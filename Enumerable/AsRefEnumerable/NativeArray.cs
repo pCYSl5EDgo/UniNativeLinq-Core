@@ -40,17 +40,6 @@ namespace pcysl5edgo.Collections.LINQ
             => UnsafeUtilityEx.MemCpy(dest, UnsafeUtilityEx.GetPointer(@this), @this.Length);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] ToArray<T>(this NativeArray<T> @this)
-            where T : unmanaged
-        {
-            var count = LongCount(@this);
-            if (count == 0) return Array.Empty<T>();
-            var answer = new T[count];
-            CopyTo(@this, (T*)Unsafe.AsPointer(ref answer[0]));
-            return answer;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static NativeEnumerable<T> ToNativeEnumerable<T>(this NativeArray<T> @this, Allocator allocator)
             where T : unmanaged
         {
@@ -64,10 +53,9 @@ namespace pcysl5edgo.Collections.LINQ
         public static NativeArray<T> ToNativeArray<T>(this NativeArray<T> @this, Allocator allocator)
             where T : unmanaged
         {
-            var count = Count(@this);
-            if (count == 0) return default;
-            var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
-            CopyTo(@this, UnsafeUtilityEx.GetPointer(answer));
+            if (@this.Length == 0) return default;
+            var answer = new NativeArray<T>(@this.Length, allocator, NativeArrayOptions.UninitializedMemory);
+            @this.CopyTo(answer);
             return answer;
         }
         #endregion
@@ -477,33 +465,17 @@ namespace pcysl5edgo.Collections.LINQ
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
-            SkipEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T
-            >
+            NativeEnumerable<T>
             Skip<T>(this NativeArray<T> @this, long count)
             where T : unmanaged
-            => new SkipEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T
-            >(@this.AsRefEnumerable(), count);
+            => new NativeEnumerable<T>(@this).Skip(count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
-            SkipLastEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T
-            >
-            SkipLast<T>(this NativeArray<T> @this, long count, Allocator allocator = Allocator.Temp)
+            NativeEnumerable<T>
+            SkipLast<T>(this NativeArray<T> @this, long count)
             where T : unmanaged
-            => new SkipLastEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T
-            >(@this.AsRefEnumerable(), count, allocator);
+            => @this.AsRefEnumerable().SkipLast(count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -525,18 +497,10 @@ namespace pcysl5edgo.Collections.LINQ
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
-            TakeEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T
-            >
+            NativeEnumerable<T>
             Take<T>(this NativeArray<T> @this, long count)
             where T : unmanaged
-            => new TakeEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T
-            >(@this.AsRefEnumerable(), count);
+            => new NativeEnumerable<T>(@this).Take(count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -558,18 +522,10 @@ namespace pcysl5edgo.Collections.LINQ
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
-            TakeLastEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T
-            >
-            TakeLast<T>(this NativeArray<T> @this, long count, Allocator allocator = Allocator.Temp)
+            NativeEnumerable<T>
+            TakeLast<T>(this NativeArray<T> @this, long count)
             where T : unmanaged
-            => new TakeLastEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T
-            >(@this.AsRefEnumerable(), count, allocator);
+            => @this.AsRefEnumerable().TakeLast(count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static

@@ -224,31 +224,15 @@ namespace pcysl5edgo.Collections.LINQ
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly
-            SkipEnumerable<
-                NativeEnumerable<TSource>,
-                Enumerator,
-                TSource
-            >
+            NativeEnumerable<TSource>
             Skip(long count)
-            => new SkipEnumerable<
-                NativeEnumerable<TSource>,
-                Enumerator,
-                TSource
-            >(this, count);
+            => new NativeEnumerable<TSource>(Ptr + count, Length - count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly
-            SkipLastEnumerable<
-                NativeEnumerable<TSource>,
-                Enumerator,
-                TSource
-            >
-            SkipLast(long count, Allocator allocator = Allocator.Temp)
-            => new SkipLastEnumerable<
-                NativeEnumerable<TSource>,
-                Enumerator,
-                TSource
-            >(this, count, allocator);
+            NativeEnumerable<TSource>
+            SkipLast(long count)
+            => new NativeEnumerable<TSource>(Ptr, Length - count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly
@@ -269,17 +253,9 @@ namespace pcysl5edgo.Collections.LINQ
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly
-            TakeEnumerable<
-                NativeEnumerable<TSource>,
-                Enumerator,
-                TSource
-            >
+            NativeEnumerable<TSource>
             Take(long count)
-            => new TakeEnumerable<
-                NativeEnumerable<TSource>,
-                Enumerator,
-                TSource
-            >(this, count);
+            => new NativeEnumerable<TSource>(Ptr, count > Length ? Length : count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly
@@ -300,17 +276,9 @@ namespace pcysl5edgo.Collections.LINQ
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly
-            TakeLastEnumerable<
-                NativeEnumerable<TSource>,
-                Enumerator,
-                TSource
-            >
-            TakeLast(long count, Allocator allocator = Allocator.Temp)
-            => new TakeLastEnumerable<
-                NativeEnumerable<TSource>,
-                Enumerator,
-                TSource
-            >(this, count, allocator);
+            NativeEnumerable<TSource>
+            TakeLast(long count)
+            => count <= 0 ? default : count >= Length ? this : new NativeEnumerable<TSource>(Ptr + Length - count, count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly
