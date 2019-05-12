@@ -1,0 +1,216 @@
+﻿public DistinctEnumerable<
+                ConcatEnumerable<
+                    XYZXYZXYZ,
+                    Enumerator, 
+                    XYZXYZXYZ,
+                    XYZXYZXYZ.Enumerator,
+                    TSource>,
+                ConcatEnumerable<
+                    XYZXYZXYZ,
+                    Enumerator,
+                    XYZXYZXYZ,
+                    XYZXYZXYZ.Enumerator,
+                    TSource>.Enumerator,
+                TSource,
+                TEqualityComparer0,
+                TGetHashCodeFunc0>
+            Union<TSourceABC, TEnumerator0, TEqualityComparer0, TGetHashCodeFunc0>
+            (in XYZXYZXYZ
+                    second, TEqualityComparer0 comparer, TGetHashCodeFunc0 getHashCodeFunc, Allocator allocator = Allocator.Temp)
+            where TEnumerator0 : struct, IRefEnumerator<TSource>
+            where TSourceABC : struct, IRefEnumerable<TEnumerator0, TSource>
+            where TEqualityComparer0 : struct, IRefFunc<TSource, TSource, bool>
+            where TGetHashCodeFunc0 : struct, IRefFunc<TSource, int>
+            => new DistinctEnumerable<
+                ConcatEnumerable<
+                    XYZXYZXYZ,
+                    Enumerator,
+                    XYZXYZXYZ,
+                    XYZXYZXYZ.Enumerator,
+                    TSource>,
+                ConcatEnumerable<
+                    XYZXYZXYZ,
+                    Enumerator,
+                    XYZXYZXYZ,
+                    XYZXYZXYZ.Enumerator,
+                    TSource>.Enumerator,
+                TSource,
+                TEqualityComparer0,
+                TGetHashCodeFunc0>
+            (this.Concat<XYZXYZXYZ, XYZXYZXYZ.Enumerator>
+                (second), comparer, getHashCodeFunc, allocator);
+
+public
+SetOperationEnumerable<
+    XYZXYZXYZ,
+    Enumerator,
+    TSourceABC,
+    TSourceABC.Enumerator,
+    TSource,
+    IntersectOperation<
+        XYZXYZXYZ,
+        Enumerator,
+        TSourceABC,
+        TSourceABC.Enumerator,
+        TSource,
+        TComparer0
+    >
+>
+Intersect<TSourceABC, TEnumerator0, TComparer0>
+(in TSourceABC second, in TComparer0 comparer, Allocator allocator = Allocator.Temp)
+where TEnumerator0 : struct, IRefEnumerator<TSource>
+where TSourceABC : struct, IRefEnumerable<TEnumerator0, TSource>
+where TComparer0 : struct, IRefFunc<TSource, TSource, int>
+=> new SetOperationEnumerable<XYZXYZXYZ, Enumerator, TSourceABC, TSourceABC.Enumerator, TSource, IntersectOperation<XYZXYZXYZ, XYZXYZXYZ.Enumerator, TSourceABC, TSourceABC.Enumerator, TSource, TComparer0>>
+(this, second, new IntersectOperation<XYZXYZXYZ, Enumerator, TSourceABC, TSourceABC.Enumerator, TSource, TComparer0>(comparer), allocator);
+
+
+public
+            SetOperationEnumerable<
+                ReverseEnumerable<TEnumerable, TEnumerator, TSource>,
+                Enumerator,
+                TSourceABC,
+                TSourceABC.Enumerator,
+                TSource,
+                IntersectOperation<
+                    ReverseEnumerable<TEnumerable, TEnumerator, TSource>,
+                    Enumerator,
+                    TSourceABC,
+                    TSourceABC.Enumerator,
+                    TSource,
+                    TComparer0
+                >
+            >
+            Intersect<TComparer0, TSourceABC, TEnumerator0>
+            (in TSourceABC second, in TComparer0 comparer, Allocator allocator = Allocator.Temp)
+            where TComparer0 : struct, IRefFunc<TSource, TSource, int>
+			where TEnumerator0 : struct, IRefEnumerator<TSource>
+			where TSourceABC : struct, IRefEnumerable<TEnumerator0, TSource>
+            => new SetOperationEnumerable<ReverseEnumerable<TEnumerable, TEnumerator, TSource>, Enumerator, TSourceABC, TSourceABC.Enumerator, TSource, IntersectOperation<ReverseEnumerable<TEnumerable, TEnumerator, TSource>, Enumerator, TSourceABC, TSourceABC.Enumerator, TSource, TComparer0>>
+                (this, second, new IntersectOperation<ReverseEnumerable<TEnumerable, TEnumerator, TSource>, Enumerator, TSourceABC, TSourceABC.Enumerator, TSource, TComparer0>(comparer), allocator);
+
+
+		public bool
+            SequenceEqual<TEnumerable0, TEnumerator0, TEqualityComparer0>
+            (in TSourceABC second, in TEqualityComparer0 comparer)
+            where TEnumerator0 : struct, IRefEnumerator<TSource>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TSource>
+            where TEqualityComparer0 : struct, IRefFunc<TSource, TSource, bool>
+            => this.SequenceEqual<
+                ReverseEnumerable<TEnumerable, TEnumerator, TSource>, Enumerator,
+                TSourceABC,
+				TSourceABC.Enumerator,
+                TSource,
+                TEqualityComparer0
+            >(second, comparer);
+
+        public bool
+            SequenceEqual<TEnumerable0, TEnumerator0>
+            (in TSourceABC second)
+            where TEnumerator0 : struct, IRefEnumerator<TSource>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TSource>
+            => this.SequenceEqual<
+                ReverseEnumerable<TEnumerable, TEnumerator, TSource>, Enumerator,
+                TSourceABC,
+				TSourceABC.Enumerator,
+                TSource,
+                DefaultEqualityComparer<TSource>
+            >(second, default);
+
+
+		public bool
+            SequenceEqual<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, TEqualityComparer0>
+            (in TSourceABC second, in TEqualityComparer0 comparer)
+            where TEnumerator0 : struct, IRefEnumerator<TSource>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TSource>
+            where TEnumerator1 : struct, IRefEnumerator<TSource>
+            where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, TSource>
+            where TEqualityComparer0 : struct, IRefFunc<TSource, TSource, bool>
+            => this.SequenceEqual<
+                ReverseEnumerable<TEnumerable, TEnumerator, TSource>, Enumerator,
+                TSourceABC,
+                TSourceABC.Enumerator,
+                TSource,
+                TEqualityComparer0
+            >(second, comparer);
+
+        public bool
+            SequenceEqual<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1>
+            (in TSourceABC second)
+            where TEnumerator0 : struct, IRefEnumerator<TSource>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TSource>
+            where TEnumerator1 : struct, IRefEnumerator<TSource>
+            where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, TSource>
+            => this.SequenceEqual<
+                ReverseEnumerable<TEnumerable, TEnumerator, TSource>, Enumerator,
+                TSourceABC,
+                TSourceABC.Enumerator,
+                TSource,
+                DefaultEqualityComparer<TSource>
+            >(second, default);
+
+
+			public
+            JoinEnumerable<
+                    JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TSource, TSourceSelector, TKeyEqualityComparer>,
+                    Enumerator,
+                    TSource,
+                    XYZXYZXYZ,
+                    XYZXYZXYZ.Enumerator,
+                    TSource0,
+                    TKey0,
+                    TKeySelector0,
+                    TKeySelector1,
+                    TSource1,
+                    TSourceSelector0,
+                    TEqualityComparer0
+                >
+            Join<
+                TEnumerable0, TEnumerator0, TSource0, TKey0, TKeySelector0, TKeySelector1, TSource1, TSourceSelector0, TEqualityComparer0
+            >
+            (in XYZXYZXYZ inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in TSourceSelector0 resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
+            where TSource0 : unmanaged
+            where TSource1 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<TSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TSource0>
+            where TKey0 : unmanaged
+            where TKeySelector0 : struct, IRefFunc<TSource, TKey0>
+            where TKeySelector1 : struct, IRefFunc<TSource0, TKey0>
+            where TSourceSelector0 : struct, IRefFunc<TSource, TSource0, TSource1>
+            where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
+            => new JoinEnumerable<JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TSource, TSourceSelector, TKeyEqualityComparer>, Enumerator, TSource, XYZXYZXYZ, XYZXYZXYZ.Enumerator, TSource0, TKey0, TKeySelector0, TKeySelector1, TSource1, TSourceSelector0, TEqualityComparer0>
+            (this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);
+
+			public
+            JoinEnumerable<
+                    JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TSource, TSourceSelector, TKeyEqualityComparer>,
+                    Enumerator,
+                    TSource,
+                    XYZXYZXYZ,
+                    XYZXYZXYZ.Enumerator,
+                    TSource0,
+                    TKey0,
+                    TKeySelector0,
+                    TKeySelector1,
+                    TSource1,
+                    TSourceSelector0,
+                    TEqualityComparer0
+                >
+            Join<
+                TEnumerable0, TEnumerator0, TSource0, TKey0, TKeySelector0, TKeySelector1, TSource1, TSourceSelector0, TEqualityComparer0
+                , TEnumerable1, TEnumerator1
+            >
+            (in XYZXYZXYZ inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in TSourceSelector0 resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
+            where TSource0 : unmanaged
+            where TSource1 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<TSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TSource0>
+            where TKey0 : unmanaged
+            where TKeySelector0 : struct, IRefFunc<TSource, TKey0>
+            where TKeySelector1 : struct, IRefFunc<TSource0, TKey0>
+            where TSourceSelector0 : struct, IRefFunc<TSource, TSource0, TSource1>
+            where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
+            where TEnumerator1 : struct, IRefEnumerator<TSource0>
+            where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, TSource0>
+            => new JoinEnumerable<JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TSource, TSourceSelector, TKeyEqualityComparer>, Enumerator, TSource, XYZXYZXYZ, XYZXYZXYZ.Enumerator, TSource0, TKey0, TKeySelector0, TKeySelector1, TSource1, TSourceSelector0, TEqualityComparer0>
+            (this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);

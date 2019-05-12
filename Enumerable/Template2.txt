@@ -1,0 +1,195 @@
+﻿using System;
+using Unity.Collections;
+
+namespace pcysl5edgo.Collections.LINQ
+{
+    public static class TSourceEnumerable
+    {
+        public static
+            TSourceEnumerable<
+				TEnumerable, TEnumerator, TSource
+			>
+            TSource<TEnumerable, TEnumerator, TSource>
+            (ref this TEnumerable enumerable, )
+            where TSource : unmanaged
+            where TEnumerator : struct, IRefEnumerator<TSource>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, TSource>
+            => new TSourceEnumerable<
+				TEnumerable, TEnumerator, TSource
+			>
+			(enumerable, );
+
+        public static
+            TSourceEnumerable<
+				NativeEnumerable<TSource>,
+				NativeEnumerable<TSource>.Enumerator,
+				TSource
+			>
+            TSource<TSource>(this NativeArray<TSource> array, )
+            where TSource : unmanaged
+            => new TSourceEnumerable<NativeEnumerable<TSource>, NativeEnumerable<TSource>.Enumerator, TSource>
+			(array.AsRefEnumerable(), );
+
+		public static
+            TSourceEnumerable<
+				ArrayEnumerable<TSource>,
+				ArrayEnumerable<TSource>.Enumerator,
+				TSource
+			>
+            TSource<TSource>(this TSource[] array, )
+            where TSource : unmanaged
+            => new TSourceEnumerable<ArrayEnumerable<TSource>, ArrayEnumerable<TSource>.Enumerator, TSource>
+			(array.AsRefEnumerable(), );
+
+        #region Average
+        public static Single
+            Average<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, Single> values)
+            where TEnumerator : struct, IRefEnumerator<Single>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, Single>
+            => values.AverageSingle<
+                    TSourceEnumerable<TEnumerable, TEnumerator, Single>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, float>.Enumerator>
+                ();
+
+        public static Double
+            Average<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, Double> values)
+            where TEnumerator : struct, IRefEnumerator<Double>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, Double>
+            => values.AverageDouble<
+                    TSourceEnumerable<TEnumerable, TEnumerator, Double>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, double>.Enumerator>
+                ();
+
+        public static Decimal
+            Average<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, Decimal> values)
+            where TEnumerator : struct, IRefEnumerator<Decimal>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, Decimal>
+            => values.AverageDecimal<
+                    TSourceEnumerable<TEnumerable, TEnumerator, Decimal>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, decimal>.Enumerator>
+                ();
+
+        public static Int32
+            Average<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, Int32> values)
+            where TEnumerator : struct, IRefEnumerator<Int32>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, Int32>
+            => values.AverageInt32<
+                    TSourceEnumerable<TEnumerable, TEnumerator, Int32>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, int>.Enumerator>
+                ();
+
+        public static Int64
+            Average<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, Int64> values)
+            where TEnumerator : struct, IRefEnumerator<Int64>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, Int64>
+            => values.AverageInt64<
+                    TSourceEnumerable<TEnumerable, TEnumerator, Int64>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, long>.Enumerator>
+                ();
+
+        public static UInt32
+            Average<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, UInt32> values)
+            where TEnumerator : struct, IRefEnumerator<UInt32>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, UInt32>
+            => values.AverageUInt32<
+                    TSourceEnumerable<TEnumerable, TEnumerator, UInt32>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, uint>.Enumerator>
+                ();
+
+        public static UInt64
+            Average<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, UInt64> values)
+            where TEnumerator : struct, IRefEnumerator<UInt64>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, UInt64>
+            => values.AverageUInt64<
+                    TSourceEnumerable<TEnumerable, TEnumerator, UInt64>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, ulong>.Enumerator>
+                ();
+        #endregion Average
+
+        #region Sum
+        public static Single
+            Sum<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, Single> values)
+            where TEnumerator : struct, IRefEnumerator<Single>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, Single>
+            => values.SumSingle<
+                    TSourceEnumerable<TEnumerable, TEnumerator, Single>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, float>.Enumerator
+                >
+                ();
+
+        public static Double
+            Sum<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, Double> values)
+            where TEnumerator : struct, IRefEnumerator<Double>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, Double>
+            => values.SumDouble<
+                    TSourceEnumerable<TEnumerable, TEnumerator, Double>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, double>.Enumerator
+                >
+                ();
+
+        public static Decimal
+            Sum<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, Decimal> values)
+            where TEnumerator : struct, IRefEnumerator<Decimal>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, Decimal>
+            => values.SumDecimal<
+                    TSourceEnumerable<TEnumerable, TEnumerator, Decimal>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, decimal>.Enumerator
+                >
+                ();
+
+        public static Int32
+            Sum<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, Int32> values)
+            where TEnumerator : struct, IRefEnumerator<Int32>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, Int32>
+            => values.SumInt32<
+                    TSourceEnumerable<TEnumerable, TEnumerator, Int32>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, int>.Enumerator
+                >
+                ();
+
+        public static Int64
+            Sum<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, Int64> values)
+            where TEnumerator : struct, IRefEnumerator<Int64>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, Int64>
+            => values.SumInt64<
+                    TSourceEnumerable<TEnumerable, TEnumerator, Int64>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, long>.Enumerator
+                >
+                ();
+
+        public static UInt32
+            Sum<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, UInt32> values)
+            where TEnumerator : struct, IRefEnumerator<UInt32>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, UInt32>
+            => values.SumUInt32<
+                    TSourceEnumerable<TEnumerable, TEnumerator, UInt32>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, uint>.Enumerator
+                >
+                ();
+
+        public static UInt64
+            Sum<TEnumerable, TEnumerator>
+            (ref this TSourceEnumerable<TEnumerable, TEnumerator, UInt64> values)
+            where TEnumerator : struct, IRefEnumerator<UInt64>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, UInt64>
+            => values.SumUInt64<
+                    TSourceEnumerable<TEnumerable, TEnumerator, UInt64>,
+                    TSourceEnumerable<TEnumerable, TEnumerator, ulong>.Enumerator
+                >
+                ();
+        #endregion
+    }
+}
