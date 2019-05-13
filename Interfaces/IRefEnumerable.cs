@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using pcysl5edgo.Collections.LINQ;
 using Unity.Collections;
 
-namespace pcysl5edgo.Collections
+namespace UniNativeLinq
 {
     public unsafe interface IRefEnumerable<TEnumerator, T> : IEnumerable<T>
         where T : unmanaged

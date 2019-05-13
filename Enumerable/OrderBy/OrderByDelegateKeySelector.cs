@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public readonly struct
         OrderByDelegateKeySelector<TSource, TKey>

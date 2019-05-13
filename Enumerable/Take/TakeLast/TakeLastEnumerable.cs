@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public unsafe readonly struct
         TakeLastEnumerable<TEnumerable, TEnumerator, TSource>

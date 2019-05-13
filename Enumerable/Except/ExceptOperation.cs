@@ -1,6 +1,6 @@
 ﻿using Unity.Collections;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public readonly unsafe struct
         ExceptOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, TSource, TComparer>

@@ -1,4 +1,4 @@
-﻿namespace pcysl5edgo.Collections.LINQ
+﻿namespace UniNativeLinq
 {
     public readonly struct ZipValueTuple<T0, T1> : IRefAction<T0, T1, (T0, T1)>
     {

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
-using System.Runtime.CompilerServices;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public unsafe readonly struct
         BufferNativeEnumerable<TSource>

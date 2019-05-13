@@ -1,4 +1,4 @@
-namespace pcysl5edgo
+namespace UniNativeLinq
 {
     public interface IRefAction<T0>
     {

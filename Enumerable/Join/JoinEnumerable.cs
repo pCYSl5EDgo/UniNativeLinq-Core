@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public unsafe readonly struct
         JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TSource, TSourceSelector, TKeyEqualityComparer>

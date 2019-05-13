@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public unsafe struct DefaultEqualityComparer<T> : IRefFunc<T, T, bool>
         where T : unmanaged

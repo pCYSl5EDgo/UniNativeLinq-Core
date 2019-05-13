@@ -1,7 +1,6 @@
-using System;
 using Unity.Collections;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public static class SelectIndexEnumerable
     {

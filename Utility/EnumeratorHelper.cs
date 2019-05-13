@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public static class EnumeratorHelper
     {

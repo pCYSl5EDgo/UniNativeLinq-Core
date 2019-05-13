@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.Collections;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public unsafe readonly struct
         WhereEnumerable<TPrevEnumerable, TPrevEnumerator, TSource, TPredicate>

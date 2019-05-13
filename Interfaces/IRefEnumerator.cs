@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace pcysl5edgo.Collections
+namespace UniNativeLinq
 {
     public interface IRefEnumerator<T> : IEnumerator<T>
         where T : unmanaged

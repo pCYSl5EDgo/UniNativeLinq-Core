@@ -1,6 +1,6 @@
 using System;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public readonly struct OrderByFromFunc<TSource>
         : IRefFunc<TSource, TSource, int>

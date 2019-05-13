@@ -6,7 +6,7 @@ using System.Linq;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public unsafe readonly struct
         OrderByEnumerable<TEnumerable, TEnumerator, TSource, TComparer>

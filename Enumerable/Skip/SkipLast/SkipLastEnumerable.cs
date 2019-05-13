@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public unsafe struct
         SkipLastEnumerable<TEnumerable, TEnumerator, TSource>

@@ -5,10 +5,8 @@ using System.Runtime.CompilerServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace pcysl5edgo.Collections
+namespace UniNativeLinq
 {
-    using LINQ;
-
     public unsafe struct
         RingBuffer<T>
         : IRefEnumerable<RingBuffer<T>.Enumerator, T>, IDisposable

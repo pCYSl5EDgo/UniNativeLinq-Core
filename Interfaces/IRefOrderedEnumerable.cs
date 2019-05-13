@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public interface IRefOrderedEnumerable<TEnumerator, TSource, TPrevEnumerable, TPrevEnumerator, TComparer>
         : IRefEnumerable<TEnumerator, TSource>, IOrderedEnumerable<TSource>

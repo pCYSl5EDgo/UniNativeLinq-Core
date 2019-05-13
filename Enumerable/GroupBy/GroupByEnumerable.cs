@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public unsafe readonly struct
         GroupByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>

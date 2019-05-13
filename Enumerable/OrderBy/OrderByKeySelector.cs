@@ -1,4 +1,4 @@
-﻿namespace pcysl5edgo.Collections.LINQ
+﻿namespace UniNativeLinq
 {
     public readonly struct 
         OrderByKeySelector<TSource, TKey, TKeySelector, TComparer>

@@ -1,8 +1,7 @@
-﻿using System;
-using Unity.Collections;
+﻿using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public unsafe struct
         IntersectOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, TSource, TComparer>

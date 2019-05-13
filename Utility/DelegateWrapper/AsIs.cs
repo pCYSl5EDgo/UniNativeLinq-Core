@@ -1,4 +1,4 @@
-﻿namespace pcysl5edgo
+﻿namespace UniNativeLinq
 {
     public struct AsIs<T0> : IRefAction<T0, T0>
     {

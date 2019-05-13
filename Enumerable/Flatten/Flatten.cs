@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Unity.Collections;
-
-namespace pcysl5edgo.Collections.LINQ
+﻿namespace UniNativeLinq
 {
     public static unsafe class FlattenEnumerable
     {

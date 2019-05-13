@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace pcysl5edgo.Collections.LINQ
+﻿namespace UniNativeLinq
 {
     public readonly struct NegatePredicate<TSource, TPredicate> : IRefFunc<TSource, bool>
         where TPredicate : IRefFunc<TSource, bool>

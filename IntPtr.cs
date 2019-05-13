@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace pcysl5edgo
+namespace UniNativeLinq
 {
     [StructLayout(LayoutKind.Explicit)]
     public unsafe struct

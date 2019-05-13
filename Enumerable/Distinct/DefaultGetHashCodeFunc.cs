@@ -1,4 +1,4 @@
-namespace pcysl5edgo.Collections.LINQ
+namespace UniNativeLinq
 {
     public struct DefaultGetHashCodeFunc<T> : IRefFunc<T, int>
         where T : unmanaged

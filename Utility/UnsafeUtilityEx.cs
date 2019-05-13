@@ -1,7 +1,7 @@
 ﻿using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace pcysl5edgo.Collections
+namespace UniNativeLinq
 {
     public static unsafe class UnsafeUtilityEx
     {

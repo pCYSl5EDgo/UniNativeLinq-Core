@@ -3,11 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using pcysl5edgo.Collections.LINQ;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
-namespace pcysl5edgo.Collections
+namespace UniNativeLinq
 {
     public unsafe struct
         UnrolledLinkedList<T>
