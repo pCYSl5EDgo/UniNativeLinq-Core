@@ -24,7 +24,7 @@ namespace UniNativeLinq
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), predicts);
-        
+
         public struct Enumerator : IRefEnumerator<TSource>
         {
             private TPrevEnumerator enumerator;
@@ -53,6 +53,18 @@ namespace UniNativeLinq
             readonly object IEnumerator.Current => Current;
 
             public void Dispose() => enumerator.Dispose();
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                ref var value = ref enumerator.TryGetNext(out success);
+                while (success)
+                {
+                    if (predicts.Calc(ref value))
+                        return ref value;
+                    value = ref enumerator.TryGetNext(out success);
+                }
+                return ref value;
+            }
         }
 
         #region Interface Implementation

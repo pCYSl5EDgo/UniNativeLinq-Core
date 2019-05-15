@@ -103,6 +103,15 @@ namespace UniNativeLinq
             }
             public bool MoveNext() => ++index < count;
             public void Reset() => index = -1;
+
+            public ref T TryGetNext(out bool success)
+            {
+                if (index >= count)
+                    success = false;
+                else
+                    success = ++index < count;
+                return ref ptr[index];
+            }
         }
 
         #region Enumerable

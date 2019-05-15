@@ -64,6 +64,14 @@ namespace UniNativeLinq
             public bool MoveNext() => ++index < count;
 
             public void Reset() => index = -1;
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                success = ++index < count;
+                if (!success)
+                    index = count;
+                return ref elements[index];
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(in this);

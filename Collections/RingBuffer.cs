@@ -77,6 +77,15 @@ namespace UniNativeLinq
             }
 
             public void Reset() => throw new InvalidOperationException();
+
+            public ref T TryGetNext(out bool success)
+            {
+                ++Parent.StartIndex;
+                success = --Parent.Length >= 0;
+                if (Parent.StartIndex >= Parent.Capacity)
+                    Parent.StartIndex = 0;
+                return ref Parent.Elements[Parent.StartIndex];
+            }
         }
 
         public readonly bool Any() => Length != 0;

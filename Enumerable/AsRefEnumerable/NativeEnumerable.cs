@@ -96,6 +96,14 @@ namespace UniNativeLinq
             public bool MoveNext() => ++index < length;
 
             public void Reset() => index = -1;
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                success = ++index < length;
+                if (!success)
+                    index = length;
+                return ref Ptr[index];
+            }
         }
 
         public struct ReverseEnumerator : IRefEnumerator<TSource>
@@ -120,6 +128,14 @@ namespace UniNativeLinq
             public bool MoveNext() => --index >= 0;
 
             public void Reset() => index = length;
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                success = --index >= 0;
+                if (!success)
+                    index = 0;
+                return ref Ptr[index];
+            }
         }
 
         #region Interface Implementation

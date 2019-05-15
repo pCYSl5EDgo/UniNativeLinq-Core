@@ -28,42 +28,70 @@ namespace UniNativeLinq
         public struct Enumerator : IRefEnumerator<TSource>
         {
             private TEnumerator enumerator;
-            private readonly TSource* current;
+            private readonly TSource* element;
             private readonly Allocator allocator;
-            private bool isFirstMoveNextYet;
+            private bool isCurrentEnumerator;
+            private bool isPrependYet;
 
-            internal Enumerator(in TEnumerator enumerator, in TSource prepend, Allocator allocator)
+            public Enumerator(in TEnumerator enumerator, in TSource element, Allocator allocator)
             {
-                this.enumerator = enumerator;
-                current = UnsafeUtilityEx.Malloc<TSource>(1, allocator);
-                *current = prepend;
                 this.allocator = allocator;
-                isFirstMoveNextYet = true;
+                this.element = UnsafeUtilityEx.Malloc<TSource>(1, allocator);
+                *this.element = element;
+                this.enumerator = enumerator;
+                isCurrentEnumerator = false;
+                isPrependYet = true;
+            }
+
+            public ref TSource Current
+            {
+                get
+                {
+                    if (isCurrentEnumerator)
+                        return ref enumerator.Current;
+                    return ref *element;
+                }
+            }
+
+            TSource IEnumerator<TSource>.Current => Current;
+            object IEnumerator.Current => Current;
+
+            public void Dispose()
+            {
+                enumerator.Dispose();
+                if (element != null && allocator != Allocator.None)
+                    UnsafeUtility.Free(element, allocator);
+                this = default;
             }
 
             public bool MoveNext()
             {
-                if (isFirstMoveNextYet)
+                if (isCurrentEnumerator)
                 {
-                    isFirstMoveNextYet = false;
+                    if (!enumerator.MoveNext())
+                        isCurrentEnumerator = false;
                     return true;
                 }
-                if (!enumerator.MoveNext()) return false;
-                *current = enumerator.Current;
-                return true;
+                if (isPrependYet)
+                {
+                    isPrependYet = false;
+                    isCurrentEnumerator = true;
+                    return true;
+                }
+                return false;
             }
 
             public void Reset() => throw new InvalidOperationException();
 
-            public readonly ref TSource Current => ref *current;
-            readonly TSource IEnumerator<TSource>.Current => Current;
-            readonly object IEnumerator.Current => Current;
-
-            public void Dispose()
+            public ref TSource TryGetNext(out bool success)
             {
-                if (current != null)
-                    UnsafeUtility.Free(current, allocator);
-                this = default;
+                if(isPrependYet)
+                {
+                    isPrependYet = false;
+                    success = true;
+                    return ref *element;
+                }
+                return ref enumerator.TryGetNext(out success);
             }
         }
 

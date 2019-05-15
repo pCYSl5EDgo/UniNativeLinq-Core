@@ -58,6 +58,15 @@ namespace UniNativeLinq
             readonly TSource IEnumerator<TSource>.Current => Current;
             readonly object IEnumerator.Current => Current;
             public void Dispose() => UnsafeUtility.Free(current, allocator);
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                ++index;
+                ref var prevSource = ref enumerator.TryGetNext(out success);
+                if (!success) return ref *current;
+                action.Execute(ref enumerator.Current, index, ref *current);
+                return ref *current;
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), acts, alloc);

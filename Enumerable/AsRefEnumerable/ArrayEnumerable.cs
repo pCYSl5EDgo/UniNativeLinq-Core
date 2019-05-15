@@ -67,6 +67,14 @@ namespace UniNativeLinq
                     UnsafeUtility.ReleaseGCObject(gcHandle);
                 this = default;
             }
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                success = ++index < length;
+                if (!success)
+                    index = length;
+                return ref ptr[index];
+            }
         }
 
         public struct ReverseEnumerator : IRefEnumerator<TSource>
@@ -95,6 +103,14 @@ namespace UniNativeLinq
                 if (ptr != null)
                     UnsafeUtility.ReleaseGCObject(gcHandle);
                 this = default;
+            }
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                success = --index >= 0;
+                if (!success)
+                    index = 0;
+                return ref ptr[index];
             }
         }
 

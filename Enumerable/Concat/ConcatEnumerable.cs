@@ -58,6 +58,16 @@ namespace UniNativeLinq
             }
 
             public void Reset() => throw new InvalidOperationException();
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                if (isCurrentSecond)
+                    return ref secondEnumerator.TryGetNext(out success);
+                ref var value = ref firstEnumerator.TryGetNext(out success);
+                if (success) return ref value;
+                isCurrentSecond = true;
+                return ref secondEnumerator.TryGetNext(out success);
+            }
         }
 
                 #region Interface Implementation

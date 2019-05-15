@@ -45,6 +45,14 @@ namespace UniNativeLinq
 
             public bool MoveNext() => enumerator.MoveNext() && predicate.Calc(ref enumerator.Current);
             public void Reset() => throw new InvalidOperationException();
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                ref var value = ref enumerator.TryGetNext(out success);
+                if (!success) return ref value;
+                success = predicate.Calc(ref value);
+                return ref value;
+            }
         }
 
         #region Interface Implementation

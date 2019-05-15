@@ -65,21 +65,6 @@ namespace UniNativeLinq
                 currentIndex = 0;
             }
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public bool MoveNext()
-            {
-                if (Ptr == null) return false;
-                while (enumerator.MoveNext())
-                {
-                    ref var current = ref enumerator.Current;
-                    var hash = getHashCodeFunc.Calc(ref current);
-                    if (Count == 0)
-                        return InitialInsert(ref current, hash);
-                    if (TryInsert(ref current, hash))
-                        return true;
-                }
-                return false;
-            }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private bool TryInsert(ref TSource current, int hash)
@@ -192,10 +177,24 @@ namespace UniNativeLinq
 
             public void Reset() => throw new InvalidOperationException();
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public bool MoveNext()
+            {
+                if (Ptr == null) return false;
+                while (enumerator.MoveNext())
+                {
+                    ref var current = ref enumerator.Current;
+                    var hash = getHashCodeFunc.Calc(ref current);
+                    if (Count == 0)
+                        return InitialInsert(ref current, hash);
+                    if (TryInsert(ref current, hash))
+                        return true;
+                }
+                return false;
+            }
+
             public ref TSource Current => ref Ptr[currentIndex];
-
             TSource IEnumerator<TSource>.Current => Current;
-
             object IEnumerator.Current => Current;
 
             public void Dispose()
@@ -205,6 +204,11 @@ namespace UniNativeLinq
                 if (codes != null)
                     UnsafeUtility.Free(codes, alloc);
                 this = default;
+            }
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                throw new NotImplementedException();
             }
         }
 

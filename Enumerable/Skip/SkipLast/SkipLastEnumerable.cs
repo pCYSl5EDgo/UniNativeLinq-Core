@@ -75,6 +75,16 @@ namespace UniNativeLinq
                     UnsafeUtility.Free(buffer, allocator);
                 this = default;
             }
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                ref var value = ref enumerator.TryGetNext(out success);
+                if (!success) return ref value;
+                buffer[index++] = value;
+                if (index > skipCount)
+                    index = 0L;
+                return ref buffer[index];
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(enumerable, skipCount, alloc);

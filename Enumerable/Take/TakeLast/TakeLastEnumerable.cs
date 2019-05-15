@@ -55,6 +55,8 @@ namespace UniNativeLinq
                 enumerator.Parent.Dispose();
                 this = default;
             }
+
+            public ref TSource TryGetNext(out bool success) => ref enumerator.TryGetNext(out success);
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(enumerable, takeCount, alloc);

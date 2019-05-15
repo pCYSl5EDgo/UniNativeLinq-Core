@@ -34,6 +34,7 @@ namespace UniNativeLinq
             private TSource* ptr;
             private long count;
             private long capacity;
+            private long lastInsertIndex;
             private TComparer comparer;
             private readonly Allocator allocator;
 
@@ -41,20 +42,13 @@ namespace UniNativeLinq
             {
                 enumerator = enumerable.GetEnumerator();
                 this.allocator = allocator;
-                count = 0;
+                count = 0L;
                 capacity = enumerable.CanFastCount() ? enumerable.LongCount() : 16L;
                 ptr = UnsafeUtilityEx.Malloc<TSource>(capacity, allocator);
                 this.comparer = comparer;
+                lastInsertIndex = -1L;
             }
 
-            public bool MoveNext()
-            {
-                do
-                {
-                    if (!enumerator.MoveNext()) return false;
-                } while (!TryInsert(ref enumerator.Current));
-                return true;
-            }
 
             private bool TryInsert(ref TSource value)
             {
@@ -80,6 +74,7 @@ namespace UniNativeLinq
                     ReAlloc(index);
                 else if (index != count)
                     UnsafeUtilityEx.MemCpy(ptr + index + 1, ptr + index, count - index);
+                lastInsertIndex = index;
                 ptr[index] = value;
                 count++;
             }
@@ -102,7 +97,7 @@ namespace UniNativeLinq
             }
 
             public void Reset() => throw new InvalidOperationException();
-            public ref TSource Current => ref ptr[count - 1];
+            public ref TSource Current => ref ptr[lastInsertIndex];
             TSource IEnumerator<TSource>.Current => Current;
             object IEnumerator.Current => Current;
 
@@ -116,6 +111,27 @@ namespace UniNativeLinq
 
             public NativeEnumerable<TSource> AsEnumerable()
             => new NativeEnumerable<TSource>(ptr, count);
+
+            public bool MoveNext()
+            {
+                do
+                {
+                    if (!enumerator.MoveNext()) return false;
+                } while (!TryInsert(ref enumerator.Current));
+                return true;
+            }
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                while (true)
+                {
+                    ref var value = ref enumerator.TryGetNext(out success);
+                    if (!success) return ref value;
+                    success = TryInsert(ref value);
+                    if (success)
+                        return ref value;
+                }
+            }
         }
 
         #region Interface Implementation
@@ -164,12 +180,12 @@ namespace UniNativeLinq
                 *dest++ = enumerator.Current;
             enumerator.Dispose();
         }
-            
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly TSource[] ToArray()
         {
             var count = LongCount();
-            if(count == 0) return Array.Empty<TSource>();
+            if (count == 0) return Array.Empty<TSource>();
             var answer = new TSource[count];
             CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
             return answer;
@@ -192,7 +208,7 @@ namespace UniNativeLinq
         public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
         {
             var count = Count();
-            if(count == 0) return default;
+            if (count == 0) return default;
             var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(answer.GetPointer());
             return answer;

@@ -84,6 +84,29 @@ namespace UniNativeLinq
             }
 
             public void Reset() => throw new InvalidOperationException();
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                if (isFirst)
+                {
+                    isFirst = false;
+                    ref var value = ref enumerator.TryGetNext(out success);
+                    if (success)
+                    {
+                        isDefault = false;
+                        return ref value;
+                    }
+                    isDefault = true;
+                    success = true;
+                    return ref *ptr;
+                }
+                if(isDefault)
+                {
+                    success = false;
+                    return ref *ptr;
+                }
+                return ref enumerator.TryGetNext(out success);
+            }
         }
 
         #region Interface Implementation
@@ -104,7 +127,7 @@ namespace UniNativeLinq
             => (int)LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount() 
+        public readonly long LongCount()
         {
             var count = enumerable.LongCount();
             return count == 0 ? 1 : count;
@@ -118,12 +141,12 @@ namespace UniNativeLinq
                 *dest++ = enumerator.Current;
             enumerator.Dispose();
         }
-            
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly TSource[] ToArray()
         {
             var count = LongCount();
-            if(count == 0) return Array.Empty<TSource>();
+            if (count == 0) return Array.Empty<TSource>();
             var answer = new TSource[count];
             CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
             return answer;
@@ -137,12 +160,12 @@ namespace UniNativeLinq
             CopyTo(ptr);
             return new NativeEnumerable<TSource>(ptr, count);
         }
-            
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
         {
             var count = Count();
-            if(count == 0) return default;
+            if (count == 0) return default;
             var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(answer.GetPointer());
             return answer;

@@ -59,6 +59,35 @@ namespace UniNativeLinq
                 isFirstAlive = isSecondAlive = true;
             }
 
+            public ref TSource TryGetNext(out bool success)
+            {
+                if (isFirstAlive && !firstEnumerator.MoveNext())
+                    isFirstAlive = false;
+                if (isSecondAlive && !secondEnumerator.MoveNext())
+                    isSecondAlive = false;
+                if (isFirstAlive)
+                {
+                    success = true;
+                    if (isSecondAlive)
+                        action.Execute(ref firstEnumerator.Current, ref secondEnumerator.Current, ref *current);
+                    else
+                        action.Execute(ref firstEnumerator.Current, ref secondDefaultValue, ref *current);
+                }
+                else
+                {
+                    if (isSecondAlive)
+                    {
+                        action.Execute(ref firstDefaultValue, ref secondEnumerator.Current, ref *current);
+                        success = true;
+                    }
+                    else
+                    {
+                        success = false;
+                    }
+                }
+                return ref *current;
+            }
+
             public bool MoveNext()
             {
                 if (isFirstAlive && !firstEnumerator.MoveNext())

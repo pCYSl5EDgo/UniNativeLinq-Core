@@ -79,6 +79,18 @@ namespace UniNativeLinq
             }
 
             public void Reset() => throw new InvalidOperationException();
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                success = isCurrentEnumerator;
+                if (!success)
+                    return ref *element;
+                ref var value = ref enumerator.TryGetNext(out success);
+                if (success)
+                    return ref value;
+                success = true;
+                return ref *element;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

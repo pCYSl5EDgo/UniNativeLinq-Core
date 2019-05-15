@@ -61,6 +61,19 @@ namespace UniNativeLinq
             readonly TSource IEnumerator<TSource>.Current => Current;
             readonly object IEnumerator.Current => Current;
             public void Dispose() => UnsafeUtility.Free(current, allocator);
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                success = ++index >= count;
+                if (!success)
+                {
+                    index = count;
+                    return ref *current;
+                }
+                if (index > 0)
+                    action.Execute(ref *current);
+                return ref *current;
+            }
         }
 
         public struct ReverseEnumerator : IRefEnumerator<TSource>
@@ -93,6 +106,19 @@ namespace UniNativeLinq
             readonly TSource IEnumerator<TSource>.Current => Current;
             readonly object IEnumerator.Current => Current;
             public void Dispose() => UnsafeUtility.Free(current, allocator);
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                success = ++index >= count;
+                if (!success)
+                {
+                    index = count;
+                    return ref *current;
+                }
+                if (index > 0)
+                    action.Back(ref *current);
+                return ref *current;
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(start, length, acts, alloc);

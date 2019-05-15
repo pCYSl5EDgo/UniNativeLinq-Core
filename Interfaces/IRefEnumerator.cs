@@ -6,5 +6,6 @@ namespace UniNativeLinq
         where T : unmanaged
     {
         new ref T Current { get; }
+        ref T TryGetNext(out bool success);
     }
 }

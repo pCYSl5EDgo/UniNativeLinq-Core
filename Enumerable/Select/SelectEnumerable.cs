@@ -65,6 +65,14 @@ namespace UniNativeLinq
             }
 
             public void Reset() => throw new InvalidOperationException();
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                ref var value = ref enumerator.TryGetNext(out success);
+                if (!success) return ref *current;
+                action.Execute(ref value, ref *current);
+                return ref *current;
+            }
         }
 
         #region Interface Implementation

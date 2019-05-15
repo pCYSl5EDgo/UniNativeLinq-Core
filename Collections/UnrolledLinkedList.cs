@@ -100,6 +100,13 @@ namespace UniNativeLinq
                 public void Dispose() => this = default;
                 public bool MoveNext() => ++index < count;
                 public void Reset() => index = -1;
+
+                public ref T TryGetNext(out bool success)
+                {
+                    if (!(success = ++index < count))
+                        index = count;
+                    return ref values[index];
+                }
             }
 
             public readonly Enumerator GetEnumerator() => new Enumerator(this);
@@ -247,6 +254,20 @@ namespace UniNativeLinq
             public void Reset()
             {
                 throw new NotImplementedException();
+            }
+
+            public ref T TryGetNext(out bool success)
+            {
+                ref var value = ref enumerator.TryGetNext(out success);
+                if (success) return ref value;
+                while (nodeEnumerator.MoveNext())
+                {
+                    enumerator = nodeEnumerator.Current.GetEnumerator();
+                    value = ref enumerator.TryGetNext(out success);
+                    if (success)
+                        return ref value;
+                }
+                return ref value;
             }
         }
 

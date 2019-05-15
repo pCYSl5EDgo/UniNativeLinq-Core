@@ -49,6 +49,16 @@ namespace UniNativeLinq
             readonly TSource IEnumerator<TSource>.Current => Current;
             readonly object IEnumerator.Current => Current;
             public void Dispose() => enumerator.Dispose();
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                while (true)
+                {
+                    ref var value = ref enumerator.TryGetNext(out success);
+                    if (!success || predicts.Calc(ref value, ++index))
+                        return ref value;
+                }
+            }
         }
 
         #region Interface Implementation

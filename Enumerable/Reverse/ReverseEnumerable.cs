@@ -106,6 +106,13 @@ namespace UniNativeLinq
                 }
                 this = default;
             }
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                if (kind == Kind.ManagedArray)
+                    return ref arrayEnumerator.TryGetNext(out success);
+                return ref nativeEnumerator.TryGetNext(out success);
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(Enumerable, alloc);

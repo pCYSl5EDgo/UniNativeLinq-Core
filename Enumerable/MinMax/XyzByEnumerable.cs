@@ -79,6 +79,18 @@ namespace UniNativeLinq
                 enumerator.Dispose();
                 this = default;
             }
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                while (true)
+                {
+                    ref var value = ref enumerator.TryGetNext(out success);
+                    if (!success) return ref value;
+                    var currentKey = keySelector.Calc(ref value);
+                    if (equalityComparer.Calc(ref key, ref currentKey))
+                        return ref value;
+                }
+            }
         }
 
         public

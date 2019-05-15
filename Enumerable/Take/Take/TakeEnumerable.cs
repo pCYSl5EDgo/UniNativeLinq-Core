@@ -44,6 +44,19 @@ namespace UniNativeLinq
 
             public bool MoveNext() => --takeCount >= 0 && enumerator.MoveNext();
             public void Reset() => throw new InvalidOperationException();
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                success = --takeCount >= 0;
+                if(!success)
+                {
+                    takeCount = 0;
+                    // invalid ref return
+                    TSource* ptr = null;
+                    return ref *ptr;
+                }
+                return ref enumerator.TryGetNext(out success);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

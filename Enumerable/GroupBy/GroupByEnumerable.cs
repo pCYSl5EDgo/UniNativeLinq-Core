@@ -147,6 +147,14 @@ namespace UniNativeLinq
             public bool MoveNext() => ++index < Count;
 
             public void Reset() => index = -1;
+
+            public ref Grouping<TKey, TElement> TryGetNext(out bool success)
+            {
+                success = ++index < Count;
+                if (!success)
+                    index = Count;
+                return ref Groups[index];
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(in enumerable, keySelector, elementSelector, equalityComparer, alloc, GroupByDisposeOption);

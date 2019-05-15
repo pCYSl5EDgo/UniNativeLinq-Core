@@ -145,6 +145,14 @@ namespace UniNativeLinq
                     UnsafeUtility.Free(Ptr, allocator);
                 this = default;
             }
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                success = ++index < Count;
+                if (!success)
+                    index = Count;
+                return ref Ptr[index];
+            }
         }
 
         public readonly

@@ -54,6 +54,8 @@ namespace UniNativeLinq
                     UnsafeUtility.Free(mergedEnumerator.Ptr, allocator);
                 this = default;
             }
+
+            public ref TSource TryGetNext(out bool success) => ref mergedEnumerator.TryGetNext(out success);
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(firstEnumerable, secondEnumerable, setOperation, alloc);

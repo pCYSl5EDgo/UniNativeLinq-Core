@@ -82,6 +82,49 @@ namespace UniNativeLinq
                 resultEnumerator.Dispose();
                 enumerator.Dispose();
             }
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                if (isNotFirst)
+                    return ref TryGetNextNotFirst(out success);
+                return ref TryGetNextFirst(out success);
+            }
+
+            private ref TSource TryGetNextFirst(out bool success)
+            {
+                isNotFirst = true;
+                while (true)
+                {
+                    ref var prevSource = ref enumerator.TryGetNext(out success);
+                    if (!success)
+                        return ref resultEnumerator.TryGetNext(out success);
+                    action.Execute(ref prevSource, ref resultEnumerable);
+                    resultEnumerator = resultEnumerable.GetEnumerator();
+                    ref var value = ref resultEnumerator.TryGetNext(out success);
+                    if (success)
+                        return ref value;
+                    resultEnumerator.Dispose();
+                }
+            }
+
+            private ref TSource TryGetNextNotFirst(out bool success)
+            {
+                ref var value = ref resultEnumerator.TryGetNext(out success);
+                if (success)
+                    return ref value;
+                resultEnumerator.Dispose();
+                while (true)
+                {
+                    ref var prevSource = ref enumerator.TryGetNext(out success);
+                    if (!success) return ref value;
+                    action.Execute(ref prevSource, ref resultEnumerable);
+                    resultEnumerator = resultEnumerable.GetEnumerator();
+                    value = ref resultEnumerator.TryGetNext(out success);
+                    if (success)
+                        return ref value;
+                    resultEnumerator.Dispose();
+                }
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), acts);

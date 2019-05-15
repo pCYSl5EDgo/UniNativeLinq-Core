@@ -136,6 +136,30 @@ namespace UniNativeLinq
                     UnsafeUtility.Free(current, allocator);
                 this = default;
             }
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                ++innerIndex;
+                while (true)
+                {
+                    if (innerIndex >= innerCount)
+                    {
+                        innerIndex = 0;
+                        ref var value = ref outerEnumerator.TryGetNext(out success);
+                        if (!success)
+                            return ref *current;
+                        outerKey = outerKeySelector.Calc(ref value);
+                    }
+                    for (; innerIndex < innerCount; innerIndex++)
+                    {
+                        if (!equalityComparer.Calc(ref innerKey[innerIndex], ref outerKey))
+                            continue;
+                        success = true;
+                        *current = sourceSelector.Calc(ref outerEnumerator.Current, ref innerValue[innerIndex]);
+                        return ref *current;
+                    }
+                }
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(outerEnumerable, innerEnumerable, outerKeySelector, innerKeySelector, sourceSelector, equalityComparer, alloc);

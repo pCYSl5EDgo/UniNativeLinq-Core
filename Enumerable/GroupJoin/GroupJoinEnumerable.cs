@@ -100,6 +100,15 @@ namespace UniNativeLinq
             }
 
             public void Reset() => throw new InvalidOperationException();
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                ref var value = ref enumerator.TryGetNext(out success);
+                if (!success) return ref *current;
+                enumerable.Predication.Key = keySelector.Calc(ref value);
+                *current = selector.Calc(ref value, ref enumerable);
+                return ref *current;
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(outerEnumerable, innerEnumerable, outerKeySelector, InnerKeySelector, sourceSelector, keyEqualityComparer, alloc);
