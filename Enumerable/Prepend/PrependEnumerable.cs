@@ -30,8 +30,8 @@ namespace UniNativeLinq
             private TEnumerator enumerator;
             private readonly TSource* element;
             private readonly Allocator allocator;
-            private bool isCurrentEnumerator;
-            private bool isPrependYet;
+            private bool isInitialState;
+            private bool isPrependNow;
 
             public Enumerator(in TEnumerator enumerator, in TSource element, Allocator allocator)
             {
@@ -39,17 +39,17 @@ namespace UniNativeLinq
                 this.element = UnsafeUtilityEx.Malloc<TSource>(1, allocator);
                 *this.element = element;
                 this.enumerator = enumerator;
-                isCurrentEnumerator = false;
-                isPrependYet = true;
+                isInitialState = true;
+                isPrependNow = true;
             }
 
             public ref TSource Current
             {
                 get
                 {
-                    if (isCurrentEnumerator)
-                        return ref enumerator.Current;
-                    return ref *element;
+                    if (isPrependNow)
+                        return ref *element;
+                    return ref enumerator.Current;
                 }
             }
 
@@ -66,28 +66,23 @@ namespace UniNativeLinq
 
             public bool MoveNext()
             {
-                if (isCurrentEnumerator)
+                if(isInitialState)
                 {
-                    if (!enumerator.MoveNext())
-                        isCurrentEnumerator = false;
+                    isInitialState = false;
                     return true;
                 }
-                if (isPrependYet)
-                {
-                    isPrependYet = false;
-                    isCurrentEnumerator = true;
-                    return true;
-                }
-                return false;
+                if(isPrependNow)
+                    isPrependNow = false;
+                return enumerator.MoveNext();
             }
 
             public void Reset() => throw new InvalidOperationException();
 
             public ref TSource TryGetNext(out bool success)
             {
-                if(isPrependYet)
+                if(isInitialState)
                 {
-                    isPrependYet = false;
+                    isInitialState = false;
                     success = true;
                     return ref *element;
                 }

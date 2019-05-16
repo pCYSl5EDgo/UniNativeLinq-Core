@@ -32,7 +32,6 @@ namespace UniNativeLinq
             private readonly TSource* element;
             private readonly Allocator allocator;
             private bool isCurrentEnumerator;
-            private bool hasNotAppendRead;
 
             public Enumerator(in TPrevEnumerator enumerator, in TSource element, Allocator allocator)
             {
@@ -41,7 +40,6 @@ namespace UniNativeLinq
                 *this.element = element;
                 this.enumerator = enumerator;
                 isCurrentEnumerator = true;
-                hasNotAppendRead = true;
             }
 
             public ref TSource Current
@@ -67,14 +65,10 @@ namespace UniNativeLinq
 
             public bool MoveNext()
             {
-                if (isCurrentEnumerator)
-                {
-                    if (!enumerator.MoveNext())
-                        isCurrentEnumerator = false;
-                    return true;
-                }
-                if (!hasNotAppendRead) return false;
-                hasNotAppendRead = false;
+                if (!isCurrentEnumerator)
+                    return false;
+                if (!enumerator.MoveNext())
+                    isCurrentEnumerator = false;
                 return true;
             }
 
@@ -86,10 +80,9 @@ namespace UniNativeLinq
                 if (!success)
                     return ref *element;
                 ref var value = ref enumerator.TryGetNext(out success);
-                if (success)
-                    return ref value;
-                success = true;
-                return ref *element;
+                if (!success)
+                    isCurrentEnumerator = false;
+                return ref value;
             }
         }
 

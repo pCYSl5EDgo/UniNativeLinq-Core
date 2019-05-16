@@ -36,52 +36,31 @@ namespace UniNativeLinq
             alloc = Allocator.None;
         }
 
-        private enum Kind
-        {
-            None,
-            NativeArray,
-            ManagedArray,
-            Other,
-        }
-
-
-        [StructLayout(LayoutKind.Explicit)]
         public struct Enumerator : IRefEnumerator<TSource>
         {
-            [FieldOffset(0)] private readonly Kind kind;
-            [FieldOffset(4)] private readonly Allocator allocator;
-            [FieldOffset(8)] private NativeEnumerable<TSource>.ReverseEnumerator nativeEnumerator;
-            [FieldOffset(8)] private ArrayEnumerable<TSource>.ReverseEnumerator arrayEnumerator;
+            private readonly ReverseEnumerableKind kind;
+            private readonly Allocator allocator;
+            private NativeEnumerable<TSource>.ReverseEnumerator enumerator;
 
             internal Enumerator(TEnumerable enumerable, Allocator allocator)
             {
-                kind = Kind.Other;
-                arrayEnumerator = default;
-                nativeEnumerator = enumerable.ToNativeEnumerable(allocator).GetReverseEnumerator();
+                kind = ReverseEnumerableKind.Other;
+                enumerator = enumerable.ToNativeEnumerable(allocator).GetReverseEnumerator();
                 this.allocator = allocator;
             }
 
             internal Enumerator(in NativeEnumerable<TSource> enumerable)
             {
-                kind = Kind.NativeArray;
-                arrayEnumerator = default;
-                nativeEnumerator = enumerable.GetReverseEnumerator();
+                kind = ReverseEnumerableKind.NativeArray;
+                enumerator = enumerable.GetReverseEnumerator();
                 allocator = Allocator.None;
             }
 
-            public bool MoveNext() => nativeEnumerator.MoveNext();
+            public bool MoveNext() => enumerator.MoveNext();
 
-            public void Reset() => nativeEnumerator.Reset();
+            public void Reset() => enumerator.Reset();
 
-            public readonly ref TSource Current
-            {
-                get
-                {
-                    if (kind == Kind.ManagedArray)
-                        return ref arrayEnumerator.Current;
-                    return ref nativeEnumerator.Current;
-                }
-            }
+            public readonly ref TSource Current => ref enumerator.Current;
 
             readonly TSource IEnumerator<TSource>.Current => Current;
 
@@ -91,28 +70,20 @@ namespace UniNativeLinq
             {
                 switch (kind)
                 {
-                    case Kind.None:
+                    case ReverseEnumerableKind.None:
                         return;
-                    case Kind.NativeArray:
-                        nativeEnumerator.Dispose();
+                    case ReverseEnumerableKind.NativeArray:
+                        enumerator.Dispose();
                         break;
-                    case Kind.ManagedArray:
-                        arrayEnumerator.Dispose();
-                        break;
-                    case Kind.Other:
-                        UnsafeUtility.Free(nativeEnumerator.Ptr, allocator);
-                        nativeEnumerator.Dispose();
+                    case ReverseEnumerableKind.Other:
+                        UnsafeUtility.Free(enumerator.Ptr, allocator);
+                        enumerator.Dispose();
                         break;
                 }
                 this = default;
             }
 
-            public ref TSource TryGetNext(out bool success)
-            {
-                if (kind == Kind.ManagedArray)
-                    return ref arrayEnumerator.TryGetNext(out success);
-                return ref nativeEnumerator.TryGetNext(out success);
-            }
+            public ref TSource TryGetNext(out bool success) => ref enumerator.TryGetNext(out success);
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(Enumerable, alloc);
