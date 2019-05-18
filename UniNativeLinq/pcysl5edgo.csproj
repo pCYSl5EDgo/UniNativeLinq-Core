@@ -16,10 +16,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.1f1/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.1.3f1/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /Y $(TargetDir)pcysl5edgo.dll &quot;C:\Users\conve\Saved Games\LINQ\Assets\LINQ2NativeArray\Plugins\&quot;&#xD;&#xA;&quot;C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.7.2 Tools\ildasm.exe&quot; $(TargetDir)pcysl5edgo.dll /out=&quot;pcysl5edgo.il&quot; /forward /utf8" />
+    <Exec Command="xcopy /Y $(TargetDir)pcysl5edgo.dll &quot;C:\Users\conve\Saved Games\LINQ\Assets\LINQ2NativeArray\Plugins\&quot;" />
   </Target>
 </Project>

@@ -17388,5 +17388,894 @@ namespace UniNativeLinq
             >
             (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
         #endregion
+
+        #region SelectMany
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                NativeEnumerable<T0>,
+                NativeEnumerable<T0>.Enumerator,
+                DelegateFuncToAction<T, NativeEnumerable<T0>>
+            >
+            SelectMany<T0, T>(this NativeArray<T> @this, Func<T, NativeEnumerable<T0>> func)
+            where T : unmanaged
+            where T0 : unmanaged
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                NativeEnumerable<T0>,
+                NativeEnumerable<T0>.Enumerator,
+                DelegateFuncToAction<T, NativeEnumerable<T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                NativeEnumerable<T0>,
+                NativeEnumerable<T0>.Enumerator,
+                NativeArrayToNativeEnumerableActionWrapper<T, T0>
+            >
+            SelectMany<T0, T>(this NativeArray<T> @this, Func<T, NativeArray<T0>> func)
+            where T : unmanaged
+            where T0 : unmanaged
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                NativeEnumerable<T0>,
+                NativeEnumerable<T0>.Enumerator,
+                NativeArrayToNativeEnumerableActionWrapper<T, T0>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                ArrayEnumerable<T0>,
+                ArrayEnumerable<T0>.Enumerator,
+                DelegateFuncToAction<T, ArrayEnumerable<T0>>
+            >
+            SelectMany<T0, T>(this NativeArray<T> @this, Func<T, ArrayEnumerable<T0>> func)
+            where T : unmanaged
+            where T0 : unmanaged
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                ArrayEnumerable<T0>,
+                ArrayEnumerable<T0>.Enumerator,
+                DelegateFuncToAction<T, ArrayEnumerable<T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                ArrayEnumerable<T0>,
+                ArrayEnumerable<T0>.Enumerator,
+                ArrayToArrayEnumerableActionWrapper<T, T0>
+            >
+            SelectMany<T0, T>(this NativeArray<T> @this, Func<T, T0[]> func)
+            where T : unmanaged where T0 : unmanaged
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                ArrayEnumerable<T0>,
+                ArrayEnumerable<T0>.Enumerator,
+                ArrayToArrayEnumerableActionWrapper<T, T0>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                RingBuffer<T0>,
+                RingBuffer<T0>.Enumerator,
+                DelegateFuncToAction<T, RingBuffer<T0>>
+            >
+            SelectMany<T0, T>(this NativeArray<T> @this, Func<T, RingBuffer<T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                RingBuffer<T0>,
+                RingBuffer<T0>.Enumerator,
+                DelegateFuncToAction<T, RingBuffer<T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                UnrolledLinkedList<T0>,
+                UnrolledLinkedList<T0>.Enumerator,
+                DelegateFuncToAction<T, UnrolledLinkedList<T0>>
+            >
+            SelectMany<T0, T>(this NativeArray<T> @this, Func<T, UnrolledLinkedList<T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                UnrolledLinkedList<T0>,
+                UnrolledLinkedList<T0>.Enumerator,
+                DelegateFuncToAction<T, UnrolledLinkedList<T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                AppendEnumerable<TEnumerable0, TEnumerator0, T0>,
+                AppendEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, AppendEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, T>(this NativeArray<T> @this, Func<T, AppendEnumerable<TEnumerable0, TEnumerator0, T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                AppendEnumerable<TEnumerable0, TEnumerator0, T0>,
+                AppendEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, AppendEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                ConcatEnumerable<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0>,
+                ConcatEnumerable<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0>.Enumerator,
+                DelegateFuncToAction<T, ConcatEnumerable<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T>(this NativeArray<T> @this, Func<T, ConcatEnumerable<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            where TEnumerator1 : struct, IRefEnumerator<T0>
+            where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                ConcatEnumerable<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0>,
+                ConcatEnumerable<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0>.Enumerator,
+                DelegateFuncToAction<T, ConcatEnumerable<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                DefaultIfEmptyEnumerable<TEnumerable0, TEnumerator0, T0>,
+                DefaultIfEmptyEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, DefaultIfEmptyEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, T>(this NativeArray<T> @this, Func<T, DefaultIfEmptyEnumerable<TEnumerable0, TEnumerator0, T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                DefaultIfEmptyEnumerable<TEnumerable0, TEnumerator0, T0>,
+                DefaultIfEmptyEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, DefaultIfEmptyEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                DistinctEnumerable<TEnumerable0, TEnumerator0, T0, TEqualityComparer0, TGetHashCodeFunc0>,
+                DistinctEnumerable<TEnumerable0, TEnumerator0, T0, TEqualityComparer0, TGetHashCodeFunc0>.Enumerator,
+                DelegateFuncToAction<T, DistinctEnumerable<TEnumerable0, TEnumerator0, T0, TEqualityComparer0, TGetHashCodeFunc0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, TEqualityComparer0, TGetHashCodeFunc0, T>(this NativeArray<T> @this, Func<T, DistinctEnumerable<TEnumerable0, TEnumerator0, T0, TEqualityComparer0, TGetHashCodeFunc0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            where TEqualityComparer0 : struct, IRefFunc<T0, T0, bool>
+            where TGetHashCodeFunc0 : struct, IRefFunc<T0, int>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                DistinctEnumerable<TEnumerable0, TEnumerator0, T0, TEqualityComparer0, TGetHashCodeFunc0>,
+                DistinctEnumerable<TEnumerable0, TEnumerator0, T0, TEqualityComparer0, TGetHashCodeFunc0>.Enumerator,
+                DelegateFuncToAction<T, DistinctEnumerable<TEnumerable0, TEnumerator0, T0, TEqualityComparer0, TGetHashCodeFunc0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                Grouping<TKey0, TElement0>,
+                GroupByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TElement0, TElementSelector0, TEqualityComparer0>,
+                GroupByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TElement0, TElementSelector0, TEqualityComparer0>.Enumerator,
+                DelegateFuncToAction<T, GroupByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TElement0, TElementSelector0, TEqualityComparer0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, TKey0, TKeySelector0, TElement0, TElementSelector0, TEqualityComparer0, T>(this NativeArray<T> @this, Func<T, GroupByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TElement0, TElementSelector0, TEqualityComparer0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            where TKey0 : unmanaged
+            where TElement0 : unmanaged
+            where TKeySelector0 : struct, IRefFunc<T0, TKey0>
+            where TElementSelector0 : struct, IRefFunc<T0, TElement0>
+            where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                Grouping<TKey0, TElement0>,
+                GroupByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TElement0, TElementSelector0, TEqualityComparer0>,
+                GroupByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TElement0, TElementSelector0, TEqualityComparer0>.Enumerator,
+                DelegateFuncToAction<T, GroupByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TElement0, TElementSelector0, TEqualityComparer0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                Grouping<TKey0, T0>,
+                Grouping<TKey0, T0>.Enumerator,
+                DelegateFuncToAction<T, Grouping<TKey0, T0>>
+            >
+            SelectMany<T0, TKey0, T>(this NativeArray<T> @this, Func<T, Grouping<TKey0, T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TKey0 : unmanaged
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                Grouping<TKey0, T0>,
+                Grouping<TKey0, T0>.Enumerator,
+                DelegateFuncToAction<T, Grouping<TKey0, T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                GroupJoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>,
+                GroupJoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>.Enumerator,
+                DelegateFuncToAction<T, GroupJoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>>
+            >
+            SelectMany<T0, TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0Selector, TKeyEqualityComparer0, T>(this NativeArray<T> @this, Func<T, GroupJoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TOuterSource0 : unmanaged
+            where TInnerSource0 : unmanaged
+            where TOuterEnumerator0 : struct, IRefEnumerator<TOuterSource0>
+            where TInnerEnumerator0 : struct, IRefEnumerator<TInnerSource0>
+            where TOuterEnumerable0 : struct, IRefEnumerable<TOuterEnumerator0, TOuterSource0>
+            where TInnerEnumerable0 : struct, IRefEnumerable<TInnerEnumerator0, TInnerSource0>
+            where TKey0 : unmanaged
+            where TOuterKeySelector0 : struct, IRefFunc<TOuterSource0, TKey0>
+            where TInnerKeySelector0 : struct, IRefFunc<TInnerSource0, TKey0>
+            where T0Selector : struct,
+            IRefFunc<TOuterSource0,
+                WhereIndexEnumerable<
+                    NativeEnumerable<TInnerSource0>,
+                    NativeEnumerable<TInnerSource0>.Enumerator,
+                    TInnerSource0,
+                    GroupJoinPredicate<TInnerSource0, TKey0, TKeyEqualityComparer0>
+                    >,
+                T0>
+            where TKeyEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                GroupJoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>,
+                GroupJoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>.Enumerator,
+                DelegateFuncToAction<T, GroupJoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                JoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>,
+                JoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>.Enumerator,
+                DelegateFuncToAction<T, JoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>>
+            >
+            SelectMany<T0, TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0Selector, TKeyEqualityComparer0, T>
+            (this NativeArray<T> @this, 
+            Func<
+                T, 
+                JoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>
+            > 
+            func)
+            where T : unmanaged where T0 : unmanaged
+            where TOuterSource0 : unmanaged
+            where TInnerSource0 : unmanaged
+            where TOuterEnumerator0 : struct, IRefEnumerator<TOuterSource0>
+            where TInnerEnumerator0 : struct, IRefEnumerator<TInnerSource0>
+            where TOuterEnumerable0 : struct, IRefEnumerable<TOuterEnumerator0, TOuterSource0>
+            where TInnerEnumerable0 : struct, IRefEnumerable<TInnerEnumerator0, TInnerSource0>
+            where TKey0 : unmanaged
+            where TOuterKeySelector0 : struct, IRefFunc<TOuterSource0, TKey0>
+            where TInnerKeySelector0 : struct, IRefFunc<TInnerSource0, TKey0>
+            where TKeyEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
+            where T0Selector : struct, IRefFunc<TOuterSource0, TInnerSource0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                JoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>,
+                JoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>.Enumerator,
+                DelegateFuncToAction<T, JoinEnumerable<TOuterEnumerable0, TOuterEnumerator0, TOuterSource0, TInnerEnumerable0, TInnerEnumerator0, TInnerSource0, TKey0, TOuterKeySelector0, TInnerKeySelector0, T0, T0Selector, TKeyEqualityComparer0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                MinMaxByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeyRenewPredicate0, TKeyEqualityComparer0>,
+                MinMaxByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeyRenewPredicate0, TKeyEqualityComparer0>.Enumerator,
+                DelegateFuncToAction<T, MinMaxByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeyRenewPredicate0, TKeyEqualityComparer0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, TKey0, TKeySelector0, TKeyRenewPredicate0, TKeyEqualityComparer0, T>(this NativeArray<T> @this, Func<T, MinMaxByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeyRenewPredicate0, TKeyEqualityComparer0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            where TKey0 : unmanaged
+            where TKeySelector0 : struct, IRefFunc<T0, TKey0>
+            where TKeyRenewPredicate0 : struct, IRefFunc<TKey0, TKey0, bool>
+            where TKeyEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                MinMaxByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeyRenewPredicate0, TKeyEqualityComparer0>,
+                MinMaxByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeyRenewPredicate0, TKeyEqualityComparer0>.Enumerator,
+                DelegateFuncToAction<T, MinMaxByEnumerable<TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeyRenewPredicate0, TKeyEqualityComparer0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                OrderByEnumerable<TEnumerable0, TEnumerator0, T0, TComparer0>,
+                OrderByEnumerable<TEnumerable0, TEnumerator0, T0, TComparer0>.Enumerator,
+                DelegateFuncToAction<T, OrderByEnumerable<TEnumerable0, TEnumerator0, T0, TComparer0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, TComparer0, T>(this NativeArray<T> @this, Func<T, OrderByEnumerable<TEnumerable0, TEnumerator0, T0, TComparer0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            where TComparer0 : struct, IRefFunc<T0, T0, int>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                OrderByEnumerable<TEnumerable0, TEnumerator0, T0, TComparer0>,
+                OrderByEnumerable<TEnumerable0, TEnumerator0, T0, TComparer0>.Enumerator,
+                DelegateFuncToAction<T, OrderByEnumerable<TEnumerable0, TEnumerator0, T0, TComparer0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                PrependEnumerable<TEnumerable0, TEnumerator0, T0>,
+                PrependEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, PrependEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, T>(this NativeArray<T> @this, Func<T, PrependEnumerable<TEnumerable0, TEnumerator0, T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                PrependEnumerable<TEnumerable0, TEnumerator0, T0>,
+                PrependEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, PrependEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                RangeRepeatEnumerable<T0, TAction0>,
+                RangeRepeatEnumerable<T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, RangeRepeatEnumerable<T0, TAction0>>
+            >
+            SelectMany<T0, TAction0, T>(this NativeArray<T> @this, Func<T, RangeRepeatEnumerable<T0, TAction0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TAction0 : struct, IRangeRepeat<T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                RangeRepeatEnumerable<T0, TAction0>,
+                RangeRepeatEnumerable<T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, RangeRepeatEnumerable<T0, TAction0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                ReverseEnumerable<TEnumerable0, TEnumerator0, T0>,
+                ReverseEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, ReverseEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, T>(this NativeArray<T> @this, Func<T, ReverseEnumerable<TEnumerable0, TEnumerator0, T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                ReverseEnumerable<TEnumerable0, TEnumerator0, T0>,
+                ReverseEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, ReverseEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>,
+                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>>
+            >
+            SelectMany<T0, TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, TAction0, T>(this NativeArray<T> @this, Func<T, SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TPrevSource0 : unmanaged
+            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrevSource0>
+            where TPrevEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TAction0 : struct, IRefAction<TPrevSource0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>,
+                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>,
+                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>>
+            >
+            SelectMany<T0, TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, TAction0, T>(this NativeArray<T> @this, Func<T, SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TPrevSource0 : unmanaged
+            where TAction0 : struct, ISelectIndex<TPrevSource0, T0>
+            where TPrevEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrevSource0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>,
+                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, TPrevSource0, T0Enumerable, T0Enumerator, TAction0, T>(this NativeArray<T> @this, Func<T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TPrevSource0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
+            where T0Enumerator : struct, IRefEnumerator<T0>
+            where T0Enumerable : struct, IRefEnumerable<T0Enumerator, T0>
+            where TAction0 : struct, IRefAction<TPrevSource0, T0Enumerable>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SkipEnumerable<TEnumerable0, TEnumerator0, T0>,
+                TEnumerator0,
+                DelegateFuncToAction<T, SkipEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, T>(this NativeArray<T> @this, Func<T, SkipEnumerable<TEnumerable0, TEnumerator0, T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SkipEnumerable<TEnumerable0, TEnumerator0, T0>,
+                TEnumerator0,
+                DelegateFuncToAction<T, SkipEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SkipLastEnumerable<TEnumerable0, TEnumerator0, T0>,
+                SkipLastEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, SkipLastEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, T>(this NativeArray<T> @this, Func<T, SkipLastEnumerable<TEnumerable0, TEnumerator0, T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SkipLastEnumerable<TEnumerable0, TEnumerator0, T0>,
+                SkipLastEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, SkipLastEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SkipWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>,
+                TEnumerator0,
+                DelegateFuncToAction<T, SkipWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, TPredicate0, T>(this NativeArray<T> @this, Func<T, SkipWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            where TPredicate0 : struct, IRefFunc<T0, bool>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SkipWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>,
+                TEnumerator0,
+                DelegateFuncToAction<T, SkipWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                TakeEnumerable<TEnumerable0, TEnumerator0, T0>,
+                TakeEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, TakeEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, T>(this NativeArray<T> @this, Func<T, TakeEnumerable<TEnumerable0, TEnumerator0, T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                TakeEnumerable<TEnumerable0, TEnumerator0, T0>,
+                TakeEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, TakeEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>,
+                TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, T>(this NativeArray<T> @this, Func<T, TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>,
+                TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
+                DelegateFuncToAction<T, TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                TakeWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>,
+                TakeWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>.Enumerator,
+                DelegateFuncToAction<T, TakeWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>>
+            >
+            SelectMany<T0, TEnumerable0, TEnumerator0, TPredicate0, T>(this NativeArray<T> @this, Func<T, TakeWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<T0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
+            where TPredicate0 : struct, IRefFunc<T0, bool>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                TakeWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>,
+                TakeWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>.Enumerator,
+                DelegateFuncToAction<T, TakeWhileEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                WhereEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>,
+                WhereEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>.Enumerator,
+                DelegateFuncToAction<T, WhereEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>>
+            >
+            SelectMany<T0, TPrevEnumerable0, TPrevEnumerator0, TPredicate0, T>(this NativeArray<T> @this, Func<T, WhereEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TPredicate0 : struct, IRefFunc<T0, bool>
+            where TPrevEnumerator0 : struct, IRefEnumerator<T0>
+            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                WhereEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>,
+                WhereEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>.Enumerator,
+                DelegateFuncToAction<T, WhereEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                WhereIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>,
+                WhereIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>.Enumerator,
+                DelegateFuncToAction<T, WhereIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>>
+            >
+            SelectMany<T0, TPrevEnumerable0, TPrevEnumerator0, TPredicate0, T>(this NativeArray<T> @this, Func<T, WhereIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TPredicate0 : struct, IWhereIndex<T0>
+            where TPrevEnumerator0 : struct, IRefEnumerator<T0>
+            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                WhereIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>,
+                WhereIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>.Enumerator,
+                DelegateFuncToAction<T, WhereIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, T0, TPredicate0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                ZipEnumerable<TFirstEnumerable0, TFirstEnumerator0, TFirstSource0, TSecondEnumerable0, TSecondEnumerator0, TSecondSource0, T0, TAction0>,
+                ZipEnumerable<TFirstEnumerable0, TFirstEnumerator0, TFirstSource0, TSecondEnumerable0, TSecondEnumerator0, TSecondSource0, T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, ZipEnumerable<TFirstEnumerable0, TFirstEnumerator0, TFirstSource0, TSecondEnumerable0, TSecondEnumerator0, TSecondSource0, T0, TAction0>>
+            >
+            SelectMany<T0, TFirstEnumerable0, TFirstEnumerator0, TFirstSource0, TSecondEnumerable0, TSecondEnumerator0, TSecondSource0, TAction0, T>(this NativeArray<T> @this, Func<T, ZipEnumerable<TFirstEnumerable0, TFirstEnumerator0, TFirstSource0, TSecondEnumerable0, TSecondEnumerator0, TSecondSource0, T0, TAction0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TFirstSource0 : unmanaged
+            where TSecondSource0 : unmanaged
+            where TFirstEnumerator0 : struct, IRefEnumerator<TFirstSource0>
+            where TFirstEnumerable0 : struct, IRefEnumerable<TFirstEnumerator0, TFirstSource0>
+            where TSecondEnumerator0 : struct, IRefEnumerator<TSecondSource0>
+            where TSecondEnumerable0 : struct, IRefEnumerable<TSecondEnumerator0, TSecondSource0>
+            where TAction0 : struct, IRefAction<TFirstSource0, TSecondSource0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                ZipEnumerable<TFirstEnumerable0, TFirstEnumerator0, TFirstSource0, TSecondEnumerable0, TSecondEnumerator0, TSecondSource0, T0, TAction0>,
+                ZipEnumerable<TFirstEnumerable0, TFirstEnumerator0, TFirstSource0, TSecondEnumerable0, TSecondEnumerator0, TSecondSource0, T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, ZipEnumerable<TFirstEnumerable0, TFirstEnumerator0, TFirstSource0, TSecondEnumerable0, TSecondEnumerator0, TSecondSource0, T0, TAction0>>
+            >
+            (@this.AsRefEnumerable(), func);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SetOperationEnumerable<TFirstEnumerable0, TFirstEnumerator0, TSecondEnumerable0, TSecondEnumerator0, T0, TSetOperation0>,
+                SetOperationEnumerable<TFirstEnumerable0, TFirstEnumerator0, TSecondEnumerable0, TSecondEnumerator0, T0, TSetOperation0>.Enumerator,
+                DelegateFuncToAction<T, SetOperationEnumerable<TFirstEnumerable0, TFirstEnumerator0, TSecondEnumerable0, TSecondEnumerator0, T0, TSetOperation0>>
+            >
+            SelectMany<T0, TFirstEnumerable0, TFirstEnumerator0, TSecondEnumerable0, TSecondEnumerator0, TSetOperation0, T>(this NativeArray<T> @this, Func<T, SetOperationEnumerable<TFirstEnumerable0, TFirstEnumerator0, TSecondEnumerable0, TSecondEnumerator0, T0, TSetOperation0>> func)
+            where T : unmanaged where T0 : unmanaged
+            where TFirstEnumerable0 : struct, IRefEnumerable<TFirstEnumerator0, T0>
+            where TFirstEnumerator0 : struct, IRefEnumerator<T0>
+            where TSecondEnumerable0 : struct, IRefEnumerable<TSecondEnumerator0, T0>
+            where TSecondEnumerator0 : struct, IRefEnumerator<T0>
+            where TSetOperation0 : struct, ISetOperation<TFirstEnumerable0, TFirstEnumerator0, TSecondEnumerable0, TSecondEnumerator0, T0>
+            => new SelectManyEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                T0,
+                SetOperationEnumerable<TFirstEnumerable0, TFirstEnumerator0, TSecondEnumerable0, TSecondEnumerator0, T0, TSetOperation0>,
+                SetOperationEnumerable<TFirstEnumerable0, TFirstEnumerator0, TSecondEnumerable0, TSecondEnumerator0, T0, TSetOperation0>.Enumerator,
+                DelegateFuncToAction<T, SetOperationEnumerable<TFirstEnumerable0, TFirstEnumerator0, TSecondEnumerable0, TSecondEnumerator0, T0, TSetOperation0>>
+            >
+            (@this.AsRefEnumerable(), func);
+        #endregion
     }
 }
