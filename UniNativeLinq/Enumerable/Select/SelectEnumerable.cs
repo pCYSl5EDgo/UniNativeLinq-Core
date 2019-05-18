@@ -69,9 +69,21 @@ namespace UniNativeLinq
             public ref TSource TryGetNext(out bool success)
             {
                 ref var value = ref enumerator.TryGetNext(out success);
-                if (!success) return ref *current;
+                if (!success) return ref Unsafe.AsRef<TSource>(null);
                 action.Execute(ref value, ref *current);
                 return ref *current;
+            }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if(!enumerator.TryMoveNext(out var prevValue))
+                {
+                    value = default;
+                    return false;
+                }
+                action.Execute(ref prevValue, ref *current);
+                value = *current;
+                return true;
             }
         }
 
@@ -377,7 +389,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 SelectEnumerable<TPrevEnumerable, TPrevEnumerator, TPrevSource, TSource, TAction>,
@@ -408,7 +420,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 SelectEnumerable<TPrevEnumerable, TPrevEnumerator, TPrevSource, TSource, TAction>,

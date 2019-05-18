@@ -110,7 +110,24 @@ namespace UniNativeLinq
                     success = false;
                 else
                     success = ++index < count;
-                return ref ptr[index];
+                if(success)
+                    return ref ptr[index];
+                return ref Unsafe.AsRef<T>(null);
+            }
+
+            public bool TryMoveNext(out T value)
+            {
+                var success = ++index < count;
+                if (success)
+                {
+                    value = ptr[index];
+                }
+                else
+                {
+                    index = count;
+                    value = default;
+                }
+                return success;
             }
         }
 
@@ -362,7 +379,7 @@ namespace UniNativeLinq
                 T,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<T, bool>
             => new SkipWhileEnumerable<
                 NativeList<T>,
@@ -393,7 +410,7 @@ namespace UniNativeLinq
                 T,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<T, bool>
             => new TakeWhileEnumerable<
                 NativeList<T>,

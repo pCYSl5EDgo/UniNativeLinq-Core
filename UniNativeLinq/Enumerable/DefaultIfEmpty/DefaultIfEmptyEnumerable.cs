@@ -107,6 +107,28 @@ namespace UniNativeLinq
                 }
                 return ref enumerator.TryGetNext(out success);
             }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if(isFirst)
+                {
+                    isFirst = false;
+                    if(enumerator.TryMoveNext(out value))
+                    {
+                        isDefault = false;
+                        return true;
+                    }
+                    isDefault = true;
+                    value = *ptr;
+                    return true;
+                }
+                if(isDefault)
+                {
+                    value = default;
+                    return false;
+                }
+                return enumerator.TryMoveNext(out value);
+            }
         }
 
         #region Interface Implementation
@@ -416,7 +438,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 DefaultIfEmptyEnumerable<TEnumerable, TEnumerator, TSource>,
@@ -447,7 +469,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 DefaultIfEmptyEnumerable<TEnumerable, TEnumerator, TSource>,

@@ -68,6 +68,12 @@ namespace UniNativeLinq
                 isCurrentSecond = true;
                 return ref secondEnumerator.TryGetNext(out success);
             }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if (isCurrentSecond) return secondEnumerator.TryMoveNext(out value);
+                return firstEnumerator.TryMoveNext(out value) || (isCurrentSecond = true && secondEnumerator.TryMoveNext(out value));
+            }
         }
 
                 #region Interface Implementation
@@ -373,7 +379,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 ConcatEnumerable<TFirstEnumerable, TFirstEnumerator, TSecondEnumerable, TSecondEnumerator, TSource>,
@@ -404,7 +410,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 ConcatEnumerable<TFirstEnumerable, TFirstEnumerator, TSecondEnumerable, TSecondEnumerator, TSource>,

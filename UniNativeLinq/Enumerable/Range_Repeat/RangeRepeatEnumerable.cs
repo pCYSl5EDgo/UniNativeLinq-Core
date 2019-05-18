@@ -68,56 +68,24 @@ namespace UniNativeLinq
                 if (!success)
                 {
                     index = count;
-                    return ref *current;
+                    return ref Unsafe.AsRef<TSource>(null);
                 }
                 if (index > 0)
                     action.Execute(ref *current);
                 return ref *current;
             }
-        }
 
-        public struct ReverseEnumerator : IRefEnumerator<TSource>
-        {
-            private readonly Allocator allocator;
-            private readonly TSource* current;
-            private readonly long count;
-            private long index;
-            private TAction action;
-
-            internal ReverseEnumerator(TSource start, long count, TAction action, Allocator allocator)
+            public bool TryMoveNext(out TSource value)
             {
-                current = UnsafeUtilityEx.Malloc<TSource>(1, allocator);
-                action.Execute(ref start, count);
-                *current = start;
-                this.count = count;
-                index = -1;
-                this.action = action;
-                this.allocator = allocator;
-            }
-            public bool MoveNext()
-            {
-                if (++index >= count) return false;
-                if (index > 0) action.Back(ref *current);
-                return true;
-            }
-
-            public void Reset() => throw new InvalidOperationException();
-            public readonly ref TSource Current => ref *current;
-            readonly TSource IEnumerator<TSource>.Current => Current;
-            readonly object IEnumerator.Current => Current;
-            public void Dispose() => UnsafeUtility.Free(current, allocator);
-
-            public ref TSource TryGetNext(out bool success)
-            {
-                success = ++index >= count;
-                if (!success)
+                if(++index < count)
                 {
-                    index = count;
-                    return ref *current;
+                    if (index > 0)
+                        action.Execute(ref *current);
+                    value = *current;
+                    return true;
                 }
-                if (index > 0)
-                    action.Back(ref *current);
-                return ref *current;
+                value = default;
+                return false;
             }
         }
 
@@ -425,7 +393,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 RangeRepeatEnumerable<TSource, TAction>,
@@ -456,7 +424,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 RangeRepeatEnumerable<TSource, TAction>,

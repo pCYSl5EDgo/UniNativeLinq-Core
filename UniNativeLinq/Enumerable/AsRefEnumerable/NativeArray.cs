@@ -485,7 +485,7 @@ namespace UniNativeLinq
                 T,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0, T>(this NativeArray<T> @this, in TPredicate0 predicate)
+            SkipWhile<TPredicate0, T>(this NativeArray<T> @this, in TPredicate0 predicate)
             where T : unmanaged
             where TPredicate0 : struct, IRefFunc<T, bool>
             => new SkipWhileEnumerable<
@@ -493,6 +493,23 @@ namespace UniNativeLinq
                 NativeEnumerable<T>.Enumerator,
                 T,
                 TPredicate0
+            >(@this.AsRefEnumerable(), predicate);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static
+            SkipWhileEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                DelegateFuncToStructOperatorFunc<T, bool>
+            >
+            SkipWhile<T>(this NativeArray<T> @this, Func<T, bool> predicate)
+            where T : unmanaged
+            => new SkipWhileEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                DelegateFuncToStructOperatorFunc<T, bool>
             >(@this.AsRefEnumerable(), predicate);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -510,7 +527,7 @@ namespace UniNativeLinq
                 T,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0, T>(this NativeArray<T> @this, TPredicate0 predicate)
+            TakeWhile<TPredicate0, T>(this NativeArray<T> @this, TPredicate0 predicate)
             where T : unmanaged
             where TPredicate0 : struct, IRefFunc<T, bool>
             => new TakeWhileEnumerable<
@@ -518,6 +535,22 @@ namespace UniNativeLinq
                 NativeEnumerable<T>.Enumerator,
                 T,
                 TPredicate0
+            >(@this.AsRefEnumerable(), predicate);
+
+        public static
+            TakeWhileEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                DelegateFuncToStructOperatorFunc<T, bool>
+            >
+            TakeWhile<T>(this NativeArray<T> @this, Func<T, bool> predicate)
+            where T : unmanaged
+            => new TakeWhileEnumerable<
+                NativeEnumerable<T>,
+                NativeEnumerable<T>.Enumerator,
+                T,
+                DelegateFuncToStructOperatorFunc<T, bool>
             >(@this.AsRefEnumerable(), predicate);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

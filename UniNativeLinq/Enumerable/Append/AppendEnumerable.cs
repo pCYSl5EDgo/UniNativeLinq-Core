@@ -84,6 +84,19 @@ namespace UniNativeLinq
                     isCurrentEnumerator = false;
                 return ref value;
             }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if (!isCurrentEnumerator)
+                {
+                    value = *element;
+                    return true;
+                }
+                if (enumerator.TryMoveNext(out value))
+                    return true;
+                isCurrentEnumerator = false;
+                return false;
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

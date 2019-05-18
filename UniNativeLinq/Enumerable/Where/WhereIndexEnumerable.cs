@@ -59,6 +59,14 @@ namespace UniNativeLinq
                         return ref value;
                 }
             }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                while (enumerator.TryMoveNext(out value))
+                    if (predicts.Calc(ref value, ++index))
+                        return true;
+                return false;
+            }
         }
 
         #region Interface Implementation
@@ -385,7 +393,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 WhereIndexEnumerable<TPrevEnumerable, TPrevEnumerator, TSource, TPredicate>,
@@ -416,7 +424,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 WhereIndexEnumerable<TPrevEnumerable, TPrevEnumerator, TSource, TPredicate>,

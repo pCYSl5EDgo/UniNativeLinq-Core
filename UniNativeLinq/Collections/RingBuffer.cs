@@ -84,7 +84,20 @@ namespace UniNativeLinq
                 success = --Parent.Length >= 0;
                 if (Parent.StartIndex >= Parent.Capacity)
                     Parent.StartIndex = 0;
-                return ref Parent.Elements[Parent.StartIndex];
+                if (success)
+                    return ref Parent.Elements[Parent.StartIndex];
+                else
+                    return ref Unsafe.AsRef<T>(null);
+            }
+
+            public bool TryMoveNext(out T value)
+            {
+                ++Parent.StartIndex;
+                var success = --Parent.Length >= 0;
+                if (Parent.StartIndex >= Parent.Capacity)
+                    Parent.StartIndex = 0;
+                value = success ? Parent.Elements[Parent.StartIndex] : default;
+                return success;
             }
         }
 
@@ -406,7 +419,7 @@ namespace UniNativeLinq
                 T,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<T, bool>
             => new SkipWhileEnumerable<
                 RingBuffer<T>,
@@ -437,7 +450,7 @@ namespace UniNativeLinq
                 T,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<T, bool>
             => new TakeWhileEnumerable<
                 RingBuffer<T>,

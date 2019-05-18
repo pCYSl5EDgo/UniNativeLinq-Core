@@ -71,9 +71,25 @@ namespace UniNativeLinq
             public ref TSource TryGetNext(out bool success)
             {
                 success = ++index < length;
-                if (!success)
+                if (success)
+                    return ref ptr[index];
+                index = length;
+                return ref Unsafe.AsRef<TSource>(null);
+            }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if (++index < length)
+                {
+                    value = ptr[index];
+                    return true;
+                }
+                else
+                {
                     index = length;
-                return ref ptr[index];
+                    value = default;
+                    return false;
+                }
             }
         }
 
@@ -108,9 +124,25 @@ namespace UniNativeLinq
             public ref TSource TryGetNext(out bool success)
             {
                 success = --index >= 0;
-                if (!success)
+                if (success)
+                    return ref ptr[index];
+                index = 0;
+                return ref Unsafe.AsRef<TSource>(null);
+            }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if(--index >= 0)
+                {
+                    value = ptr[index];
+                    return true;
+                }
+                else
+                {
                     index = 0;
-                return ref ptr[index];
+                    value = default;
+                    return false;
+                }
             }
         }
 

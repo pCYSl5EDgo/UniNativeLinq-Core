@@ -132,6 +132,14 @@ namespace UniNativeLinq
                         return ref value;
                 }
             }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                while (enumerator.TryMoveNext(out value))
+                    if (TryInsert(ref value))
+                        return true;
+                return false;
+            }
         }
 
         #region Interface Implementation

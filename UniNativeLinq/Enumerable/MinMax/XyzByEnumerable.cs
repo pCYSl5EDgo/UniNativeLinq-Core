@@ -91,6 +91,17 @@ namespace UniNativeLinq
                         return ref value;
                 }
             }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                while (enumerator.TryMoveNext(out value))
+                {
+                    var currentKey = keySelector.Calc(ref value);
+                    if (equalityComparer.Calc(ref key, ref currentKey))
+                        return true;
+                }
+                return false;
+            }
         }
 
         public
@@ -460,7 +471,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 MinMaxByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
@@ -491,7 +502,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 MinMaxByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,

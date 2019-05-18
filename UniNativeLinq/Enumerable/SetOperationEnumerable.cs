@@ -56,6 +56,8 @@ namespace UniNativeLinq
             }
 
             public ref TSource TryGetNext(out bool success) => ref mergedEnumerator.TryGetNext(out success);
+
+            public bool TryMoveNext(out TSource value) => mergedEnumerator.TryMoveNext(out value);
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(firstEnumerable, secondEnumerable, setOperation, alloc);
@@ -381,7 +383,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 SetOperationEnumerable<TFirstEnumerable, TFirstEnumerator, TSecondEnumerable, TSecondEnumerator, TSource, TSetOperation>,
@@ -412,7 +414,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 SetOperationEnumerable<TFirstEnumerable, TFirstEnumerator, TSecondEnumerable, TSecondEnumerator, TSource, TSetOperation>,

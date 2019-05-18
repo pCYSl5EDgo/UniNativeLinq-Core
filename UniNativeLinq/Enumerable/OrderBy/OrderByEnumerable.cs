@@ -129,7 +129,13 @@ namespace UniNativeLinq
                 ++Count;
             }
 
-            public bool MoveNext() => ++index < Count;
+            public bool MoveNext()
+            {
+                if (++index < Count)
+                    return true;
+                index = Count;
+                return false;
+            }
 
             public void Reset() => index = -1;
 
@@ -149,9 +155,25 @@ namespace UniNativeLinq
             public ref TSource TryGetNext(out bool success)
             {
                 success = ++index < Count;
-                if (!success)
+                if (success)
+                    return ref Ptr[index];
+                index = Count;
+                return ref Unsafe.AsRef<TSource>(null);
+            }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if(++index < Count)
+                {
+                    value = Ptr[index];
+                    return true;
+                }
+                else
+                {
+                    value = default;
                     index = Count;
-                return ref Ptr[index];
+                    return false;
+                }
             }
         }
 
@@ -505,7 +527,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 OrderByEnumerable<TEnumerable, TEnumerator, TSource, TComparer>,
@@ -536,7 +558,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 OrderByEnumerable<TEnumerable, TEnumerator, TSource, TComparer>,

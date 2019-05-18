@@ -68,14 +68,30 @@ namespace UniNativeLinq
             public ref TSource TryGetNext(out bool success)
             {
                 success = ++index < count;
-                if (!success)
+                if (success)
+                    return ref elements[index];
+                index = count;
+                return ref Unsafe.AsRef<TSource>(null);
+            }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if (++index < count)
+                {
+                    value = elements[index];
+                    return true;
+                }
+                else
+                {
+                    value = default;
                     index = count;
-                return ref elements[index];
+                    return false;
+                }
             }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(in this);
-        
+
         public void Dispose()
         {
             if (Elements != null && UnsafeUtility.IsValidAllocator(Allocator))
@@ -380,7 +396,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 Grouping<TKey, TSource>,
@@ -411,7 +427,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 Grouping<TKey, TSource>,

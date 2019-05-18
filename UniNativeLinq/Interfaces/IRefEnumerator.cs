@@ -7,5 +7,6 @@ namespace UniNativeLinq
     {
         new ref T Current { get; }
         ref T TryGetNext(out bool success);
+        bool TryMoveNext(out T value);
     }
 }

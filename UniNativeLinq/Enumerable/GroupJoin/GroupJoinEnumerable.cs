@@ -109,6 +109,18 @@ namespace UniNativeLinq
                 *current = selector.Calc(ref value, ref enumerable);
                 return ref *current;
             }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if (!enumerator.TryMoveNext(out var outerValue))
+                {
+                    value = default;
+                    return false;
+                }
+                enumerable.Predication.Key = keySelector.Calc(ref outerValue);
+                value = *current = selector.Calc(ref outerValue, ref enumerable);
+                return true;
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(outerEnumerable, innerEnumerable, outerKeySelector, InnerKeySelector, sourceSelector, keyEqualityComparer, alloc);
@@ -434,7 +446,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 GroupJoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TSource, TSourceSelector, TKeyEqualityComparer>,
@@ -465,7 +477,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 GroupJoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TSource, TSourceSelector, TKeyEqualityComparer>,

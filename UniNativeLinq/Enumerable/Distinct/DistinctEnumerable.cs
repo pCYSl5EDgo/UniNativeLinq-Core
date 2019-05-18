@@ -177,6 +177,19 @@ namespace UniNativeLinq
 
             public void Reset() => throw new InvalidOperationException();
 
+            public ref TSource Current => ref Ptr[currentIndex];
+            TSource IEnumerator<TSource>.Current => Current;
+            object IEnumerator.Current => Current;
+
+            public void Dispose()
+            {
+                if (Ptr != null)
+                    UnsafeUtility.Free(Ptr, alloc);
+                if (codes != null)
+                    UnsafeUtility.Free(codes, alloc);
+                this = default;
+            }
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
@@ -193,27 +206,50 @@ namespace UniNativeLinq
                 return false;
             }
 
-            public ref TSource Current => ref Ptr[currentIndex];
-            TSource IEnumerator<TSource>.Current => Current;
-            object IEnumerator.Current => Current;
-
-            public void Dispose()
-            {
-                if (Ptr != null)
-                    UnsafeUtility.Free(Ptr, alloc);
-                if (codes != null)
-                    UnsafeUtility.Free(codes, alloc);
-                this = default;
-            }
-
             public ref TSource TryGetNext(out bool success)
             {
-                throw new NotImplementedException();
+                if (!(success = Ptr != null))
+                    return ref Unsafe.AsRef<TSource>(null);
+                while (true)
+                {
+                    ref var current = ref enumerator.TryGetNext(out success);
+                    if (!success)
+                        return ref Unsafe.AsRef<TSource>(null);
+                    var hash = getHashCodeFunc.Calc(ref current);
+                    if (Count == 0)
+                    {
+                        success = InitialInsert(ref current, hash);
+                        return ref current;
+                    }
+                    if (TryInsert(ref current, hash))
+                    {
+                        success = true;
+                        return ref current;
+                    }
+                }
+            }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if(Ptr == null)
+                {
+                    value = default;
+                    return false;
+                }
+                while (enumerator.TryMoveNext(out value))
+                {
+                    var hash = getHashCodeFunc.Calc(ref value);
+                    if (Count == 0)
+                        return InitialInsert(ref value, hash);
+                    if (TryInsert(ref value, hash))
+                        return true;
+                }
+                return false;
             }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(in enumerable, equalityComparer, getHashCodeFunc, alloc);
-        
+
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator<TSource> IEnumerable<TSource>.GetEnumerator() => GetEnumerator();
@@ -260,12 +296,12 @@ namespace UniNativeLinq
                 *dest++ = enumerator.Current;
             enumerator.Dispose();
         }
-            
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly TSource[] ToArray()
         {
             var count = LongCount();
-            if(count == 0) return Array.Empty<TSource>();
+            if (count == 0) return Array.Empty<TSource>();
             var answer = new TSource[count];
             CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
             return answer;
@@ -279,12 +315,12 @@ namespace UniNativeLinq
             CopyTo(ptr);
             return new NativeEnumerable<TSource>(ptr, count);
         }
-            
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
         {
             var count = Count();
-            if(count == 0) return default;
+            if (count == 0) return default;
             var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(answer.GetPointer());
             return answer;
@@ -535,7 +571,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 DistinctEnumerable<TEnumerable, TEnumerator, TSource, TEqualityComparer, TGetHashCodeFunc>,
@@ -566,7 +602,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 DistinctEnumerable<TEnumerable, TEnumerator, TSource, TEqualityComparer, TGetHashCodeFunc>,

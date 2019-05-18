@@ -90,6 +90,27 @@ namespace UniNativeLinq
                 return ref TryGetNextFirst(out success);
             }
 
+            public bool TryMoveNext(out TSource value)
+            {
+                if (isNotFirst)
+                    return TryMoveNextNotFirst(out value);
+                return TryMoveNextFirst(out value);
+            }
+
+            private bool TryMoveNextFirst(out TSource value)
+            {
+                isNotFirst = true;
+                while (enumerator.TryMoveNext(out var prevSource))
+                {
+                    action.Execute(ref prevSource, ref resultEnumerable);
+                    resultEnumerator = resultEnumerable.GetEnumerator();
+                    if (resultEnumerator.TryMoveNext(out value))
+                        return true;
+                    resultEnumerator.Dispose();
+                }
+                return resultEnumerator.TryMoveNext(out value);
+            }
+
             private ref TSource TryGetNextFirst(out bool success)
             {
                 isNotFirst = true;
@@ -105,6 +126,23 @@ namespace UniNativeLinq
                         return ref value;
                     resultEnumerator.Dispose();
                 }
+            }
+
+            private bool TryMoveNextNotFirst(out TSource value)
+            {
+                if (resultEnumerator.TryMoveNext(out value))
+                    return true;
+                resultEnumerator.Dispose();
+                while (enumerator.TryMoveNext(out var prevSource))
+                {
+                    action.Execute(ref prevSource, ref resultEnumerable);
+                    resultEnumerator = resultEnumerable.GetEnumerator();
+                    if (resultEnumerator.TryMoveNext(out value))
+                        return true;
+                    resultEnumerator.Dispose();
+                }
+                value = default;
+                return false;
             }
 
             private ref TSource TryGetNextNotFirst(out bool success)
@@ -449,7 +487,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 SelectManyEnumerable<TEnumerable, TEnumerator, TPrevSource, TSource, TSourceEnumerable, TSourceEnumerator, TAction>,
@@ -480,7 +518,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 SelectManyEnumerable<TEnumerable, TEnumerator, TPrevSource, TSource, TSourceEnumerable, TSourceEnumerator, TAction>,

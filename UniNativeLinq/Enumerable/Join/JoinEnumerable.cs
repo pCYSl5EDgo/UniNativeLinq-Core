@@ -147,7 +147,7 @@ namespace UniNativeLinq
                         innerIndex = 0;
                         ref var value = ref outerEnumerator.TryGetNext(out success);
                         if (!success)
-                            return ref *current;
+                            return ref Unsafe.AsRef<TSource>(null);
                         outerKey = outerKeySelector.Calc(ref value);
                     }
                     for (; innerIndex < innerCount; innerIndex++)
@@ -157,6 +157,31 @@ namespace UniNativeLinq
                         success = true;
                         *current = sourceSelector.Calc(ref outerEnumerator.Current, ref innerValue[innerIndex]);
                         return ref *current;
+                    }
+                }
+            }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                ++innerIndex;
+                while (true)
+                {
+                    if (innerIndex >= innerCount)
+                    {
+                        innerIndex = 0;
+                        if (!outerEnumerator.TryMoveNext(out var _value))
+                        {
+                            value = default;
+                            return false;
+                        }
+                        outerKey = outerKeySelector.Calc(ref _value);
+                    }
+                    for (; innerIndex < innerCount; innerIndex++)
+                    {
+                        if (!equalityComparer.Calc(ref innerKey[innerIndex], ref outerKey))
+                            continue;
+                        value = *current = sourceSelector.Calc(ref outerEnumerator.Current, ref innerValue[innerIndex]);
+                        return true;
                     }
                 }
             }
@@ -485,7 +510,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TSource, TSourceSelector, TKeyEqualityComparer>,
@@ -516,7 +541,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TSource, TSourceSelector, TKeyEqualityComparer>,

@@ -105,7 +105,25 @@ namespace UniNativeLinq
                 {
                     if (!(success = ++index < count))
                         index = count;
-                    return ref values[index];
+                    if (success)
+                        return ref values[index];
+                    return ref Unsafe.AsRef<T>(null);
+                }
+
+                public bool TryMoveNext(out T value)
+                {
+                    var success = ++index < count;
+                    if (success)
+                    {
+                        value = values[index];
+                        return true;
+                    }
+                    else
+                    {
+                        value = default;
+                        index = count;
+                        return false;
+                    }
                 }
             }
 
@@ -268,6 +286,20 @@ namespace UniNativeLinq
                         return ref value;
                 }
                 return ref value;
+            }
+
+            public bool TryMoveNext(out T value)
+            {
+                if (enumerator.TryMoveNext(out value))
+                    return true;
+                while (nodeEnumerator.MoveNext())
+                {
+                    enumerator = nodeEnumerator.Current.GetEnumerator();
+                    if (enumerator.TryMoveNext(out value))
+                        return true;
+                }
+                value = default;
+                return false;
             }
         }
 
@@ -620,7 +652,7 @@ namespace UniNativeLinq
                 T,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<T, bool>
             => new SkipWhileEnumerable<
                 UnrolledLinkedList<T>,
@@ -651,7 +683,7 @@ namespace UniNativeLinq
                 T,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<T, bool>
             => new TakeWhileEnumerable<
                 UnrolledLinkedList<T>,

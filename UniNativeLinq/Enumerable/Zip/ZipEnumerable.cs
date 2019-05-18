@@ -88,6 +88,37 @@ namespace UniNativeLinq
                 return ref *current;
             }
 
+            public bool TryMoveNext(out TSource value)
+            {
+                if (isFirstAlive && !firstEnumerator.MoveNext())
+                    isFirstAlive = false;
+                if (isSecondAlive && !secondEnumerator.MoveNext())
+                    isSecondAlive = false;
+                if (isFirstAlive)
+                {
+                    if (isSecondAlive)
+                        action.Execute(ref firstEnumerator.Current, ref secondEnumerator.Current, ref *current);
+                    else
+                        action.Execute(ref firstEnumerator.Current, ref secondDefaultValue, ref *current);
+                    value = *current;
+                    return true;
+                }
+                else
+                {
+                    if (isSecondAlive)
+                    {
+                        action.Execute(ref firstDefaultValue, ref secondEnumerator.Current, ref *current);
+                        value = *current;
+                        return true;
+                    }
+                    else
+                    {
+                        value = *current;
+                        return false;
+                    }
+                }
+            }
+
             public bool MoveNext()
             {
                 if (isFirstAlive && !firstEnumerator.MoveNext())
@@ -446,7 +477,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 ZipEnumerable<TFirstEnumerable, TFirstEnumerator, TFirstSource, TSecondEnumerable, TSecondEnumerator, TSecondSource, TSource, TAction>,
@@ -477,7 +508,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 ZipEnumerable<TFirstEnumerable, TFirstEnumerator, TFirstSource, TSecondEnumerable, TSecondEnumerator, TSecondSource, TSource, TAction>,

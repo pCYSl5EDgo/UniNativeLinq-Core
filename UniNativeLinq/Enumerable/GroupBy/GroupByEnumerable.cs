@@ -151,9 +151,25 @@ namespace UniNativeLinq
             public ref Grouping<TKey, TElement> TryGetNext(out bool success)
             {
                 success = ++index < Count;
-                if (!success)
+                if (success)
+                    return ref Groups[index];
+                index = Count;
+                return ref Unsafe.AsRef<Grouping<TKey, TElement>>(null);
+            }
+
+            public bool TryMoveNext(out Grouping<TKey, TElement> value)
+            {
+                if(++index < Count)
+                {
+                    value = Groups[index];
+                    return true;
+                }
+                else
+                {
+                    value = default;
                     index = Count;
-                return ref Groups[index];
+                    return false;
+                }
             }
         }
 
@@ -481,7 +497,7 @@ namespace UniNativeLinq
                 Grouping<TKey, TElement>,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<Grouping<TKey, TElement>, bool>
             => new SkipWhileEnumerable<
                 GroupByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>,
@@ -512,7 +528,7 @@ namespace UniNativeLinq
                 Grouping<TKey, TElement>,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<Grouping<TKey, TElement>, bool>
             => new TakeWhileEnumerable<
                 GroupByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>,

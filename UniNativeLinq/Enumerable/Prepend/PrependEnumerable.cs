@@ -88,6 +88,17 @@ namespace UniNativeLinq
                 }
                 return ref enumerator.TryGetNext(out success);
             }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if (isInitialState)
+                {
+                    isInitialState = false;
+                    value = *element;
+                    return true;
+                }
+                return enumerator.TryMoveNext(out value);
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), prepend, alloc);
@@ -394,7 +405,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            SkipWhileIndex<TPredicate0>(in TPredicate0 predicate)
+            SkipWhile<TPredicate0>(in TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new SkipWhileEnumerable<
                 PrependEnumerable<TEnumerable, TEnumerator, TSource>,
@@ -425,7 +436,7 @@ namespace UniNativeLinq
                 TSource,
                 TPredicate0
             >
-            TakeWhileIndex<TPredicate0>(TPredicate0 predicate)
+            TakeWhile<TPredicate0>(TPredicate0 predicate)
             where TPredicate0 : struct, IRefFunc<TSource, bool>
             => new TakeWhileEnumerable<
                 PrependEnumerable<TEnumerable, TEnumerator, TSource>,
