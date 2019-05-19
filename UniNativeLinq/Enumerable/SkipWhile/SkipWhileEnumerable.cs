@@ -1,0 +1,184 @@
+﻿using System;
+using System.Runtime.CompilerServices;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.Collections;
+
+namespace UniNativeLinq
+{
+    public unsafe partial struct
+        SkipWhileEnumerable<TEnumerable, TEnumerator, TSource, TPredicate>
+        : IRefEnumerable<SkipWhileEnumerable<TEnumerable, TEnumerator, TSource, TPredicate>.Enumerator, TSource>
+        where TSource : unmanaged
+        where TEnumerator : struct, IRefEnumerator<TSource>
+        where TEnumerable : struct, IRefEnumerable<TEnumerator, TSource>
+        where TPredicate : struct, IRefFunc<TSource, bool>
+    {
+        private TEnumerable enumerable;
+        private TPredicate predicate;
+
+        public SkipWhileEnumerable(in TEnumerable enumerable, in TPredicate predicate)
+        {
+            this.enumerable = enumerable;
+            this.predicate = predicate;
+        }
+
+        public struct Enumerator : IRefEnumerator<TSource>
+        {
+            private TEnumerator enumerator;
+            private bool isFirstNotRead;
+            public ref TSource Current => ref enumerator.Current;
+            TSource IEnumerator<TSource>.Current => Current;
+            object IEnumerator.Current => Current;
+
+            internal Enumerator(in TEnumerator enumerator)
+            {
+                isFirstNotRead = true;
+                this.enumerator = enumerator;
+            }
+
+            public void Dispose()
+            {
+                enumerator.Dispose();
+                this = default;
+            }
+
+            public bool MoveNext()
+            {
+                if(isFirstNotRead)
+                {
+                    isFirstNotRead = false;
+                    return true;
+                }
+                return enumerator.MoveNext();
+            }
+
+            public void Reset() 
+            {
+                isFirstNotRead = true;
+                enumerator.Reset();
+            }
+
+            public ref TSource TryGetNext(out bool success)
+            {
+                if(isFirstNotRead)
+                {
+                    isFirstNotRead = false;
+                    success = true;
+                    return ref enumerator.Current;
+                }
+                return ref enumerator.TryGetNext(out success);
+            }
+
+            public bool TryMoveNext(out TSource value)
+            {
+                if(isFirstNotRead)
+                {
+                    isFirstNotRead = false;
+                    value = enumerator.Current;
+                    return true;
+                }
+                return enumerator.TryMoveNext(out value);
+            }
+        }
+
+        public readonly Enumerator GetEnumerator()
+        {
+            var enumerator = enumerable.GetEnumerator();
+            while (true)
+            {
+                ref var current = ref enumerator.TryGetNext(out var success);
+                if (!success)
+                {
+                    enumerator.Dispose();
+                    return default;
+                }
+                if (predicate.Calc(ref current)) continue;
+                return new Enumerator(enumerator);
+            }
+        }
+
+        #region Interface Implementation
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly IEnumerator<TSource> IEnumerable<TSource>.GetEnumerator() => GetEnumerator();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly bool CanFastCount() => false;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly bool Any()
+        {
+            var enumerator = GetEnumerator();
+            enumerator.TryGetNext(out var success);
+            enumerator.Dispose();
+            return success;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly int Count()
+            => (int)LongCount();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly long LongCount()
+        {
+            var count = 0L;
+            var enumerator = GetEnumerator();
+            bool success;
+            while (true)
+            {
+                enumerator.TryGetNext(out success);
+                if (!success) break;
+                ++count;
+            }
+            enumerator.Dispose();
+            return count;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly void CopyTo(TSource* dest)
+        {
+            var enumerator = GetEnumerator();
+            bool success;
+            while (true)
+            {
+                ref var value = ref enumerator.TryGetNext(out success);
+                if (!success) break;
+                *dest++ = value;
+            }
+            enumerator.Dispose();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly TSource[] ToArray()
+        {
+            var count = LongCount();
+            if (count == 0) return Array.Empty<TSource>();
+            var answer = new TSource[count];
+            CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
+            return answer;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly NativeEnumerable<TSource> ToNativeEnumerable(Allocator allocator)
+        {
+            var count = LongCount();
+            var ptr = UnsafeUtilityEx.Malloc<TSource>(count, allocator);
+            CopyTo(ptr);
+            return new NativeEnumerable<TSource>(ptr, count);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
+        {
+            var count = Count();
+            if (count == 0) return default;
+            var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
+            CopyTo(UnsafeUtilityEx.GetPointer(answer));
+            return answer;
+        }
+        #endregion
+    }
+}

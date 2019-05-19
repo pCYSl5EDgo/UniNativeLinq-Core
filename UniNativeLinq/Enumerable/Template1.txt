@@ -12891,9 +12891,8 @@ public readonly bool TryGetElementAt(long index, out TSource value)
 public readonly bool TryGetFirst(out TSource first)
 {
     var enumerator = GetEnumerator();
-    if (enumerator.MoveNext())
+    if (enumerator.TryMoveNext(out first))
     {
-        first = enumerator.Current;
         enumerator.Dispose();
         return true;
     }
@@ -12906,14 +12905,13 @@ public readonly bool TryGetFirst(out TSource first)
 public readonly bool TryGetLast(out TSource last)
 {
     var enumerator = GetEnumerator();
-    last = default;
-    if (!enumerator.MoveNext())
+    if (!enumerator.TryMoveNext(out last))
     {
         enumerator.Dispose();
         return false;
     }
-    while (enumerator.MoveNext())
-        last = enumerator.Current;
+	while (enumerator.TryMoveNext(out last))
+        ;
     enumerator.Dispose();
     return true;
 }

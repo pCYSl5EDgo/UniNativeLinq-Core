@@ -57,9 +57,9 @@ namespace UniNativeLinq
 
             public bool MoveNext() => ++index < length;
             public void Reset() => index = -1;
-            public ref TSource Current => ref ptr[index];
-            TSource IEnumerator<TSource>.Current => Current;
-            object IEnumerator.Current => Current;
+            public readonly ref TSource Current => ref ptr[index];
+            readonly TSource IEnumerator<TSource>.Current => Current;
+            readonly object IEnumerator.Current => Current;
 
             public void Dispose()
             {

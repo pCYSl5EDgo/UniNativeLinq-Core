@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28902.138
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pcysl5edgo", "UniNativeLinq\pcysl5edgo.csproj", "{72262A22-0BD1-402D-9704-81D2BA33F03D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniNativeLinq", "UniNativeLinq\UniNativeLinq.csproj", "{72262A22-0BD1-402D-9704-81D2BA33F03D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CecilRewrite", "CecilRewrite\CecilRewrite.csproj", "{64E6B71F-548A-422A-92E7-91B217DE8B40}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CecilRewrite", "CecilRewriteAndAddExtensions\CecilRewrite.csproj", "{6027A5CF-BDCF-4109-BCB2-016A51974A1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{72262A22-0BD1-402D-9704-81D2BA33F03D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72262A22-0BD1-402D-9704-81D2BA33F03D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72262A22-0BD1-402D-9704-81D2BA33F03D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64E6B71F-548A-422A-92E7-91B217DE8B40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64E6B71F-548A-422A-92E7-91B217DE8B40}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64E6B71F-548A-422A-92E7-91B217DE8B40}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64E6B71F-548A-422A-92E7-91B217DE8B40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6027A5CF-BDCF-4109-BCB2-016A51974A1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6027A5CF-BDCF-4109-BCB2-016A51974A1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6027A5CF-BDCF-4109-BCB2-016A51974A1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6027A5CF-BDCF-4109-BCB2-016A51974A1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -222,7 +222,7 @@ namespace UniNativeLinq
         }
         #endregion
 
-        public long FindIndexBinarySearch<TComparer>(ref TSource searchItem, in TComparer comparer)
+        public readonly long FindIndexBinarySearch<TComparer>(ref TSource searchItem, in TComparer comparer)
             where TComparer : struct, IRefFunc<TSource, TSource, int>
         {
             var minInclusive = 0L;
@@ -239,6 +239,30 @@ namespace UniNativeLinq
                     minInclusive = index + 1;
             }
             return -1L;
+        }
+
+        public readonly NativeEnumerable<TSource>
+            Skip(long count)
+            => new NativeEnumerable<TSource>(Ptr + count, Length - count);
+
+        public readonly NativeEnumerable<TSource>
+            SkipLast(long count)
+            => new NativeEnumerable<TSource>(Ptr, Length - count);
+
+        public readonly NativeEnumerable<TSource>
+            Take(long count)
+        {
+            if (count >= Length) return this;
+            if (count <= 0) return default;
+            return new NativeEnumerable<TSource>(Ptr, count);
+        }
+
+        public readonly NativeEnumerable<TSource>
+            TakeLast(long count)
+        {
+            if (count >= Length) return this;
+            if (Ptr == null || count <= 0) return default;
+            return new NativeEnumerable<TSource>(Ptr + Length - count, count);
         }
     }
 }

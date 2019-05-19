@@ -40,10 +40,11 @@ namespace UniNativeLinq
 
             internal Enumerator(in TEnumerable enumerable, in TComparer comparer, Allocator allocator)
             {
-                enumerator = enumerable.GetEnumerator();
+                ref var _enumerable = ref Unsafe.AsRef(enumerable);
+                enumerator = _enumerable.GetEnumerator();
                 this.allocator = allocator;
                 count = 0L;
-                capacity = enumerable.CanFastCount() ? enumerable.LongCount() : 16L;
+                capacity = _enumerable.CanFastCount() ? _enumerable.LongCount() : 16L;
                 ptr = UnsafeUtilityEx.Malloc<TSource>(capacity, allocator);
                 this.comparer = comparer;
                 lastInsertIndex = -1L;
