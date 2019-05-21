@@ -6,13 +6,13 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
-    public unsafe partial struct
-        WhereIndexEnumerable<TPrevEnumerable, TPrevEnumerator, TSource, TPredicate>
-        : IRefEnumerable<WhereIndexEnumerable<TPrevEnumerable, TPrevEnumerator, TSource, TPredicate>.Enumerator, TSource>
-        where TSource : unmanaged
-        where TPredicate : struct, IWhereIndex<TSource>
-        where TPrevEnumerator : struct, IRefEnumerator<TSource>
-        where TPrevEnumerable : struct, IRefEnumerable<TPrevEnumerator, TSource>
+    public unsafe struct
+        WhereIndexEnumerable<TPrevEnumerable, TPrevEnumerator, T, TPredicate>
+        : IRefEnumerable<WhereIndexEnumerable<TPrevEnumerable, TPrevEnumerator, T, TPredicate>.Enumerator, T>
+        where T : unmanaged
+        where TPredicate : struct, IWhereIndex<T>
+        where TPrevEnumerator : struct, IRefEnumerator<T>
+        where TPrevEnumerable : struct, IRefEnumerable<TPrevEnumerator, T>
     {
         internal readonly TPrevEnumerable Enumerable;
         internal TPredicate Predication;
@@ -23,7 +23,7 @@ namespace UniNativeLinq
             Predication = predication;
         }
 
-        public struct Enumerator : IRefEnumerator<TSource>
+        public struct Enumerator : IRefEnumerator<T>
         {
             private TPrevEnumerator enumerator;
             private TPredicate predicts;
@@ -45,12 +45,12 @@ namespace UniNativeLinq
             }
 
             public void Reset() => throw new InvalidOperationException();
-            public readonly ref TSource Current => ref enumerator.Current;
-            readonly TSource IEnumerator<TSource>.Current => Current;
+            public readonly ref T Current => ref enumerator.Current;
+            readonly T IEnumerator<T>.Current => Current;
             readonly object IEnumerator.Current => Current;
             public void Dispose() => enumerator.Dispose();
 
-            public ref TSource TryGetNext(out bool success)
+            public ref T TryGetNext(out bool success)
             {
                 while (true)
                 {
@@ -60,7 +60,7 @@ namespace UniNativeLinq
                 }
             }
 
-            public bool TryMoveNext(out TSource value)
+            public bool TryMoveNext(out T value)
             {
                 while (enumerator.TryMoveNext(out value))
                     if (predicts.Calc(ref value, ++index))
@@ -74,7 +74,7 @@ namespace UniNativeLinq
         public readonly Enumerator GetEnumerator() => new Enumerator(Enumerable.GetEnumerator(), Predication);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<TSource> IEnumerable<TSource>.GetEnumerator() => GetEnumerator();
+        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -111,7 +111,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(TSource* dest)
+        public readonly void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -120,30 +120,30 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly TSource[] ToArray()
+        public readonly T[] ToArray()
         {
             var count = LongCount();
-            if (count == 0) return Array.Empty<TSource>();
-            var answer = new TSource[count];
-            CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
+            if (count == 0) return Array.Empty<T>();
+            var answer = new T[count];
+            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
             return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<TSource> ToNativeEnumerable(Allocator allocator)
+        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
-            var ptr = UnsafeUtilityEx.Malloc<TSource>(count, allocator);
+            var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<TSource>(ptr, count);
+            return new NativeEnumerable<T>(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
+        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
-            var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
+            var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(UnsafeUtilityEx.GetPointer(answer));
             return answer;
         }

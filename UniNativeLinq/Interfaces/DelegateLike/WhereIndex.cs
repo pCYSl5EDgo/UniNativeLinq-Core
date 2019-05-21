@@ -1,7 +1,7 @@
 namespace UniNativeLinq
 {
-    public interface IWhereIndex<TSource>
+    public interface IWhereIndex<T>
     {
-        bool Calc(ref TSource value, long index);
+        bool Calc(ref T value, long index);
     }
 }

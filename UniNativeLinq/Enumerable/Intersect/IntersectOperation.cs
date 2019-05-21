@@ -4,29 +4,29 @@ using Unity.Collections.LowLevel.Unsafe;
 namespace UniNativeLinq
 {
     public unsafe struct
-        IntersectOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, TSource, TComparer>
-        : ISetOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, TSource>
-        where TSource : unmanaged
-        where TEnumerator0 : struct, IRefEnumerator<TSource>
-        where TEnumerator1 : struct, IRefEnumerator<TSource>
-        where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TSource>
-        where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, TSource>
-        where TComparer : struct, IRefFunc<TSource, TSource, int>
+        IntersectOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T, TComparer>
+        : ISetOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T>
+        where T : unmanaged
+        where TEnumerator0 : struct, IRefEnumerator<T>
+        where TEnumerator1 : struct, IRefEnumerator<T>
+        where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T>
+        where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T>
+        where TComparer : struct, IRefFunc<T, T, int>
     {
         private readonly TComparer comparer;
 
         public IntersectOperation(in TComparer comparer) => this.comparer = comparer;
 
-        public NativeEnumerable<TSource> Calc(ref TEnumerable0 first, ref TEnumerable1 second, Allocator allocator)
+        public NativeEnumerable<T> Calc(ref TEnumerable0 first, ref TEnumerable1 second, Allocator allocator)
         {
-            var smaller = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, TSource, TComparer>(first, comparer, Allocator.Temp).ToNativeEnumerable();
+            var smaller = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, comparer, Allocator.Temp).ToNativeEnumerable();
             if (smaller.Length == 0)
             {
                 smaller.Dispose(Allocator.Temp);
                 return default;
             }
             var capacity = smaller.Length;
-            var larger = new SortedDistinctEnumerable<TEnumerable1, TEnumerator1, TSource, TComparer>(second, comparer, Allocator.Temp).ToNativeEnumerable();
+            var larger = new SortedDistinctEnumerable<TEnumerable1, TEnumerator1, T, TComparer>(second, comparer, Allocator.Temp).ToNativeEnumerable();
             if (larger.Length == 0)
             {
                 smaller.Dispose(Allocator.Temp);
@@ -38,7 +38,7 @@ namespace UniNativeLinq
                 capacity = larger.Length;
                 (smaller, larger) = (larger, smaller);
             }
-            var ptr = UnsafeUtilityEx.Malloc<TSource>(capacity, allocator);
+            var ptr = UnsafeUtilityEx.Malloc<T>(capacity, allocator);
             var count = 0L;
             for (var i = 0L; i < capacity; i++)
             {
@@ -47,15 +47,15 @@ namespace UniNativeLinq
             }
             smaller.Dispose(Allocator.Temp);
             larger.Dispose(Allocator.Temp);
-            if (count != 0) return new NativeEnumerable<TSource>(ptr, count);
+            if (count != 0) return new NativeEnumerable<T>(ptr, count);
             UnsafeUtility.Free(ptr, allocator);
             return default;
         }
 
         public static implicit operator
-            IntersectOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, TSource, TComparer>
+            IntersectOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T, TComparer>
             (in TComparer comparer)
-            => new IntersectOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, TSource, TComparer>
+            => new IntersectOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T, TComparer>
             (comparer);
     }
 }

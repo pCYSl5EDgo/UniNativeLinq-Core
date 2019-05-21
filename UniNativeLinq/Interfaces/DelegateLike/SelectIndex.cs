@@ -1,7 +1,7 @@
 namespace UniNativeLinq
 {
-    public interface ISelectIndex<TSource, TResult>
+    public interface ISelectIndex<T, TResult>
     {
-        void Execute(ref TSource source, long index, ref TResult result);
+        void Execute(ref T source, long index, ref TResult result);
     }
 }

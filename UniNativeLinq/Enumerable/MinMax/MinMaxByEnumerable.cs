@@ -6,14 +6,14 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
-    public unsafe readonly partial struct
-        MinMaxByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>
-        : IRefEnumerable<MinMaxByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>.Enumerator, TSource>
-        where TSource : unmanaged
-        where TEnumerator : struct, IRefEnumerator<TSource>
-        where TEnumerable : struct, IRefEnumerable<TEnumerator, TSource>
+    public readonly unsafe struct
+        MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>
+        : IRefEnumerable<MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>.Enumerator, T>
+        where T : unmanaged
+        where TEnumerator : struct, IRefEnumerator<T>
+        where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
         where TKey : unmanaged
-        where TKeySelector : struct, IRefFunc<TSource, TKey>
+        where TKeySelector : struct, IRefFunc<T, TKey>
         where TKeyRenewPredicate : struct, IRefFunc<TKey, TKey, bool>
         where TKeyEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
     {
@@ -30,15 +30,15 @@ namespace UniNativeLinq
             this.equalityComparer = equalityComparer;
         }
 
-        public struct Enumerator : IRefEnumerator<TSource>
+        public struct Enumerator : IRefEnumerator<T>
         {
             private TEnumerator enumerator;
             private TKey key;
             private TKeySelector keySelector;
             private TKeyEqualityComparer equalityComparer;
 
-            public ref TSource Current => ref enumerator.Current;
-            TSource IEnumerator<TSource>.Current => Current;
+            public ref T Current => ref enumerator.Current;
+            T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
 
             internal Enumerator(TEnumerator enumerator, TKeySelector keySelector, TKeyRenewPredicate keyRenewPredicate, TKeyEqualityComparer equalityComparer)
@@ -80,7 +80,7 @@ namespace UniNativeLinq
                 this = default;
             }
 
-            public ref TSource TryGetNext(out bool success)
+            public ref T TryGetNext(out bool success)
             {
                 while (true)
                 {
@@ -92,7 +92,7 @@ namespace UniNativeLinq
                 }
             }
 
-            public bool TryMoveNext(out TSource value)
+            public bool TryMoveNext(out T value)
             {
                 while (enumerator.TryMoveNext(out value))
                 {
@@ -106,21 +106,21 @@ namespace UniNativeLinq
 
         public
             MinMaxByEnumerable<
-                MinMaxByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
+                MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
                 Enumerator,
-                TSource,
+                T,
                 TKey,
-                DelegateFuncToStructOperatorFunc<TSource, TKey>,
+                DelegateFuncToStructOperatorFunc<T, TKey>,
                 MinByPredicate<TKey, DefaultOrderByAscending<TKey>>,
                 DefaultEqualityComparer<TKey>
             >
-            MinBy(Func<TSource, TKey> func)
+            MinBy(Func<T, TKey> func)
             => new MinMaxByEnumerable<
-                MinMaxByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
+                MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
                 Enumerator,
-                TSource,
+                T,
                 TKey,
-                DelegateFuncToStructOperatorFunc<TSource, TKey>,
+                DelegateFuncToStructOperatorFunc<T, TKey>,
                 MinByPredicate<TKey, DefaultOrderByAscending<TKey>>,
                 DefaultEqualityComparer<TKey>
             >
@@ -128,21 +128,21 @@ namespace UniNativeLinq
 
         public
             MinMaxByEnumerable<
-                MinMaxByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
+                MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
                 Enumerator,
-                TSource,
+                T,
                 TKey,
-                DelegateFuncToStructOperatorFunc<TSource, TKey>,
+                DelegateFuncToStructOperatorFunc<T, TKey>,
                 MaxByPredicate<TKey, DefaultOrderByAscending<TKey>>,
                 DefaultEqualityComparer<TKey>
             >
-            MaxBy(Func<TSource, TKey> func)
+            MaxBy(Func<T, TKey> func)
             => new MinMaxByEnumerable<
-                MinMaxByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
+                MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
                 Enumerator,
-                TSource,
+                T,
                 TKey,
-                DelegateFuncToStructOperatorFunc<TSource, TKey>,
+                DelegateFuncToStructOperatorFunc<T, TKey>,
                 MaxByPredicate<TKey, DefaultOrderByAscending<TKey>>,
                 DefaultEqualityComparer<TKey>
             >
@@ -152,7 +152,7 @@ namespace UniNativeLinq
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<TSource> IEnumerable<TSource>.GetEnumerator() => GetEnumerator();
+        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -189,7 +189,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(TSource* dest)
+        public readonly void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -198,30 +198,30 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly TSource[] ToArray()
+        public readonly T[] ToArray()
         {
             var count = LongCount();
-            if (count == 0) return Array.Empty<TSource>();
-            var answer = new TSource[count];
-            CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
+            if (count == 0) return Array.Empty<T>();
+            var answer = new T[count];
+            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
             return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<TSource> ToNativeEnumerable(Allocator allocator)
+        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
-            var ptr = UnsafeUtilityEx.Malloc<TSource>(count, allocator);
+            var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<TSource>(ptr, count);
+            return new NativeEnumerable<T>(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
+        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
-            var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
+            var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(UnsafeUtilityEx.GetPointer(answer));
             return answer;
         }

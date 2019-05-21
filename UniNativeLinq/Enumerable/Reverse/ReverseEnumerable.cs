@@ -7,12 +7,12 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public unsafe readonly partial struct
-        ReverseEnumerable<TEnumerable, TEnumerator, TSource>
-        : IRefEnumerable<ReverseEnumerable<TEnumerable, TEnumerator, TSource>.Enumerator, TSource>
-        where TSource : unmanaged
-        where TEnumerator : struct, IRefEnumerator<TSource>
-        where TEnumerable : struct, IRefEnumerable<TEnumerator, TSource>
+    public readonly unsafe struct
+        ReverseEnumerable<TEnumerable, TEnumerator, T>
+        : IRefEnumerable<ReverseEnumerable<TEnumerable, TEnumerator, T>.Enumerator, T>
+        where T : unmanaged
+        where TEnumerator : struct, IRefEnumerator<T>
+        where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
         internal readonly TEnumerable Enumerable;
         private readonly Allocator alloc;
@@ -23,23 +23,23 @@ namespace UniNativeLinq
             this.alloc = alloc;
         }
 
-        public ReverseEnumerable(NativeEnumerable<TSource> enumerable)
+        public ReverseEnumerable(NativeEnumerable<T> enumerable)
         {
-            Enumerable = Unsafe.As<NativeEnumerable<TSource>, TEnumerable>(ref enumerable);
+            Enumerable = Unsafe.As<NativeEnumerable<T>, TEnumerable>(ref enumerable);
             alloc = Allocator.None;
         }
 
-        public ReverseEnumerable(ArrayEnumerable<TSource> enumerable)
+        public ReverseEnumerable(ArrayEnumerable<T> enumerable)
         {
-            Enumerable = Unsafe.As<ArrayEnumerable<TSource>, TEnumerable>(ref enumerable);
+            Enumerable = Unsafe.As<ArrayEnumerable<T>, TEnumerable>(ref enumerable);
             alloc = Allocator.None;
         }
 
-        public struct Enumerator : IRefEnumerator<TSource>
+        public struct Enumerator : IRefEnumerator<T>
         {
             private readonly ReverseEnumerableKind kind;
             private readonly Allocator allocator;
-            private NativeEnumerable<TSource>.ReverseEnumerator enumerator;
+            private NativeEnumerable<T>.ReverseEnumerator enumerator;
 
             internal Enumerator(TEnumerable enumerable, Allocator allocator)
             {
@@ -48,7 +48,7 @@ namespace UniNativeLinq
                 this.allocator = allocator;
             }
 
-            internal Enumerator(in NativeEnumerable<TSource> enumerable)
+            internal Enumerator(in NativeEnumerable<T> enumerable)
             {
                 kind = ReverseEnumerableKind.NativeArray;
                 enumerator = enumerable.GetReverseEnumerator();
@@ -59,9 +59,9 @@ namespace UniNativeLinq
 
             public void Reset() => enumerator.Reset();
 
-            public readonly ref TSource Current => ref enumerator.Current;
+            public readonly ref T Current => ref enumerator.Current;
 
-            readonly TSource IEnumerator<TSource>.Current => Current;
+            readonly T IEnumerator<T>.Current => Current;
 
             readonly object IEnumerator.Current => Current;
 
@@ -82,16 +82,16 @@ namespace UniNativeLinq
                 this = default;
             }
 
-            public ref TSource TryGetNext(out bool success) => ref enumerator.TryGetNext(out success);
+            public ref T TryGetNext(out bool success) => ref enumerator.TryGetNext(out success);
 
-            public bool TryMoveNext(out TSource value) => enumerator.TryMoveNext(out value);
+            public bool TryMoveNext(out T value) => enumerator.TryMoveNext(out value);
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(Enumerable, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<TSource> IEnumerable<TSource>.GetEnumerator() => GetEnumerator();
+        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -109,7 +109,7 @@ namespace UniNativeLinq
         public readonly long LongCount() => Enumerable.LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(TSource* dest)
+        public readonly void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -118,30 +118,30 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly TSource[] ToArray()
+        public readonly T[] ToArray()
         {
             var count = LongCount();
-            if (count == 0) return Array.Empty<TSource>();
-            var answer = new TSource[count];
-            CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
+            if (count == 0) return Array.Empty<T>();
+            var answer = new T[count];
+            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
             return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<TSource> ToNativeEnumerable(Allocator allocator)
+        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
-            var ptr = UnsafeUtilityEx.Malloc<TSource>(count, allocator);
+            var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<TSource>(ptr, count);
+            return new NativeEnumerable<T>(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
+        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
-            var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
+            var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(UnsafeUtilityEx.GetPointer(answer));
             return answer;
         }

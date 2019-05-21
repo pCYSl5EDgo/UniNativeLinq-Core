@@ -7,14 +7,14 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public unsafe partial struct
-        DistinctEnumerable<TEnumerable, TEnumerator, TSource, TEqualityComparer, TGetHashCodeFunc>
-        : IRefEnumerable<DistinctEnumerable<TEnumerable, TEnumerator, TSource, TEqualityComparer, TGetHashCodeFunc>.Enumerator, TSource>
-        where TSource : unmanaged
-        where TEqualityComparer : struct, IRefFunc<TSource, TSource, bool>
-        where TGetHashCodeFunc : struct, IRefFunc<TSource, int>
-        where TEnumerator : struct, IRefEnumerator<TSource>
-        where TEnumerable : struct, IRefEnumerable<TEnumerator, TSource>
+    public unsafe struct
+        DistinctEnumerable<TEnumerable, TEnumerator, T, TEqualityComparer, TGetHashCodeFunc>
+        : IRefEnumerable<DistinctEnumerable<TEnumerable, TEnumerator, T, TEqualityComparer, TGetHashCodeFunc>.Enumerator, T>
+        where T : unmanaged
+        where TEqualityComparer : struct, IRefFunc<T, T, bool>
+        where TGetHashCodeFunc : struct, IRefFunc<T, int>
+        where TEnumerator : struct, IRefEnumerator<T>
+        where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
         private TEnumerable enumerable;
         private readonly TEqualityComparer equalityComparer;
@@ -29,10 +29,10 @@ namespace UniNativeLinq
             alloc = allocator;
         }
 
-        public struct Enumerator : IRefEnumerator<TSource>
+        public struct Enumerator : IRefEnumerator<T>
         {
             private TEnumerator enumerator;
-            private TSource* ptr;
+            private T* ptr;
             private int* codes;
             private long capacity;
             private long count;
@@ -59,7 +59,7 @@ namespace UniNativeLinq
                 count = 0;
                 enumerator = _enumerable.GetEnumerator();
                 alloc = allocator;
-                ptr = UnsafeUtilityEx.Malloc<TSource>(capacity, alloc);
+                ptr = UnsafeUtilityEx.Malloc<T>(capacity, alloc);
                 codes = UnsafeUtilityEx.Malloc<int>(capacity, alloc);
                 this.comparer = comparer;
                 this.getHashCodeFunc = getHashCodeFunc;
@@ -68,7 +68,7 @@ namespace UniNativeLinq
 
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private bool TryInsert(ref TSource current, int hash)
+            private bool TryInsert(ref T current, int hash)
             {
                 if (hash < codes[0])
                 {
@@ -101,7 +101,7 @@ namespace UniNativeLinq
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private bool TryInsertAround(ref TSource current, int hash, long minInclusive, long maxInclusive)
+            private bool TryInsertAround(ref T current, int hash, long minInclusive, long maxInclusive)
             {
                 if (hash == codes[currentIndex] && comparer.Calc(ref current, ref ptr[currentIndex]))
                     return false;
@@ -120,7 +120,7 @@ namespace UniNativeLinq
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private bool InitialInsert(ref TSource current, int hash)
+            private bool InitialInsert(ref T current, int hash)
             {
                 currentIndex = 0;
                 Insert(ref current, hash);
@@ -128,7 +128,7 @@ namespace UniNativeLinq
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private void Insert(ref TSource current, int hash)
+            private void Insert(ref T current, int hash)
             {
                 if (capacity == count)
                 {
@@ -145,9 +145,9 @@ namespace UniNativeLinq
                 count++;
             }
 
-            private void InsertWithReallocation(ref TSource current, int hash, long index)
+            private void InsertWithReallocation(ref T current, int hash, long index)
             {
-                var tmpPtr = UnsafeUtilityEx.Malloc<TSource>(capacity << 1, alloc);
+                var tmpPtr = UnsafeUtilityEx.Malloc<T>(capacity << 1, alloc);
                 var tmpCodes = UnsafeUtilityEx.Malloc<int>(capacity << 1, alloc);
                 capacity <<= 1;
                 tmpPtr[count] = current;
@@ -178,8 +178,8 @@ namespace UniNativeLinq
 
             public void Reset() => throw new InvalidOperationException();
 
-            public ref TSource Current => ref ptr[currentIndex];
-            TSource IEnumerator<TSource>.Current => Current;
+            public ref T Current => ref ptr[currentIndex];
+            T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
 
             public void Dispose()
@@ -207,15 +207,15 @@ namespace UniNativeLinq
                 return false;
             }
 
-            public ref TSource TryGetNext(out bool success)
+            public ref T TryGetNext(out bool success)
             {
                 if (!(success = ptr != null))
-                    return ref Unsafe.AsRef<TSource>(null);
+                    return ref Unsafe.AsRef<T>(null);
                 while (true)
                 {
                     ref var current = ref enumerator.TryGetNext(out success);
                     if (!success)
-                        return ref Unsafe.AsRef<TSource>(null);
+                        return ref Unsafe.AsRef<T>(null);
                     var hash = getHashCodeFunc.Calc(ref current);
                     if (count == 0)
                     {
@@ -230,7 +230,7 @@ namespace UniNativeLinq
                 }
             }
 
-            public bool TryMoveNext(out TSource value)
+            public bool TryMoveNext(out T value)
             {
                 if(ptr == null)
                 {
@@ -253,7 +253,7 @@ namespace UniNativeLinq
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<TSource> IEnumerable<TSource>.GetEnumerator() => GetEnumerator();
+        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -290,7 +290,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(TSource* dest)
+        public readonly void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -299,30 +299,30 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly TSource[] ToArray()
+        public readonly T[] ToArray()
         {
             var count = LongCount();
-            if (count == 0) return Array.Empty<TSource>();
-            var answer = new TSource[count];
-            CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
+            if (count == 0) return Array.Empty<T>();
+            var answer = new T[count];
+            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
             return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<TSource> ToNativeEnumerable(Allocator allocator)
+        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
-            var ptr = UnsafeUtilityEx.Malloc<TSource>(count, allocator);
+            var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<TSource>(ptr, count);
+            return new NativeEnumerable<T>(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
+        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
-            var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
+            var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(answer.GetPointer());
             return answer;
         }

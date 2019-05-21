@@ -221,7 +221,7 @@ namespace UniNativeLinq
         public static AppendEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T>
             Append<T>(this NativeArray<T> @this, T value, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            => new AppendEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T>(@this.AsRefEnumerable(), value, allocator);
+            => new AppendEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T>(@this.AsRefEnumerable(), value);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DefaultIfEmptyEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T>
@@ -379,7 +379,7 @@ namespace UniNativeLinq
             >
             Prepend<T>(this NativeArray<T> @this, T value, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            => new PrependEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T>(@this.AsRefEnumerable(), value, allocator);
+            => new PrependEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T>(@this.AsRefEnumerable(), value);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -394,14 +394,14 @@ namespace UniNativeLinq
             where T : unmanaged
             where TNextResult0 : unmanaged
             where TNextAction0 : struct, ISelectIndex<T, TNextResult0>
-            => new SelectIndexEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TNextResult0, TNextAction0>(@this.AsRefEnumerable(), action, allocator);
+            => new SelectIndexEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TNextResult0, TNextAction0>(@this.AsRefEnumerable(), action);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static SelectIndexEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TNextResult0, DelegateFuncToSelectIndexStructOperator<T, TNextResult0>>
             SelectIndex<TNextResult0, T>(this NativeArray<T> @this, Func<T, long, TNextResult0> func, Allocator allocator = Allocator.Temp)
             where T : unmanaged
             where TNextResult0 : unmanaged
-            => new SelectIndexEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TNextResult0, DelegateFuncToSelectIndexStructOperator<T, TNextResult0>>(@this.AsRefEnumerable(), func, allocator);
+            => new SelectIndexEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TNextResult0, DelegateFuncToSelectIndexStructOperator<T, TNextResult0>>(@this.AsRefEnumerable(), func);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static SelectEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TNextResult0, TNextAction0>
@@ -409,14 +409,14 @@ namespace UniNativeLinq
             where T : unmanaged
             where TNextResult0 : unmanaged
             where TNextAction0 : struct, IRefAction<T, TNextResult0>
-            => new SelectEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TNextResult0, TNextAction0>(@this.AsRefEnumerable(), action, allocator);
+            => new SelectEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TNextResult0, TNextAction0>(@this.AsRefEnumerable(), action);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static SelectEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TNextResult0, DelegateFuncToAction<T, TNextResult0>>
             Select<TNextResult0, T>(this NativeArray<T> @this, Func<T, TNextResult0> func, Allocator allocator = Allocator.Temp)
             where T : unmanaged
             where TNextResult0 : unmanaged
-            => new SelectEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TNextResult0, DelegateFuncToAction<T, TNextResult0>>(@this.AsRefEnumerable(), func, allocator);
+            => new SelectEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TNextResult0, DelegateFuncToAction<T, TNextResult0>>(@this.AsRefEnumerable(), func);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -577,7 +577,7 @@ namespace UniNativeLinq
                 T,
                 (T, long),
                 WithIndex<T>
-            >(@this.AsRefEnumerable(), default, allocator);
+            >(@this.AsRefEnumerable(), default);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -1010,22 +1010,22 @@ namespace UniNativeLinq
             ConcatEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
-                SelectEnumerable<TEnumerable1, TEnumerator1, TPrevSource1, T, TAction1>,
-                SelectEnumerable<TEnumerable1, TEnumerator1, TPrevSource1, T, TAction1>.Enumerator,
+                SelectEnumerable<TEnumerable1, TEnumerator1, TPrev1, T, TAction1>,
+                SelectEnumerable<TEnumerable1, TEnumerator1, TPrev1, T, TAction1>.Enumerator,
                 T
             >
-            Concat<TEnumerable1, TEnumerator1, TPrevSource1, TAction1, T>(this NativeArray<T> @this,
-            in SelectEnumerable<TEnumerable1, TEnumerator1, TPrevSource1, T, TAction1> second)
+            Concat<TEnumerable1, TEnumerator1, TPrev1, TAction1, T>(this NativeArray<T> @this,
+            in SelectEnumerable<TEnumerable1, TEnumerator1, TPrev1, T, TAction1> second)
             where T : unmanaged
-            where TEnumerator1 : struct, IRefEnumerator<TPrevSource1>
-            where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, TPrevSource1>
-            where TAction1 : struct, IRefAction<TPrevSource1, T>
-            where TPrevSource1 : unmanaged
+            where TEnumerator1 : struct, IRefEnumerator<TPrev1>
+            where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, TPrev1>
+            where TAction1 : struct, IRefAction<TPrev1, T>
+            where TPrev1 : unmanaged
             => new ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectEnumerable<TEnumerable1, TEnumerator1, TPrevSource1, T, TAction1>,
-                    SelectEnumerable<TEnumerable1, TEnumerator1, TPrevSource1, T, TAction1>.Enumerator,
+                    SelectEnumerable<TEnumerable1, TEnumerator1, TPrev1, T, TAction1>,
+                    SelectEnumerable<TEnumerable1, TEnumerator1, TPrev1, T, TAction1>.Enumerator,
                     T>
                 (@this.AsRefEnumerable(), second);
 
@@ -1034,22 +1034,22 @@ namespace UniNativeLinq
             ConcatEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
-                SelectIndexEnumerable<TEnumerable1, TEnumerator1, TPrevSource1, T, TAction1>,
-                SelectIndexEnumerable<TEnumerable1, TEnumerator1, TPrevSource1, T, TAction1>.Enumerator,
+                SelectIndexEnumerable<TEnumerable1, TEnumerator1, TPrev1, T, TAction1>,
+                SelectIndexEnumerable<TEnumerable1, TEnumerator1, TPrev1, T, TAction1>.Enumerator,
                 T
             >
-            Concat<TEnumerable1, TEnumerator1, TPrevSource1, TAction1, T>(this NativeArray<T> @this,
-            in SelectIndexEnumerable<TEnumerable1, TEnumerator1, TPrevSource1, T, TAction1> second)
+            Concat<TEnumerable1, TEnumerator1, TPrev1, TAction1, T>(this NativeArray<T> @this,
+            in SelectIndexEnumerable<TEnumerable1, TEnumerator1, TPrev1, T, TAction1> second)
             where T : unmanaged
-            where TEnumerator1 : struct, IRefEnumerator<TPrevSource1>
-            where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, TPrevSource1>
-            where TAction1 : struct, ISelectIndex<TPrevSource1, T>
-            where TPrevSource1 : unmanaged
+            where TEnumerator1 : struct, IRefEnumerator<TPrev1>
+            where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, TPrev1>
+            where TAction1 : struct, ISelectIndex<TPrev1, T>
+            where TPrev1 : unmanaged
             => new ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectIndexEnumerable<TEnumerable1, TEnumerator1, TPrevSource1, T, TAction1>,
-                    SelectIndexEnumerable<TEnumerable1, TEnumerator1, TPrevSource1, T, TAction1>.Enumerator,
+                    SelectIndexEnumerable<TEnumerable1, TEnumerator1, TPrev1, T, TAction1>,
+                    SelectIndexEnumerable<TEnumerable1, TEnumerator1, TPrev1, T, TAction1>.Enumerator,
                     T>
                 (@this.AsRefEnumerable(), second);
 
@@ -1058,24 +1058,24 @@ namespace UniNativeLinq
             ConcatEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T, TResultEnumerable0, TResultEnumerator0, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T, TResultEnumerable0, TResultEnumerator0, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T, TResultEnumerable0, TResultEnumerator0, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T, TResultEnumerable0, TResultEnumerator0, TAction0>.Enumerator,
                 T
             >
-            Concat<TEnumerable0, TEnumerator0, TPrevSource0, TResultEnumerable0, TResultEnumerator0, TAction0, T>(this NativeArray<T> @this,
-            in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T, TResultEnumerable0, TResultEnumerator0, TAction0> second)
+            Concat<TEnumerable0, TEnumerator0, TPrev0, TResultEnumerable0, TResultEnumerator0, TAction0, T>(this NativeArray<T> @this,
+            in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T, TResultEnumerable0, TResultEnumerator0, TAction0> second)
             where T : unmanaged
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TPrevSource0 : unmanaged
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TPrev0 : unmanaged
             where TResultEnumerator0 : struct, IRefEnumerator<T>
             where TResultEnumerable0 : struct, IRefEnumerable<TResultEnumerator0, T>
-            where TAction0 : struct, IRefAction<TPrevSource0, TResultEnumerable0>
+            where TAction0 : struct, IRefAction<TPrev0, TResultEnumerable0>
             => new ConcatEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T, TResultEnumerable0, TResultEnumerator0, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T, TResultEnumerable0, TResultEnumerator0, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T, TResultEnumerable0, TResultEnumerator0, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T, TResultEnumerable0, TResultEnumerator0, TAction0>.Enumerator,
                 T
             >(@this.AsRefEnumerable(), second);
 
@@ -2935,8 +2935,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -2947,23 +2947,23 @@ namespace UniNativeLinq
             >
             GroupJoin<
                 TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0
-                , TPrevSource0, TAction0, T
+                , TPrev0, TAction0, T
             >
             (this NativeArray<T> @this,
-            in SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
+            in SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TAction0 : struct, IRefAction<TPrevSource0, T0>
+            where TPrev0 : unmanaged
+            where TAction0 : struct, IRefAction<TPrev0, T0>
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
             where TKey0 : unmanaged
             where TKeySelector0 : struct, IRefFunc<T, TKey0>
             where TKeySelector1 : struct, IRefFunc<T0, TKey0>
             where T0Selector : struct, IRefFunc<T, WhereIndexEnumerable<NativeEnumerable<T0>, NativeEnumerable<T0>.Enumerator, T0, GroupJoinPredicate<T0, TKey0, TEqualityComparer0>>, T1>
             where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
-            => new GroupJoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>, SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
+            => new GroupJoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>, SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
             (@this.AsRefEnumerable(), inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2972,8 +2972,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -2984,23 +2984,23 @@ namespace UniNativeLinq
             >
             GroupJoin<
                 TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0
-                , TPrevSource0, TAction0, T
+                , TPrev0, TAction0, T
             >
             (this NativeArray<T> @this,
-            in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
+            in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TAction0 : struct, ISelectIndex<TPrevSource0, T0>
+            where TPrev0 : unmanaged
+            where TAction0 : struct, ISelectIndex<TPrev0, T0>
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
             where TKey0 : unmanaged
             where TKeySelector0 : struct, IRefFunc<T, TKey0>
             where TKeySelector1 : struct, IRefFunc<T0, TKey0>
             where T0Selector : struct, IRefFunc<T, WhereIndexEnumerable<NativeEnumerable<T0>, NativeEnumerable<T0>.Enumerator, T0, GroupJoinPredicate<T0, TKey0, TEqualityComparer0>>, T1>
             where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
-            => new GroupJoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
+            => new GroupJoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
             (@this.AsRefEnumerable(), inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3009,8 +3009,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -3021,17 +3021,17 @@ namespace UniNativeLinq
             >
             GroupJoin<
                 TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0
-                , TEnumerable1, TEnumerator1, TPrevSource0, TAction0, T
+                , TEnumerable1, TEnumerator1, TPrev0, TAction0, T
             >
             (this NativeArray<T> @this,
-            in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
+            in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
+            where TPrev0 : unmanaged
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TAction0 : struct, IRefAction<TPrevSource0, TEnumerable1>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TAction0 : struct, IRefAction<TPrev0, TEnumerable1>
             where TKey0 : unmanaged
             where TKeySelector0 : struct, IRefFunc<T, TKey0>
             where TKeySelector1 : struct, IRefFunc<T0, TKey0>
@@ -3039,7 +3039,7 @@ namespace UniNativeLinq
             where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
             where TEnumerator1 : struct, IRefEnumerator<T0>
             where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T0>
-            => new GroupJoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
+            => new GroupJoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
             (@this.AsRefEnumerable(), inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4811,8 +4811,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -4823,23 +4823,23 @@ namespace UniNativeLinq
             >
             Join<
                 TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0
-                , TPrevSource0, TAction0, T
+                , TPrev0, TAction0, T
             >
             (this NativeArray<T> @this,
-            in SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
+            in SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TAction0 : struct, IRefAction<TPrevSource0, T0>
+            where TPrev0 : unmanaged
+            where TAction0 : struct, IRefAction<TPrev0, T0>
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
             where TKey0 : unmanaged
             where TKeySelector0 : struct, IRefFunc<T, TKey0>
             where TKeySelector1 : struct, IRefFunc<T0, TKey0>
             where T0Selector : struct, IRefFunc<T, T0, T1>
             where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
-            => new JoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>, SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
+            => new JoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>, SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
             (@this.AsRefEnumerable(), inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4848,8 +4848,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -4860,23 +4860,23 @@ namespace UniNativeLinq
             >
             Join<
                 TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0
-                , TPrevSource0, TAction0, T
+                , TPrev0, TAction0, T
             >
             (this NativeArray<T> @this,
-            in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
+            in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TAction0 : struct, ISelectIndex<TPrevSource0, T0>
+            where TPrev0 : unmanaged
+            where TAction0 : struct, ISelectIndex<TPrev0, T0>
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
             where TKey0 : unmanaged
             where TKeySelector0 : struct, IRefFunc<T, TKey0>
             where TKeySelector1 : struct, IRefFunc<T0, TKey0>
             where T0Selector : struct, IRefFunc<T, T0, T1>
             where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
-            => new JoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
+            => new JoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
             (@this.AsRefEnumerable(), inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4885,8 +4885,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -4897,17 +4897,17 @@ namespace UniNativeLinq
             >
             Join<
                 TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0
-                , TEnumerable1, TEnumerator1, TPrevSource0, TAction0, T
+                , TEnumerable1, TEnumerator1, TPrev0, TAction0, T
             >
             (this NativeArray<T> @this,
-            in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
+            in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
+            where TPrev0 : unmanaged
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TAction0 : struct, IRefAction<TPrevSource0, TEnumerable1>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TAction0 : struct, IRefAction<TPrev0, TEnumerable1>
             where TKey0 : unmanaged
             where TKeySelector0 : struct, IRefFunc<T, TKey0>
             where TKeySelector1 : struct, IRefFunc<T0, TKey0>
@@ -4915,7 +4915,7 @@ namespace UniNativeLinq
             where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
             where TEnumerator1 : struct, IRefEnumerator<T0>
             where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T0>
-            => new JoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
+            => new JoinEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0>
             (@this.AsRefEnumerable(), inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6375,41 +6375,41 @@ namespace UniNativeLinq
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>,
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>.Enumerator,
                 T,
                 TEqualityComparer0,
                 TGetHashCodeFunc0>
-            Union<TPrevEnumerable0, TPrevEnumerator0, TEqualityComparer0, TGetHashCodeFunc0, TPrevSource0, TAction0, T>
+            Union<TPrevEnumerable0, TPrevEnumerator0, TEqualityComparer0, TGetHashCodeFunc0, TPrev0, TAction0, T>
             (this NativeArray<T> @this,
-            in SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>
+            in SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>
                 second, TEqualityComparer0 comparer, TGetHashCodeFunc0 getHashCodeFunc, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TPrevEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrevSource0>
-            where TAction0 : struct, IRefAction<TPrevSource0, T>
+            where TPrev0 : unmanaged
+            where TPrevEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrev0>
+            where TAction0 : struct, IRefAction<TPrev0, T>
             where TEqualityComparer0 : struct, IRefFunc<T, T, bool>
             where TGetHashCodeFunc0 : struct, IRefFunc<T, int>
             => new DistinctEnumerable<
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>,
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>.Enumerator,
                 T,
                 TEqualityComparer0,
@@ -6421,41 +6421,41 @@ namespace UniNativeLinq
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>,
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>.Enumerator,
                 T,
                 TEqualityComparer0,
                 TGetHashCodeFunc0>
-            Union<TPrevEnumerable0, TPrevEnumerator0, TEqualityComparer0, TGetHashCodeFunc0, TPrevSource0, TAction0, T>
+            Union<TPrevEnumerable0, TPrevEnumerator0, TEqualityComparer0, TGetHashCodeFunc0, TPrev0, TAction0, T>
             (this NativeArray<T> @this,
-            in SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>
+            in SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>
                 second, TEqualityComparer0 comparer, TGetHashCodeFunc0 getHashCodeFunc, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TPrevEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrevSource0>
-            where TAction0 : struct, ISelectIndex<TPrevSource0, T>
+            where TPrev0 : unmanaged
+            where TPrevEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrev0>
+            where TAction0 : struct, ISelectIndex<TPrev0, T>
             where TEqualityComparer0 : struct, IRefFunc<T, T, bool>
             where TGetHashCodeFunc0 : struct, IRefFunc<T, int>
             => new DistinctEnumerable<
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>,
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>.Enumerator,
                 T,
                 TEqualityComparer0,
@@ -7917,7 +7917,7 @@ namespace UniNativeLinq
                 T0,
                 TResult0,
                 TAction0
-            >(@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            >(@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -7941,7 +7941,7 @@ namespace UniNativeLinq
             where TAction0 : struct, IRefAction<T, T0, TResult0>
             where TResult0 : unmanaged
             => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, AppendEnumerable<TEnumerable0, TEnumerator0, T0>, AppendEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -7967,7 +7967,7 @@ namespace UniNativeLinq
             where TAction0 : struct, IRefAction<T, T0, TResult0>
             where TResult0 : unmanaged
             => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, ConcatEnumerable<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0>, ConcatEnumerable<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -7991,7 +7991,7 @@ namespace UniNativeLinq
             where TAction0 : struct, IRefAction<T, T0, TResult0>
             where TResult0 : unmanaged
             => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, DefaultIfEmptyEnumerable<TEnumerable0, TEnumerator0, T0>, DefaultIfEmptyEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8017,7 +8017,7 @@ namespace UniNativeLinq
             where TEqualityComparer0 : struct, IRefFunc<T0, T0, bool>
             where TGetHashCodeFunc0 : struct, IRefFunc<T0, int>
             => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, DistinctEnumerable<TEnumerable0, TEnumerator0, T0, TEqualityComparer0, TGetHashCodeFunc0>, DistinctEnumerable<TEnumerable0, TEnumerator0, T0, TEqualityComparer0, TGetHashCodeFunc0>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8049,7 +8049,7 @@ namespace UniNativeLinq
                 TResult0,
                 TAction0
             >
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8091,7 +8091,7 @@ namespace UniNativeLinq
                 TResult0,
                 TAction0
             >
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8133,7 +8133,7 @@ namespace UniNativeLinq
                 TResult0,
                 TAction0
             >
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8158,7 +8158,7 @@ namespace UniNativeLinq
             where TResult0 : unmanaged
             where TComparer0 : struct, IRefFunc<T0, T0, int>
             => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, OrderByEnumerable<TEnumerable0, TEnumerator0, T0, TComparer0>, OrderByEnumerable<TEnumerable0, TEnumerator0, T0, TComparer0>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8181,7 +8181,7 @@ namespace UniNativeLinq
             where T0 : unmanaged
             where TAction0 : struct, IRefAction<T, T0, TResult0>
             where TResult0 : unmanaged
-            => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, PrependEnumerable<TEnumerable0, TEnumerator0, T0>, PrependEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator, T0, TResult0, TAction0>(@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, PrependEnumerable<TEnumerable0, TEnumerator0, T0>, PrependEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator, T0, TResult0, TAction0>(@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8204,7 +8204,7 @@ namespace UniNativeLinq
             where TResult0 : unmanaged
             where TAction1 : struct, IRangeRepeat<T0>
             => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, RangeRepeatEnumerable<T0, TAction1>, RangeRepeatEnumerable<T0, TAction1>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8227,87 +8227,87 @@ namespace UniNativeLinq
             where T0 : unmanaged
             where TAction0 : struct, IRefAction<T, T0, TResult0>
             where TResult0 : unmanaged
-            => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, ReverseEnumerable<TEnumerable0, TEnumerator0, T0>, ReverseEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator, T0, TResult0, TAction0>(@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, ReverseEnumerable<TEnumerable0, TEnumerator0, T0>, ReverseEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator, T0, TResult0, TAction0>(@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction1>,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction1>.Enumerator,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>.Enumerator,
                 T0,
                 TResult0,
                 TAction0
             >
-            Zip<TEnumerable0, TEnumerator0, T0, TResult0, TAction0, TPrevSource0, TAction1, T>
+            Zip<TEnumerable0, TEnumerator0, T0, TResult0, TAction0, TPrev0, TAction1, T>
             (this NativeArray<T> @this,
-            in SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction1>
+            in SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>
             second, TAction0 action, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
             where T0 : unmanaged
             where TAction0 : struct, IRefAction<T, T0, TResult0>
             where TResult0 : unmanaged
-            where TAction1 : struct, IRefAction<TPrevSource0, T0>
-            where TPrevSource0 : unmanaged
-            => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction1>, SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction1>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            where TAction1 : struct, IRefAction<TPrev0, T0>
+            where TPrev0 : unmanaged
+            => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>, SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>.Enumerator, T0, TResult0, TAction0>
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction1>,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction1>.Enumerator,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>.Enumerator,
                 T0,
                 TResult0,
                 TAction0
             >
-            Zip<TEnumerable0, TEnumerator0, T0, TResult0, TAction0, TPrevSource0, TAction1, T>
+            Zip<TEnumerable0, TEnumerator0, T0, TResult0, TAction0, TPrev0, TAction1, T>
             (this NativeArray<T> @this,
-            in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction1>
+            in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>
             second, TAction0 action, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
             where T0 : unmanaged
             where TAction0 : struct, IRefAction<T, T0, TResult0>
             where TResult0 : unmanaged
-            where TAction1 : struct, ISelectIndex<TPrevSource0, T0>
-            where TPrevSource0 : unmanaged
-            => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction1>, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction1>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            where TAction1 : struct, ISelectIndex<TPrev0, T0>
+            where TPrev0 : unmanaged
+            => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>, SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>.Enumerator, T0, TResult0, TAction0>
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction1>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction1>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction1>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction1>.Enumerator,
                 T0,
                 TResult0,
                 TAction0
             >
-            Zip<TEnumerable0, TEnumerator0, T0, TResult0, TAction0, TPrevSource0, TEnumerable1, TEnumerator1, TAction1, T>
+            Zip<TEnumerable0, TEnumerator0, T0, TResult0, TAction0, TPrev0, TEnumerable1, TEnumerator1, TAction1, T>
             (this NativeArray<T> @this,
-            in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction1>
+            in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction1>
             second, TAction0 action, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
             where T0 : unmanaged
             where TAction0 : struct, IRefAction<T, T0, TResult0>
             where TResult0 : unmanaged
-            where TAction1 : struct, IRefAction<TPrevSource0, TEnumerable1>
-            where TPrevSource0 : unmanaged
+            where TAction1 : struct, IRefAction<TPrev0, TEnumerable1>
+            where TPrev0 : unmanaged
             where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T0>
             where TEnumerator1 : struct, IRefEnumerator<T0>
-            => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction1>, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction1>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction1>, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction1>.Enumerator, T0, TResult0, TAction0>
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8334,7 +8334,7 @@ namespace UniNativeLinq
             where TEnumerator1 : struct, IRefEnumerator<T0>
             where TSetOperation0 : struct, ISetOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0>
             => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, SetOperationEnumerable<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0, TSetOperation0>, SetOperationEnumerable<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T0, TSetOperation0>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8368,7 +8368,7 @@ namespace UniNativeLinq
                 TResult0,
                 TAction0
             >
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8402,7 +8402,7 @@ namespace UniNativeLinq
                 TResult0,
                 TAction0
             >
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8437,7 +8437,7 @@ namespace UniNativeLinq
                 TResult0,
                 TAction0
             >
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8472,7 +8472,7 @@ namespace UniNativeLinq
                 TResult0,
                 TAction0
             >
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8506,7 +8506,7 @@ namespace UniNativeLinq
                 TResult0,
                 TAction0
             >
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8540,7 +8540,7 @@ namespace UniNativeLinq
                 TResult0,
                 TAction0
             >
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8566,7 +8566,7 @@ namespace UniNativeLinq
             where TResult0 : unmanaged
             where TPredicate0 : struct, IRefFunc<T0, bool>
             => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, WhereEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>, WhereEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8591,7 +8591,7 @@ namespace UniNativeLinq
             where TResult0 : unmanaged
             where TPredicate0 : struct, IWhereIndex<T0>
             => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, WhereIndexEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>, WhereIndexEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>.Enumerator, T0, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8620,7 +8620,7 @@ namespace UniNativeLinq
             where TResult1 : unmanaged
             where TAction0 : struct, IRefAction<T, TResult1, TResult0>
             => new ZipEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, ZipEnumerable<TEnumerable0, TEnumerator0, T0, TEnumerable1, TEnumerator1, T1, TResult1, TAction1>, ZipEnumerable<TEnumerable0, TEnumerator0, T0, TEnumerable1, TEnumerator1, T1, TResult1, TAction1>.Enumerator, TResult1, TResult0, TAction0>
-            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, action, firstDefaultValue, secondDefaultValue);
         #endregion
 
         #region Zip ValueTuple
@@ -8653,7 +8653,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8685,7 +8685,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8719,7 +8719,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8751,7 +8751,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8785,7 +8785,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8816,7 +8816,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ZipEnumerable<
@@ -8856,7 +8856,7 @@ namespace UniNativeLinq
                 (T, T2),
                 ZipValueTuple<T, T2>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8897,7 +8897,7 @@ namespace UniNativeLinq
                 (T, T2),
                 ZipValueTuple<T, T2>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8930,7 +8930,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8961,7 +8961,7 @@ namespace UniNativeLinq
                 T0,
                 (T, T0),
                 ZipValueTuple<T, T0>
-            >(@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            >(@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -8992,7 +8992,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9024,7 +9024,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9032,33 +9032,33 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            Zip<TEnumerable0, TEnumerator0, T0, TPrevSource0, TAction0, T>
+            Zip<TEnumerable0, TEnumerator0, T0, TPrev0, TAction0, T>
             (this NativeArray<T> @this,
-            in SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>
+            in SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>
             second, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
             where T0 : unmanaged
-            where TAction0 : struct, IRefAction<TPrevSource0, T0>
-            where TPrevSource0 : unmanaged
+            where TAction0 : struct, IRefAction<TPrev0, T0>
+            where TPrev0 : unmanaged
             => new ZipEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9066,33 +9066,33 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            Zip<TEnumerable0, TEnumerator0, T0, TPrevSource0, TAction0, T>
+            Zip<TEnumerable0, TEnumerator0, T0, TPrev0, TAction0, T>
             (this NativeArray<T> @this,
-            in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>
+            in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>
             second, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
             where T0 : unmanaged
-            where TAction0 : struct, ISelectIndex<TPrevSource0, T0>
-            where TPrevSource0 : unmanaged
+            where TAction0 : struct, ISelectIndex<TPrev0, T0>
+            where TPrev0 : unmanaged
             => new ZipEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9100,35 +9100,35 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
                 T0,
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            Zip<TEnumerable0, TEnumerator0, T0, TPrevSource0, TEnumerable1, TEnumerator1, TAction0, T>
+            Zip<TEnumerable0, TEnumerator0, T0, TPrev0, TEnumerable1, TEnumerator1, TAction0, T>
             (this NativeArray<T> @this,
-            in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>
+            in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>
             second, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
             where T0 : unmanaged
-            where TAction0 : struct, IRefAction<TPrevSource0, TEnumerable1>
-            where TPrevSource0 : unmanaged
+            where TAction0 : struct, IRefAction<TPrev0, TEnumerable1>
+            where TPrev0 : unmanaged
             where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T0>
             where TEnumerator1 : struct, IRefEnumerator<T0>
             => new ZipEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
                 T0,
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9163,7 +9163,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9195,7 +9195,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9227,7 +9227,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9260,7 +9260,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9293,7 +9293,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9325,7 +9325,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9357,7 +9357,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9390,7 +9390,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9423,7 +9423,7 @@ namespace UniNativeLinq
                 (T, T0),
                 ZipValueTuple<T, T0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -9460,7 +9460,7 @@ namespace UniNativeLinq
                 (T, TResult0),
                 ZipValueTuple<T, TResult0>
             >
-            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue, allocator);
+            (@this.AsRefEnumerable(), second, default, firstDefaultValue, secondDefaultValue);
         #endregion
 
         #region Function
@@ -10524,38 +10524,38 @@ namespace UniNativeLinq
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>,
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>.Enumerator,
                 T,
                 DefaultEqualityComparer<T>,
                 DefaultGetHashCodeFunc<T>>
-            Union<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, TAction0, T>
-            (this NativeArray<T> @this, in SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>
+            Union<TPrevEnumerable0, TPrevEnumerator0, TPrev0, TAction0, T>
+            (this NativeArray<T> @this, in SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>
                 second, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TPrevEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrevSource0>
-            where TAction0 : struct, IRefAction<TPrevSource0, T>
+            where TPrev0 : unmanaged
+            where TPrevEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrev0>
+            where TAction0 : struct, IRefAction<TPrev0, T>
             => new DistinctEnumerable<
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>,
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>.Enumerator,
                 T,
                 DefaultEqualityComparer<T>,
@@ -10567,38 +10567,38 @@ namespace UniNativeLinq
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>,
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>.Enumerator,
                 T,
                 DefaultEqualityComparer<T>,
                 DefaultGetHashCodeFunc<T>>
-            Union<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, TAction0, T>
-            (this NativeArray<T> @this, in SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>
+            Union<TPrevEnumerable0, TPrevEnumerator0, TPrev0, TAction0, T>
+            (this NativeArray<T> @this, in SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>
                 second, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TPrevEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrevSource0>
-            where TAction0 : struct, ISelectIndex<TPrevSource0, T>
+            where TPrev0 : unmanaged
+            where TPrevEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrev0>
+            where TAction0 : struct, ISelectIndex<TPrev0, T>
             => new DistinctEnumerable<
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>,
                 ConcatEnumerable<
                     NativeEnumerable<T>,
                     NativeEnumerable<T>.Enumerator,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>,
-                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T, TAction0>.Enumerator,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>,
+                    SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T, TAction0>.Enumerator,
                     T>.Enumerator,
                 T,
                 DefaultEqualityComparer<T>,
@@ -13695,8 +13695,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -13707,16 +13707,16 @@ namespace UniNativeLinq
             >
             Join<
                 TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector
-                , TPrevSource0, TAction0, T
+                , TPrev0, TAction0, T
             >
-            (this NativeArray<T> @this, in SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, Allocator allocator = Allocator.Temp)
+            (this NativeArray<T> @this, in SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TAction0 : struct, IRefAction<TPrevSource0, T0>
+            where TPrev0 : unmanaged
+            where TAction0 : struct, IRefAction<TPrev0, T0>
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
             where TKey0 : unmanaged
             where TKeySelector0 : struct, IRefFunc<T, TKey0>
             where TKeySelector1 : struct, IRefFunc<T0, TKey0>
@@ -13725,8 +13725,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -13743,8 +13743,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -13755,16 +13755,16 @@ namespace UniNativeLinq
             >
             Join<
                 TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector
-                , TPrevSource0, TAction0, T
+                , TPrev0, TAction0, T
             >
-            (this NativeArray<T> @this, in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, Allocator allocator = Allocator.Temp)
+            (this NativeArray<T> @this, in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TAction0 : struct, ISelectIndex<TPrevSource0, T0>
+            where TPrev0 : unmanaged
+            where TAction0 : struct, ISelectIndex<TPrev0, T0>
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
             where TKey0 : unmanaged
             where TKeySelector0 : struct, IRefFunc<T, TKey0>
             where TKeySelector1 : struct, IRefFunc<T0, TKey0>
@@ -13773,8 +13773,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -13791,8 +13791,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -13803,16 +13803,16 @@ namespace UniNativeLinq
             >
             Join<
                 TEnumerable0, TEnumerator0, T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector
-                , TEnumerable1, TEnumerator1, TPrevSource0, TAction0, T
+                , TEnumerable1, TEnumerator1, TPrev0, TAction0, T
             >
-            (this NativeArray<T> @this, in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, Allocator allocator = Allocator.Temp)
+            (this NativeArray<T> @this, in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
+            where TPrev0 : unmanaged
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TAction0 : struct, IRefAction<TPrevSource0, TEnumerable1>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TAction0 : struct, IRefAction<TPrev0, TEnumerable1>
             where TKey0 : unmanaged
             where TKeySelector0 : struct, IRefFunc<T, TKey0>
             where TKeySelector1 : struct, IRefFunc<T0, TKey0>
@@ -13823,8 +13823,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 TKeySelector0,
@@ -15098,8 +15098,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 DelegateFuncToStructOperatorFunc<T, TKey0>,
@@ -15110,23 +15110,23 @@ namespace UniNativeLinq
             >
             Join<
                 TEnumerable0, TEnumerator0, T0, TKey0, T1
-                , TPrevSource0, TAction0, T
+                , TPrev0, TAction0, T
             >
-            (this NativeArray<T> @this, in SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0> inner, in DelegateFuncToStructOperatorFunc<T, TKey0> outerKeySelector, in DelegateFuncToStructOperatorFunc<T0, TKey0> innerKeySelector, in Func<T, T0, T1> resultSelector, Allocator allocator = Allocator.Temp)
+            (this NativeArray<T> @this, in SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0> inner, in DelegateFuncToStructOperatorFunc<T, TKey0> outerKeySelector, in DelegateFuncToStructOperatorFunc<T0, TKey0> innerKeySelector, in Func<T, T0, T1> resultSelector, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TAction0 : struct, IRefAction<TPrevSource0, T0>
+            where TPrev0 : unmanaged
+            where TAction0 : struct, IRefAction<TPrev0, T0>
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
             where TKey0 : unmanaged
             => new JoinEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 DelegateFuncToStructOperatorFunc<T, TKey0>,
@@ -15143,8 +15143,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 DelegateFuncToStructOperatorFunc<T, TKey0>,
@@ -15155,23 +15155,23 @@ namespace UniNativeLinq
             >
             Join<
                 TEnumerable0, TEnumerator0, T0, TKey0, T1
-                , TPrevSource0, TAction0, T
+                , TPrev0, TAction0, T
             >
-            (this NativeArray<T> @this, in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0> inner, in DelegateFuncToStructOperatorFunc<T, TKey0> outerKeySelector, in DelegateFuncToStructOperatorFunc<T0, TKey0> innerKeySelector, in Func<T, T0, T1> resultSelector, Allocator allocator = Allocator.Temp)
+            (this NativeArray<T> @this, in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0> inner, in DelegateFuncToStructOperatorFunc<T, TKey0> outerKeySelector, in DelegateFuncToStructOperatorFunc<T0, TKey0> innerKeySelector, in Func<T, T0, T1> resultSelector, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
-            where TAction0 : struct, ISelectIndex<TPrevSource0, T0>
+            where TPrev0 : unmanaged
+            where TAction0 : struct, ISelectIndex<TPrev0, T0>
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
             where TKey0 : unmanaged
             => new JoinEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 DelegateFuncToStructOperatorFunc<T, TKey0>,
@@ -15188,8 +15188,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 DelegateFuncToStructOperatorFunc<T, TKey0>,
@@ -15200,16 +15200,16 @@ namespace UniNativeLinq
             >
             Join<
                 TEnumerable0, TEnumerator0, T0, TKey0, T1
-                , TEnumerable1, TEnumerator1, TPrevSource0, TAction0, T
+                , TEnumerable1, TEnumerator1, TPrev0, TAction0, T
             >
-            (this NativeArray<T> @this, in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0> inner, in DelegateFuncToStructOperatorFunc<T, TKey0> outerKeySelector, in DelegateFuncToStructOperatorFunc<T0, TKey0> innerKeySelector, in Func<T, T0, T1> resultSelector, Allocator allocator = Allocator.Temp)
+            (this NativeArray<T> @this, in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0> inner, in DelegateFuncToStructOperatorFunc<T, TKey0> outerKeySelector, in DelegateFuncToStructOperatorFunc<T0, TKey0> innerKeySelector, in Func<T, T0, T1> resultSelector, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TPrevSource0 : unmanaged
+            where TPrev0 : unmanaged
             where T0 : unmanaged
             where T1 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TAction0 : struct, IRefAction<TPrevSource0, TEnumerable1>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TAction0 : struct, IRefAction<TPrev0, TEnumerable1>
             where TKey0 : unmanaged
             where TEnumerator1 : struct, IRefEnumerator<T0>
             where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T0>
@@ -15217,8 +15217,8 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
                 T0,
                 TKey0,
                 DelegateFuncToStructOperatorFunc<T, TKey0>,
@@ -15652,7 +15652,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -15684,7 +15684,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -15718,7 +15718,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -15750,7 +15750,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -15784,7 +15784,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -15815,7 +15815,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -15856,7 +15856,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T2, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -15897,7 +15897,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T2, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -15930,7 +15930,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -15961,7 +15961,7 @@ namespace UniNativeLinq
                 T0,
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
-            >(NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            >(NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -15992,7 +15992,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16024,7 +16024,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16032,33 +16032,33 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            Zip<TEnumerable0, TEnumerator0, T0, TPrevSource0, TAction0, TResult1, T>
-            (this NativeArray<T> @this, in SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>
+            Zip<TEnumerable0, TEnumerator0, T0, TPrev0, TAction0, TResult1, T>
+            (this NativeArray<T> @this, in SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>
             second, Func<T, T0, TResult1> action, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
             where T0 : unmanaged
-            where TAction0 : struct, IRefAction<TPrevSource0, T0>
-            where TPrevSource0 : unmanaged
+            where TAction0 : struct, IRefAction<TPrev0, T0>
+            where TPrev0 : unmanaged
             where TResult1 : unmanaged
             => new ZipEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16066,33 +16066,33 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            Zip<TEnumerable0, TEnumerator0, T0, TPrevSource0, TAction0, TResult1, T>
-            (this NativeArray<T> @this, in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>
+            Zip<TEnumerable0, TEnumerator0, T0, TPrev0, TAction0, TResult1, T>
+            (this NativeArray<T> @this, in SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>
             second, Func<T, T0, TResult1> action, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
             where T0 : unmanaged
-            where TAction0 : struct, ISelectIndex<TPrevSource0, T0>
-            where TPrevSource0 : unmanaged
+            where TAction0 : struct, ISelectIndex<TPrev0, T0>
+            where TPrev0 : unmanaged
             where TResult1 : unmanaged
             => new ZipEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
                 T0,
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16100,21 +16100,21 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
                 T0,
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            Zip<TEnumerable0, TEnumerator0, T0, TPrevSource0, TEnumerable1, TEnumerator1, TAction0, TResult1, T>
-            (this NativeArray<T> @this, in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>
+            Zip<TEnumerable0, TEnumerator0, T0, TPrev0, TEnumerable1, TEnumerator1, TAction0, TResult1, T>
+            (this NativeArray<T> @this, in SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>
             second, Func<T, T0, TResult1> action, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
             where T : unmanaged
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
             where T0 : unmanaged
-            where TAction0 : struct, IRefAction<TPrevSource0, TEnumerable1>
-            where TPrevSource0 : unmanaged
+            where TAction0 : struct, IRefAction<TPrev0, TEnumerable1>
+            where TPrev0 : unmanaged
             where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T0>
             where TEnumerator1 : struct, IRefEnumerator<T0>
             where TResult1 : unmanaged
@@ -16122,13 +16122,13 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TEnumerable1, TEnumerator1, TAction0>.Enumerator,
                 T0,
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16163,7 +16163,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16195,7 +16195,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16227,7 +16227,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16260,7 +16260,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16293,7 +16293,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16325,7 +16325,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16357,7 +16357,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16390,7 +16390,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16423,7 +16423,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, T0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static
@@ -16460,7 +16460,7 @@ namespace UniNativeLinq
                 TResult1,
                 DelegateFuncToAction<T, TResult0, TResult1>
             >
-            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue, allocator);
+            (NativeEnumerable.AsRefEnumerable(@this), second, action, firstDefaultValue, secondDefaultValue);
         #endregion
 
         #region SelectMany
@@ -16952,24 +16952,24 @@ namespace UniNativeLinq
                 NativeEnumerable<T>.Enumerator,
                 T,
                 T0,
-                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
-                DelegateFuncToAction<T, SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>>
+                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>>
             >
-            SelectMany<T0, TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, TAction0, T>(this NativeArray<T> @this, Func<T, SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>> func)
+            SelectMany<T0, TPrevEnumerable0, TPrevEnumerator0, TPrev0, TAction0, T>(this NativeArray<T> @this, Func<T, SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>> func)
             where T : unmanaged where T0 : unmanaged
-            where TPrevSource0 : unmanaged
-            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrevSource0>
-            where TPrevEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TAction0 : struct, IRefAction<TPrevSource0, T0>
+            where TPrev0 : unmanaged
+            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrev0>
+            where TPrevEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TAction0 : struct, IRefAction<TPrev0, T0>
             => new SelectManyEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
                 T0,
-                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
-                DelegateFuncToAction<T, SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>>
+                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>,
+                SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>>
             >
             (@this.AsRefEnumerable(), func);
 
@@ -16980,24 +16980,24 @@ namespace UniNativeLinq
                 NativeEnumerable<T>.Enumerator,
                 T,
                 T0,
-                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
-                DelegateFuncToAction<T, SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>>
+                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>>
             >
-            SelectMany<T0, TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, TAction0, T>(this NativeArray<T> @this, Func<T, SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>> func)
+            SelectMany<T0, TPrevEnumerable0, TPrevEnumerator0, TPrev0, TAction0, T>(this NativeArray<T> @this, Func<T, SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>> func)
             where T : unmanaged where T0 : unmanaged
-            where TPrevSource0 : unmanaged
-            where TAction0 : struct, ISelectIndex<TPrevSource0, T0>
-            where TPrevEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrevSource0>
+            where TPrev0 : unmanaged
+            where TAction0 : struct, ISelectIndex<TPrev0, T0>
+            where TPrevEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TPrevEnumerable0 : struct, IRefEnumerable<TPrevEnumerator0, TPrev0>
             => new SelectManyEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
                 T0,
-                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>,
-                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>.Enumerator,
-                DelegateFuncToAction<T, SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrevSource0, T0, TAction0>>
+                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>,
+                SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectIndexEnumerable<TPrevEnumerable0, TPrevEnumerator0, TPrev0, T0, TAction0>>
             >
             (@this.AsRefEnumerable(), func);
 
@@ -17008,26 +17008,26 @@ namespace UniNativeLinq
                 NativeEnumerable<T>.Enumerator,
                 T,
                 T0,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>.Enumerator,
-                DelegateFuncToAction<T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>>
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, T0Enumerable, T0Enumerator, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, T0Enumerable, T0Enumerator, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, T0Enumerable, T0Enumerator, TAction0>>
             >
-            SelectMany<T0, TEnumerable0, TEnumerator0, TPrevSource0, T0Enumerable, T0Enumerator, TAction0, T>(this NativeArray<T> @this, Func<T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>> func)
+            SelectMany<T0, TEnumerable0, TEnumerator0, TPrev0, T0Enumerable, T0Enumerator, TAction0, T>(this NativeArray<T> @this, Func<T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, T0Enumerable, T0Enumerator, TAction0>> func)
             where T : unmanaged where T0 : unmanaged
-            where TPrevSource0 : unmanaged
-            where TEnumerator0 : struct, IRefEnumerator<TPrevSource0>
-            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrevSource0>
+            where TPrev0 : unmanaged
+            where TEnumerator0 : struct, IRefEnumerator<TPrev0>
+            where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TPrev0>
             where T0Enumerator : struct, IRefEnumerator<T0>
             where T0Enumerable : struct, IRefEnumerable<T0Enumerator, T0>
-            where TAction0 : struct, IRefAction<TPrevSource0, T0Enumerable>
+            where TAction0 : struct, IRefAction<TPrev0, T0Enumerable>
             => new SelectManyEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
                 T0,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>,
-                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>.Enumerator,
-                DelegateFuncToAction<T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrevSource0, T0, T0Enumerable, T0Enumerator, TAction0>>
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, T0Enumerable, T0Enumerator, TAction0>,
+                SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, T0Enumerable, T0Enumerator, TAction0>.Enumerator,
+                DelegateFuncToAction<T, SelectManyEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, T0Enumerable, T0Enumerator, TAction0>>
             >
             (@this.AsRefEnumerable(), func);
 

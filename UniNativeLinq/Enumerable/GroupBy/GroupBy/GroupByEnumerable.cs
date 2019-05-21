@@ -7,16 +7,16 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public unsafe readonly partial struct
-        GroupByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>
-        : IRefEnumerable<GroupByEnumerable<TEnumerable, TEnumerator, TSource, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>.Enumerator, Grouping<TKey, TElement>>
-        where TSource : unmanaged
+    public readonly unsafe struct
+        GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>
+        : IRefEnumerable<GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>.Enumerator, Grouping<TKey, TElement>>
+        where T : unmanaged
         where TKey : unmanaged
         where TElement : unmanaged
-        where TEnumerator : struct, IRefEnumerator<TSource>
-        where TEnumerable : struct, IRefEnumerable<TEnumerator, TSource>
-        where TKeySelector : struct, IRefFunc<TSource, TKey>
-        where TElementSelector : struct, IRefFunc<TSource, TElement>
+        where TEnumerator : struct, IRefEnumerator<T>
+        where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
+        where TKeySelector : struct, IRefFunc<T, TKey>
+        where TElementSelector : struct, IRefFunc<T, TElement>
         where TEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
     {
         private readonly TEnumerable enumerable;
@@ -85,7 +85,7 @@ namespace UniNativeLinq
                 }
             }
 
-            private void InsertTo(ref Grouping<TKey, TElement> group, ref long capa, ref TSource current, ref TElementSelector elementSelector)
+            private void InsertTo(ref Grouping<TKey, TElement> group, ref long capa, ref T current, ref TElementSelector elementSelector)
             {
                 if (capa == group.Length)
                 {

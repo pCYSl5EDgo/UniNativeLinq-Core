@@ -7,17 +7,17 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public unsafe partial struct
-        NativeEnumerable<TSource>
-        : IRefEnumerable<NativeEnumerable<TSource>.Enumerator, TSource>
-        where TSource : unmanaged
+    public unsafe struct
+        NativeEnumerable<T>
+        : IRefEnumerable<NativeEnumerable<T>.Enumerator, T>
+        where T : unmanaged
     {
-        public readonly TSource* Ptr;
+        public readonly T* Ptr;
         public readonly long Length;
 
-        public ref TSource this[long index] => ref Ptr[index];
+        public ref T this[long index] => ref Ptr[index];
 
-        public NativeEnumerable(NativeArray<TSource> array)
+        public NativeEnumerable(NativeArray<T> array)
         {
             if (array.IsCreated)
             {
@@ -31,7 +31,7 @@ namespace UniNativeLinq
             }
         }
 
-        public NativeEnumerable(NativeArray<TSource> array, long offset, long length)
+        public NativeEnumerable(NativeArray<T> array, long offset, long length)
         {
             if (array.IsCreated && length > 0)
             {
@@ -53,7 +53,7 @@ namespace UniNativeLinq
             }
         }
 
-        public NativeEnumerable(TSource* ptr, long length)
+        public NativeEnumerable(T* ptr, long length)
         {
             if (length <= 0 || ptr == null)
             {
@@ -74,17 +74,17 @@ namespace UniNativeLinq
         public readonly Enumerator GetEnumerator() => new Enumerator(this);
         public readonly ReverseEnumerator GetReverseEnumerator() => new ReverseEnumerator(this);
 
-        public struct Enumerator : IRefEnumerator<TSource>
+        public struct Enumerator : IRefEnumerator<T>
         {
-            internal readonly TSource* Ptr;
+            internal readonly T* Ptr;
             private readonly long length;
             private long index;
 
-            public ref TSource Current => ref Ptr[index];
-            TSource IEnumerator<TSource>.Current => Current;
+            public ref T Current => ref Ptr[index];
+            T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
 
-            internal Enumerator(in NativeEnumerable<TSource> parent)
+            internal Enumerator(in NativeEnumerable<T> parent)
             {
                 index = -1;
                 Ptr = parent.Ptr;
@@ -97,16 +97,16 @@ namespace UniNativeLinq
 
             public void Reset() => index = -1;
 
-            public ref TSource TryGetNext(out bool success)
+            public ref T TryGetNext(out bool success)
             {
                 success = ++index < length;
                 if (success)
                     return ref Ptr[index];
                 index = length;
-                return ref Unsafe.AsRef<TSource>(null);
+                return ref Unsafe.AsRef<T>(null);
             }
 
-            public bool TryMoveNext(out TSource value)
+            public bool TryMoveNext(out T value)
             {
                 if (++index < length)
                 {
@@ -122,17 +122,17 @@ namespace UniNativeLinq
             }
         }
 
-        public struct ReverseEnumerator : IRefEnumerator<TSource>
+        public struct ReverseEnumerator : IRefEnumerator<T>
         {
-            internal readonly TSource* Ptr;
+            internal readonly T* Ptr;
             private readonly long length;
             private long index;
 
-            public ref TSource Current => ref Ptr[index];
-            TSource IEnumerator<TSource>.Current => Current;
+            public ref T Current => ref Ptr[index];
+            T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
 
-            internal ReverseEnumerator(in NativeEnumerable<TSource> parent)
+            internal ReverseEnumerator(in NativeEnumerable<T> parent)
             {
                 index = parent.Length;
                 Ptr = parent.Ptr;
@@ -145,16 +145,16 @@ namespace UniNativeLinq
 
             public void Reset() => index = length;
 
-            public ref TSource TryGetNext(out bool success)
+            public ref T TryGetNext(out bool success)
             {
                 success = --index >= 0;
                 if (success)
                     return ref Ptr[index];
                 index = 0;
-                return ref Unsafe.AsRef<TSource>(null);
+                return ref Unsafe.AsRef<T>(null);
             }
 
-            public bool TryMoveNext(out TSource value)
+            public bool TryMoveNext(out T value)
             {
                 if(--index >= 0)
                 {
@@ -172,7 +172,7 @@ namespace UniNativeLinq
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<TSource> IEnumerable<TSource>.GetEnumerator() => GetEnumerator();
+        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -190,40 +190,40 @@ namespace UniNativeLinq
         public readonly long LongCount() => Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(TSource* dest) => UnsafeUtilityEx.MemCpy(dest, Ptr, Length);
+        public readonly void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, Ptr, Length);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly TSource[] ToArray()
+        public readonly T[] ToArray()
         {
             var count = LongCount();
-            if (count == 0) return Array.Empty<TSource>();
-            var answer = new TSource[count];
-            CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
+            if (count == 0) return Array.Empty<T>();
+            var answer = new T[count];
+            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
             return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<TSource> ToNativeEnumerable(Allocator allocator)
+        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
-            var ptr = UnsafeUtilityEx.Malloc<TSource>(count, allocator);
+            var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<TSource>(ptr, count);
+            return new NativeEnumerable<T>(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
+        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
-            var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
+            var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(answer.GetPointer());
             return answer;
         }
         #endregion
 
-        public readonly long FindIndexBinarySearch<TComparer>(ref TSource searchItem, in TComparer comparer)
-            where TComparer : struct, IRefFunc<TSource, TSource, int>
+        public readonly long FindIndexBinarySearch<TComparer>(ref T searchItem, in TComparer comparer)
+            where TComparer : struct, IRefFunc<T, T, int>
         {
             var minInclusive = 0L;
             var maxInclusive = Length - 1;
@@ -241,28 +241,28 @@ namespace UniNativeLinq
             return -1L;
         }
 
-        public readonly NativeEnumerable<TSource>
+        public readonly NativeEnumerable<T>
             Skip(long count)
-            => new NativeEnumerable<TSource>(Ptr + count, Length - count);
+            => new NativeEnumerable<T>(Ptr + count, Length - count);
 
-        public readonly NativeEnumerable<TSource>
+        public readonly NativeEnumerable<T>
             SkipLast(long count)
-            => new NativeEnumerable<TSource>(Ptr, Length - count);
+            => new NativeEnumerable<T>(Ptr, Length - count);
 
-        public readonly NativeEnumerable<TSource>
+        public readonly NativeEnumerable<T>
             Take(long count)
         {
             if (count >= Length) return this;
             if (count <= 0) return default;
-            return new NativeEnumerable<TSource>(Ptr, count);
+            return new NativeEnumerable<T>(Ptr, count);
         }
 
-        public readonly NativeEnumerable<TSource>
+        public readonly NativeEnumerable<T>
             TakeLast(long count)
         {
             if (count >= Length) return this;
             if (Ptr == null || count <= 0) return default;
-            return new NativeEnumerable<TSource>(Ptr + Length - count, count);
+            return new NativeEnumerable<T>(Ptr + Length - count, count);
         }
     }
 }

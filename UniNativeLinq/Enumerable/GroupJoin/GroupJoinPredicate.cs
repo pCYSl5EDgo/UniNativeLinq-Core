@@ -3,9 +3,9 @@
 namespace UniNativeLinq
 {
     public struct
-        GroupJoinPredicate<TSource, TKey, TEqualityComparer>
-        : IWhereIndex<TSource>
-        where TSource : unmanaged
+        GroupJoinPredicate<T, TKey, TEqualityComparer>
+        : IWhereIndex<T>
+        where T : unmanaged
         where TKey : unmanaged
         where TEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
     {
@@ -24,28 +24,28 @@ namespace UniNativeLinq
         }
 
         public static
-            GroupJoinPredicate<TSource, TKey, TEqualityComparer>
+            GroupJoinPredicate<T, TKey, TEqualityComparer>
             Create<TEnumerable, TEnumerator, TKeySelector>(in TEnumerable enumerable, in TKeySelector selector, in TEqualityComparer comparer, Allocator allocator)
-            where TEnumerator : struct, IRefEnumerator<TSource>
-            where TEnumerable : struct, IRefEnumerable<TEnumerator, TSource>
-            where TKeySelector : struct, IRefFunc<TSource, TKey>
-            => new GroupJoinPredicate<TSource, TKey, TEqualityComparer>(
-                new SelectEnumerable<TEnumerable, TEnumerator, TSource, TKey, FuncToAction<TKeySelector, TSource, TKey>>(enumerable, selector, allocator).ToNativeEnumerable(allocator),
+            where TEnumerator : struct, IRefEnumerator<T>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
+            where TKeySelector : struct, IRefFunc<T, TKey>
+            => new GroupJoinPredicate<T, TKey, TEqualityComparer>(
+                new SelectEnumerable<TEnumerable, TEnumerator, T, TKey, FuncToAction<TKeySelector, T, TKey>>(enumerable, selector).ToNativeEnumerable(allocator),
                 comparer,
                 allocator
             );
 
         public static
-            GroupJoinPredicate<TSource, TKey, TEqualityComparer>
-            Create<TKeySelector>(in NativeEnumerable<TSource> enumerable, in TKeySelector selector, in TEqualityComparer comparer, Allocator allocator)
-            where TKeySelector : struct, IRefFunc<TSource, TKey>
-            => new GroupJoinPredicate<TSource, TKey, TEqualityComparer>(
-                new SelectEnumerable<NativeEnumerable<TSource>, NativeEnumerable<TSource>.Enumerator, TSource, TKey, FuncToAction<TKeySelector, TSource, TKey>>(enumerable, selector, allocator).ToNativeEnumerable(allocator),
+            GroupJoinPredicate<T, TKey, TEqualityComparer>
+            Create<TKeySelector>(in NativeEnumerable<T> enumerable, in TKeySelector selector, in TEqualityComparer comparer, Allocator allocator)
+            where TKeySelector : struct, IRefFunc<T, TKey>
+            => new GroupJoinPredicate<T, TKey, TEqualityComparer>(
+                new SelectEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TKey, FuncToAction<TKeySelector, T, TKey>>(enumerable, selector).ToNativeEnumerable(allocator),
                 comparer,
                 allocator
             );
 
-        public bool Calc(ref TSource value, long index) => comparer.Calc(ref Key, ref keys[index]);
+        public bool Calc(ref T value, long index) => comparer.Calc(ref Key, ref keys[index]);
 
         public void Dispose()
         {

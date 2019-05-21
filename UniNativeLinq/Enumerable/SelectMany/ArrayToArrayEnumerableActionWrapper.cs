@@ -3,21 +3,21 @@
 namespace UniNativeLinq
 {
     public readonly struct
-        ArrayToArrayEnumerableActionWrapper<TSource, TResult>
-        : IRefAction<TSource, ArrayEnumerable<TResult>>
-        where TSource : unmanaged
+        ArrayToArrayEnumerableActionWrapper<T, TResult>
+        : IRefAction<T, ArrayEnumerable<TResult>>
+        where T : unmanaged
         where TResult : unmanaged
     {
-        private readonly Func<TSource, TResult[]> func;
-        public ArrayToArrayEnumerableActionWrapper(Func<TSource, TResult[]> func)
+        private readonly Func<T, TResult[]> func;
+        public ArrayToArrayEnumerableActionWrapper(Func<T, TResult[]> func)
             => this.func = func;
 
-        public void Execute(ref TSource arg0, ref ArrayEnumerable<TResult> arg1) 
+        public void Execute(ref T arg0, ref ArrayEnumerable<TResult> arg1) 
             => arg1 = func(arg0).AsRefEnumerable();
 
         public static implicit operator
-            ArrayToArrayEnumerableActionWrapper<TSource, TResult>
-            (Func<TSource, TResult[]> func)
-            => new ArrayToArrayEnumerableActionWrapper<TSource, TResult>(func);
+            ArrayToArrayEnumerableActionWrapper<T, TResult>
+            (Func<T, TResult[]> func)
+            => new ArrayToArrayEnumerableActionWrapper<T, TResult>(func);
     }
 }

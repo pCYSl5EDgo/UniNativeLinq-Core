@@ -8,18 +8,18 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public unsafe readonly partial struct
-        OrderByEnumerable<TEnumerable, TEnumerator, TSource, TComparer>
+    public readonly unsafe struct
+        OrderByEnumerable<TEnumerable, TEnumerator, T, TComparer>
         : IRefOrderedEnumerable<
-            OrderByEnumerable<TEnumerable, TEnumerator, TSource, TComparer>.Enumerator,
-            TSource,
+            OrderByEnumerable<TEnumerable, TEnumerator, T, TComparer>.Enumerator,
+            T,
             TEnumerable,
             TEnumerator,
             TComparer>
-        where TSource : unmanaged
-        where TEnumerator : struct, IRefEnumerator<TSource>
-        where TEnumerable : struct, IRefEnumerable<TEnumerator, TSource>
-        where TComparer : struct, IRefFunc<TSource, TSource, int>
+        where T : unmanaged
+        where TEnumerator : struct, IRefEnumerator<T>
+        where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
+        where TComparer : struct, IRefFunc<T, T, int>
     {
         private readonly TEnumerable enumerable;
         private readonly TComparer orderComparer;
@@ -32,9 +32,9 @@ namespace UniNativeLinq
             alloc = allocator;
         }
 
-        public struct Enumerator : IRefEnumerator<TSource>
+        public struct Enumerator : IRefEnumerator<T>
         {
-            internal TSource* Ptr;
+            internal T* Ptr;
             private long capacity;
             internal long Count;
             private long index;
@@ -51,7 +51,7 @@ namespace UniNativeLinq
                     this = default;
                     return;
                 }
-                Ptr = UnsafeUtilityEx.Malloc<TSource>(capacity, allocator);
+                Ptr = UnsafeUtilityEx.Malloc<T>(capacity, allocator);
                 var enumerator = enumerable.GetEnumerator();
                 if (!enumerator.MoveNext())
                 {
@@ -91,7 +91,7 @@ namespace UniNativeLinq
                 }
             }
 
-            private void Insert(ref TSource current, long insertIndex)
+            private void Insert(ref T current, long insertIndex)
             {
                 if (Count == capacity)
                 {
@@ -106,10 +106,10 @@ namespace UniNativeLinq
                 ++Count;
             }
 
-            private void ReAllocAndInsert(ref TSource current, long insertIndex)
+            private void ReAllocAndInsert(ref T current, long insertIndex)
             {
                 capacity += capacity >> 1;
-                var tmp = UnsafeUtilityEx.Malloc<TSource>(capacity, allocator);
+                var tmp = UnsafeUtilityEx.Malloc<T>(capacity, allocator);
                 if (insertIndex == 0)
                 {
                     UnsafeUtilityEx.MemCpy(tmp + 1, Ptr, Count);
@@ -139,9 +139,9 @@ namespace UniNativeLinq
 
             public void Reset() => index = -1;
 
-            public readonly ref TSource Current => ref Ptr[index];
+            public readonly ref T Current => ref Ptr[index];
 
-            readonly TSource IEnumerator<TSource>.Current => Current;
+            readonly T IEnumerator<T>.Current => Current;
 
             readonly object IEnumerator.Current => Current;
 
@@ -152,16 +152,16 @@ namespace UniNativeLinq
                 this = default;
             }
 
-            public ref TSource TryGetNext(out bool success)
+            public ref T TryGetNext(out bool success)
             {
                 success = ++index < Count;
                 if (success)
                     return ref Ptr[index];
                 index = Count;
-                return ref Unsafe.AsRef<TSource>(null);
+                return ref Unsafe.AsRef<T>(null);
             }
 
-            public bool TryMoveNext(out TSource value)
+            public bool TryMoveNext(out T value)
             {
                 if(++index < Count)
                 {
@@ -178,56 +178,56 @@ namespace UniNativeLinq
         }
 
         public readonly
-            OrderByEnumerable<TEnumerable, TEnumerator, TSource, CompoundOrderBy<TSource, TComparer, OrderByKeySelector<TSource, TKey0, TKeySelector0, TComparer0>>>
+            OrderByEnumerable<TEnumerable, TEnumerator, T, CompoundOrderBy<T, TComparer, OrderByKeySelector<T, TKey0, TKeySelector0, TComparer0>>>
             CreateRefOrderedEnumerable<TKey0, TKeySelector0, TComparer0>(TKeySelector0 keySelector, TComparer0 comparer, bool descending)
             where TKey0 : unmanaged
-            where TKeySelector0 : struct, IRefAction<TSource, TKey0>
+            where TKeySelector0 : struct, IRefAction<T, TKey0>
             where TComparer0 : struct, IRefFunc<TKey0, TKey0, int>
             => new OrderByEnumerable<
                     TEnumerable,
                     TEnumerator,
-                    TSource,
+                    T,
                     CompoundOrderBy<
-                        TSource,
+                        T,
                         TComparer,
                         OrderByKeySelector<
-                            TSource,
+                            T,
                             TKey0,
                             TKeySelector0,
                             TComparer0
                         >
                     >
                 >(enumerable,
-                new CompoundOrderBy<TSource, TComparer, OrderByKeySelector<TSource, TKey0, TKeySelector0, TComparer0>>(
+                new CompoundOrderBy<T, TComparer, OrderByKeySelector<T, TKey0, TKeySelector0, TComparer0>>(
                     orderComparer,
-                    new OrderByKeySelector<TSource, TKey0, TKeySelector0, TComparer0>(
+                    new OrderByKeySelector<T, TKey0, TKeySelector0, TComparer0>(
                         keySelector, comparer, descending)
                     ),
                     alloc
                 );
 
-        public readonly IOrderedEnumerable<TSource> CreateOrderedEnumerable<TKey0>(Func<TSource, TKey0> keySelector, IComparer<TKey0> comparer, bool @descending)
+        public readonly IOrderedEnumerable<T> CreateOrderedEnumerable<TKey0>(Func<T, TKey0> keySelector, IComparer<TKey0> comparer, bool @descending)
             => new OrderByEnumerable<
                     TEnumerable,
                     TEnumerator,
-                    TSource,
+                    T,
                     CompoundOrderBy<
-                        TSource,
+                        T,
                         TComparer,
-                        OrderByDelegateKeySelector<TSource, TKey0>
+                        OrderByDelegateKeySelector<T, TKey0>
                     >
                 >(
                 enumerable,
-                new CompoundOrderBy<TSource, TComparer, OrderByDelegateKeySelector<TSource, TKey0>>(
+                new CompoundOrderBy<T, TComparer, OrderByDelegateKeySelector<T, TKey0>>(
                     orderComparer,
-                new OrderByDelegateKeySelector<TSource, TKey0>(keySelector, comparer, descending)),
+                new OrderByDelegateKeySelector<T, TKey0>(keySelector, comparer, descending)),
                 alloc);
 
         public readonly Enumerator GetEnumerator() => new Enumerator(enumerable, orderComparer, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<TSource> IEnumerable<TSource>.GetEnumerator() => GetEnumerator();
+        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -245,7 +245,7 @@ namespace UniNativeLinq
         public readonly long LongCount() => enumerable.LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(TSource* dest)
+        public readonly void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -254,30 +254,30 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly TSource[] ToArray()
+        public readonly T[] ToArray()
         {
             var count = LongCount();
-            if (count == 0) return Array.Empty<TSource>();
-            var answer = new TSource[count];
-            CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
+            if (count == 0) return Array.Empty<T>();
+            var answer = new T[count];
+            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
             return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<TSource> ToNativeEnumerable(Allocator allocator)
+        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
-            var ptr = UnsafeUtilityEx.Malloc<TSource>(count, allocator);
+            var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<TSource>(ptr, count);
+            return new NativeEnumerable<T>(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
+        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
-            var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
+            var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(UnsafeUtilityEx.GetPointer(answer));
             return answer;
         }

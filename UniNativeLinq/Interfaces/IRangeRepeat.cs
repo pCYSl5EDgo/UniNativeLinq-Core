@@ -1,10 +1,10 @@
 ﻿namespace UniNativeLinq
 {
-    public interface IRangeRepeat<TSource>
+    public interface IRangeRepeat<T>
     {
-        void Execute(ref TSource value);
-        void Back(ref TSource value);
-        void Execute(ref TSource value, long count);
-        void Back(ref TSource value, long count);
+        void Execute(ref T value);
+        void Back(ref T value);
+        void Execute(ref T value, long count);
+        void Back(ref T value, long count);
     }
 }

@@ -3,28 +3,28 @@
 namespace UniNativeLinq
 {
     public readonly unsafe struct
-        ExceptOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, TSource, TComparer>
-        : ISetOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, TSource>
-        where TSource : unmanaged
-        where TComparer : struct, IRefFunc<TSource, TSource, int>
-        where TEnumerator0 : struct, IRefEnumerator<TSource>
-        where TEnumerator1 : struct, IRefEnumerator<TSource>
-        where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, TSource>
-        where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, TSource>
+        ExceptOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T, TComparer>
+        : ISetOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T>
+        where T : unmanaged
+        where TComparer : struct, IRefFunc<T, T, int>
+        where TEnumerator0 : struct, IRefEnumerator<T>
+        where TEnumerator1 : struct, IRefEnumerator<T>
+        where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T>
+        where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T>
     {
         private readonly TComparer comparer;
 
         public ExceptOperation(in TComparer comparer) => this.comparer = comparer;
 
-        public NativeEnumerable<TSource> Calc(ref TEnumerable0 first, ref TEnumerable1 second, Allocator allocator)
+        public NativeEnumerable<T> Calc(ref TEnumerable0 first, ref TEnumerable1 second, Allocator allocator)
         {
-            var targets = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, TSource, TComparer>(first, comparer, allocator).ToNativeEnumerable();
+            var targets = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, comparer, allocator).ToNativeEnumerable();
             if (targets.Length == 0)
             {
                 targets.Dispose(allocator);
                 return default;
             }
-            var removes = new SortedDistinctEnumerable<TEnumerable1, TEnumerator1, TSource, TComparer>(second, comparer, Allocator.Temp).ToNativeEnumerable();
+            var removes = new SortedDistinctEnumerable<TEnumerable1, TEnumerator1, T, TComparer>(second, comparer, Allocator.Temp).ToNativeEnumerable();
             if (removes.Length == 0)
             {
                 removes.Dispose(Allocator.Temp);
@@ -37,13 +37,13 @@ namespace UniNativeLinq
                 if (index != --count)
                     targets[index] = targets[count];
             }
-            return new NativeEnumerable<TSource>(targets.Ptr, count);
+            return new NativeEnumerable<T>(targets.Ptr, count);
         }
 
         public static implicit operator
-            ExceptOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, TSource, TComparer>
+            ExceptOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T, TComparer>
             (in TComparer comparer)
-            => new ExceptOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, TSource, TComparer>
+            => new ExceptOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T, TComparer>
             (comparer);
     }
 }

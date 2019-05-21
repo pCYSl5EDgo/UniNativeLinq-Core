@@ -3,13 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public unsafe partial struct
-        GroupJoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TSource, TSourceSelector, TKeyEqualityComparer>
-        : IRefEnumerable<GroupJoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TSource, TSourceSelector, TKeyEqualityComparer>.Enumerator, TSource>
+    public unsafe struct
+        GroupJoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, T, TSelector, TKeyEqualityComparer>
+        : IRefEnumerable<GroupJoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, T, TSelector, TKeyEqualityComparer>.Enumerator, T>
         where TOuterSource : unmanaged
         where TInnerSource : unmanaged
         where TOuterEnumerator : struct, IRefEnumerator<TOuterSource>
@@ -19,8 +18,8 @@ namespace UniNativeLinq
         where TKey : unmanaged
         where TOuterKeySelector : struct, IRefFunc<TOuterSource, TKey>
         where TInnerKeySelector : struct, IRefFunc<TInnerSource, TKey>
-        where TSource : unmanaged
-        where TSourceSelector : struct,
+        where T : unmanaged
+        where TSelector : struct,
         IRefFunc<TOuterSource,
             WhereIndexEnumerable<
                 NativeEnumerable<TInnerSource>,
@@ -28,18 +27,18 @@ namespace UniNativeLinq
                 TInnerSource,
                 GroupJoinPredicate<TInnerSource, TKey, TKeyEqualityComparer>
                 >,
-            TSource>
+            T>
         where TKeyEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
     {
         private TOuterEnumerable outerEnumerable;
         private TInnerEnumerable innerEnumerable;
         private TOuterKeySelector outerKeySelector;
         private TInnerKeySelector InnerKeySelector;
-        private readonly TSourceSelector sourceSelector;
+        private readonly TSelector sourceSelector;
         private readonly TKeyEqualityComparer keyEqualityComparer;
         private readonly Allocator alloc;
 
-        public GroupJoinEnumerable(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TSourceSelector sourceSelector, in TKeyEqualityComparer keyEqualityComparer, Allocator allocator)
+        public GroupJoinEnumerable(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TSelector sourceSelector, in TKeyEqualityComparer keyEqualityComparer, Allocator allocator)
         {
             this.outerEnumerable = outerEnumerable;
             this.innerEnumerable = innerEnumerable;
@@ -50,7 +49,8 @@ namespace UniNativeLinq
             alloc = allocator;
         }
 
-        public struct Enumerator : IRefEnumerator<TSource>
+        [LocalRefReturn]
+        public struct Enumerator : IRefEnumerator<T>
         {
             private WhereIndexEnumerable<
                 NativeEnumerable<TInnerSource>,
@@ -60,24 +60,24 @@ namespace UniNativeLinq
                 > enumerable;
             private TOuterEnumerator enumerator;
             private TOuterKeySelector keySelector;
-            private TSourceSelector selector;
-            private TSource* element;
+            private TSelector selector;
+            private T element;
             private Allocator allocator;
 
-            internal Enumerator(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TSourceSelector sourceSelector, in TKeyEqualityComparer keyEqualityComparer, Allocator allocator)
+            internal Enumerator(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TSelector sourceSelector, in TKeyEqualityComparer keyEqualityComparer, Allocator allocator)
             {
                 enumerator = outerEnumerable.GetEnumerator();
                 var inners = innerEnumerable.ToNativeEnumerable(allocator);
                 var predicate = GroupJoinPredicate<TInnerSource, TKey, TKeyEqualityComparer>.Create(inners, innerKeySelector, keyEqualityComparer, allocator);
                 enumerable = new WhereIndexEnumerable<NativeEnumerable<TInnerSource>, NativeEnumerable<TInnerSource>.Enumerator, TInnerSource, GroupJoinPredicate<TInnerSource, TKey, TKeyEqualityComparer>>(inners, predicate);
                 selector = sourceSelector;
-                element = UnsafeUtilityEx.Malloc<TSource>(1, allocator);
+                element = default;
                 keySelector = outerKeySelector;
                 this.allocator = allocator;
             }
 
-            public ref TSource Current => ref *element;
-            TSource IEnumerator<TSource>.Current => Current;
+            public ref T Current => throw new NotImplementedException();
+            T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
 
             public void Dispose()
@@ -85,8 +85,6 @@ namespace UniNativeLinq
                 enumerator.Dispose();
                 enumerable.Enumerable.Dispose(allocator);
                 enumerable.Predication.Dispose();
-                if (element != null)
-                    UnsafeUtility.Free(element, allocator);
                 this = default;
             }
 
@@ -95,22 +93,22 @@ namespace UniNativeLinq
                 if (!enumerator.MoveNext()) return false;
                 ref var c = ref enumerator.Current;
                 enumerable.Predication.Key = keySelector.Calc(ref c);
-                *element = selector.Calc(ref c, ref enumerable);
+                element = selector.Calc(ref c, ref enumerable);
                 return true;
             }
 
             public void Reset() => throw new InvalidOperationException();
 
-            public ref TSource TryGetNext(out bool success)
+            public ref T TryGetNext(out bool success)
             {
                 ref var value = ref enumerator.TryGetNext(out success);
-                if (!success) return ref *element;
+                if (!success) throw new NotImplementedException();
                 enumerable.Predication.Key = keySelector.Calc(ref value);
-                *element = selector.Calc(ref value, ref enumerable);
-                return ref *element;
+                element = selector.Calc(ref value, ref enumerable);
+                throw new NotImplementedException();
             }
 
-            public bool TryMoveNext(out TSource value)
+            public bool TryMoveNext(out T value)
             {
                 if (!enumerator.TryMoveNext(out var outerValue))
                 {
@@ -118,7 +116,7 @@ namespace UniNativeLinq
                     return false;
                 }
                 enumerable.Predication.Key = keySelector.Calc(ref outerValue);
-                value = *element = selector.Calc(ref outerValue, ref enumerable);
+                value = element = selector.Calc(ref outerValue, ref enumerable);
                 return true;
             }
         }
@@ -127,7 +125,7 @@ namespace UniNativeLinq
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<TSource> IEnumerable<TSource>.GetEnumerator() => GetEnumerator();
+        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -164,7 +162,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(TSource* dest)
+        public readonly void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -173,30 +171,30 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly TSource[] ToArray()
+        public readonly T[] ToArray()
         {
             var count = LongCount();
-            if (count == 0) return Array.Empty<TSource>();
-            var answer = new TSource[count];
-            CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
+            if (count == 0) return Array.Empty<T>();
+            var answer = new T[count];
+            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
             return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<TSource> ToNativeEnumerable(Allocator allocator)
+        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
-            var ptr = UnsafeUtilityEx.Malloc<TSource>(count, allocator);
+            var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<TSource>(ptr, count);
+            return new NativeEnumerable<T>(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
+        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
-            var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
+            var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(UnsafeUtilityEx.GetPointer(answer));
             return answer;
         }

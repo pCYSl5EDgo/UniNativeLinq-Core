@@ -3,33 +3,33 @@
 namespace UniNativeLinq
 {
     public struct
-        DelegateFuncToWhereIndexStructOperator<TSource>
-        : IWhereIndex<TSource>
-        where TSource : unmanaged
+        DelegateFuncToWhereIndexStructOperator<T>
+        : IWhereIndex<T>
+        where T : unmanaged
     {
-        public Func<TSource, long, bool> Func;
+        public Func<T, long, bool> Func;
 
-        public DelegateFuncToWhereIndexStructOperator(Func<TSource, long, bool> Func) => this.Func = Func;
+        public DelegateFuncToWhereIndexStructOperator(Func<T, long, bool> Func) => this.Func = Func;
 
-        public bool Calc(ref TSource value, long index) => Func(value, index);
+        public bool Calc(ref T value, long index) => Func(value, index);
 
-        public static implicit operator DelegateFuncToWhereIndexStructOperator<TSource>(Func<TSource, long, bool> Func)
-            => new DelegateFuncToWhereIndexStructOperator<TSource>(Func);
+        public static implicit operator DelegateFuncToWhereIndexStructOperator<T>(Func<T, long, bool> Func)
+            => new DelegateFuncToWhereIndexStructOperator<T>(Func);
     }
 
     public struct
-        DelegateFuncToSelectIndexStructOperator<TSource, TResult>
-        : ISelectIndex<TSource, TResult>
-        where TSource : unmanaged
+        DelegateFuncToSelectIndexStructOperator<T, TResult>
+        : ISelectIndex<T, TResult>
+        where T : unmanaged
         where TResult : unmanaged
     {
-        public Func<TSource, long, TResult> Func;
+        public Func<T, long, TResult> Func;
 
-        public DelegateFuncToSelectIndexStructOperator(Func<TSource, long, TResult> Func) => this.Func = Func;
+        public DelegateFuncToSelectIndexStructOperator(Func<T, long, TResult> Func) => this.Func = Func;
 
-        public void Execute(ref TSource source, long index, ref TResult result) => result = Func(source, index);
+        public void Execute(ref T source, long index, ref TResult result) => result = Func(source, index);
 
-        public static implicit operator DelegateFuncToSelectIndexStructOperator<TSource, TResult>(Func<TSource, long, TResult> Func)
-            => new DelegateFuncToSelectIndexStructOperator<TSource, TResult>(Func);
+        public static implicit operator DelegateFuncToSelectIndexStructOperator<T, TResult>(Func<T, long, TResult> Func)
+            => new DelegateFuncToSelectIndexStructOperator<T, TResult>(Func);
     }
 }

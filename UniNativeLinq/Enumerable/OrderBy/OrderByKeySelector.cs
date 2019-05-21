@@ -1,9 +1,9 @@
 ﻿namespace UniNativeLinq
 {
     public readonly struct 
-        OrderByKeySelector<TSource, TKey, TKeySelector, TComparer>
-        : IRefFunc<TSource, TSource, int>
-        where TKeySelector : struct, IRefAction<TSource, TKey>
+        OrderByKeySelector<T, TKey, TKeySelector, TComparer>
+        : IRefFunc<T, T, int>
+        where TKeySelector : struct, IRefAction<T, TKey>
         where TComparer : struct, IRefFunc<TKey, TKey, int>
     {
         private readonly TKeySelector keySelector;
@@ -17,7 +17,7 @@
             this.descending = descending;
         }
 
-        public int Calc(ref TSource arg0, ref TSource arg1)
+        public int Calc(ref T arg0, ref T arg1)
         {
             TKey key0 = default, key1 = default;
             if (descending)

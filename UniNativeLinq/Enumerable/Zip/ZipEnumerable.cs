@@ -3,63 +3,59 @@ using System.Runtime.CompilerServices;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public unsafe readonly partial struct
-        ZipEnumerable<TFirstEnumerable, TFirstEnumerator, TFirstSource, TSecondEnumerable, TSecondEnumerator, TSecondSource, TSource, TAction>
-        : IRefEnumerable<ZipEnumerable<TFirstEnumerable, TFirstEnumerator, TFirstSource, TSecondEnumerable, TSecondEnumerator, TSecondSource, TSource, TAction>.Enumerator, TSource>
-        where TFirstSource : unmanaged
-        where TSecondSource : unmanaged
-        where TSource : unmanaged
-        where TFirstEnumerator : struct, IRefEnumerator<TFirstSource>
-        where TFirstEnumerable : struct, IRefEnumerable<TFirstEnumerator, TFirstSource>
-        where TSecondEnumerator : struct, IRefEnumerator<TSecondSource>
-        where TSecondEnumerable : struct, IRefEnumerable<TSecondEnumerator, TSecondSource>
-        where TAction : struct, IRefAction<TFirstSource, TSecondSource, TSource>
+    public readonly unsafe struct
+        ZipEnumerable<TFirstEnumerable, TFirstEnumerator, TFirst, TSecondEnumerable, TSecondEnumerator, TSecond, T, TAction>
+        : IRefEnumerable<ZipEnumerable<TFirstEnumerable, TFirstEnumerator, TFirst, TSecondEnumerable, TSecondEnumerator, TSecond, T, TAction>.Enumerator, T>
+        where TFirst : unmanaged
+        where TSecond : unmanaged
+        where T : unmanaged
+        where TFirstEnumerator : struct, IRefEnumerator<TFirst>
+        where TFirstEnumerable : struct, IRefEnumerable<TFirstEnumerator, TFirst>
+        where TSecondEnumerator : struct, IRefEnumerator<TSecond>
+        where TSecondEnumerable : struct, IRefEnumerable<TSecondEnumerator, TSecond>
+        where TAction : struct, IRefAction<TFirst, TSecond, T>
     {
         private readonly TFirstEnumerable firstCollection;
         private readonly TSecondEnumerable secondCollection;
-        private readonly Allocator alloc;
         private readonly TAction acts;
-        private readonly TFirstSource firstDefault;
-        private readonly TSecondSource secondDefault;
+        private readonly TFirst firstDefault;
+        private readonly TSecond secondDefault;
 
-        public ZipEnumerable(in TFirstEnumerable firstCollection, in TSecondEnumerable secondCollection, TAction acts, in TFirstSource firstDefault, in TSecondSource secondDefault, Allocator alloc)
+        public ZipEnumerable(in TFirstEnumerable firstCollection, in TSecondEnumerable secondCollection, in TAction acts, in TFirst firstDefault, in TSecond secondDefault)
         {
             this.firstCollection = firstCollection;
             this.secondCollection = secondCollection;
             this.acts = acts;
             this.firstDefault = firstDefault;
             this.secondDefault = secondDefault;
-            this.alloc = alloc;
         }
 
-        public struct Enumerator : IRefEnumerator<TSource>
+        [LocalRefReturn]
+        public struct Enumerator : IRefEnumerator<T>
         {
             private TFirstEnumerator firstEnumerator;
             private TSecondEnumerator secondEnumerator;
-            private readonly TSource* element;
-            private readonly Allocator allocator;
+            private T element;
             private TAction action;
-            private TFirstSource firstDefaultValue;
-            private TSecondSource secondDefaultValue;
+            private TFirst firstDefaultValue;
+            private TSecond secondDefaultValue;
             private bool isFirstAlive, isSecondAlive;
 
-            internal Enumerator(in TFirstEnumerator firstEnumerator, in TSecondEnumerator secondEnumerator, TAction action, TFirstSource firstDefaultValue, TSecondSource secondDefaultValue, Allocator allocator)
+            internal Enumerator(in TFirstEnumerator firstEnumerator, in TSecondEnumerator secondEnumerator, in TAction action, TFirst firstDefaultValue, TSecond secondDefaultValue)
             {
                 this.firstEnumerator = firstEnumerator;
                 this.secondEnumerator = secondEnumerator;
-                element = UnsafeUtilityEx.Malloc<TSource>(1, allocator);
-                this.allocator = allocator;
+                element = default;
                 this.action = action;
                 this.firstDefaultValue = firstDefaultValue;
                 this.secondDefaultValue = secondDefaultValue;
                 isFirstAlive = isSecondAlive = true;
             }
 
-            public ref TSource TryGetNext(out bool success)
+            public ref T TryGetNext(out bool success)
             {
                 if (isFirstAlive && !firstEnumerator.MoveNext())
                     isFirstAlive = false;
@@ -69,15 +65,15 @@ namespace UniNativeLinq
                 {
                     success = true;
                     if (isSecondAlive)
-                        action.Execute(ref firstEnumerator.Current, ref secondEnumerator.Current, ref *element);
+                        action.Execute(ref firstEnumerator.Current, ref secondEnumerator.Current, ref element);
                     else
-                        action.Execute(ref firstEnumerator.Current, ref secondDefaultValue, ref *element);
+                        action.Execute(ref firstEnumerator.Current, ref secondDefaultValue, ref element);
                 }
                 else
                 {
                     if (isSecondAlive)
                     {
-                        action.Execute(ref firstDefaultValue, ref secondEnumerator.Current, ref *element);
+                        action.Execute(ref firstDefaultValue, ref secondEnumerator.Current, ref element);
                         success = true;
                     }
                     else
@@ -85,10 +81,10 @@ namespace UniNativeLinq
                         success = false;
                     }
                 }
-                return ref *element;
+                throw new NotImplementedException();
             }
 
-            public bool TryMoveNext(out TSource value)
+            public bool TryMoveNext(out T value)
             {
                 if (isFirstAlive && !firstEnumerator.MoveNext())
                     isFirstAlive = false;
@@ -97,23 +93,23 @@ namespace UniNativeLinq
                 if (isFirstAlive)
                 {
                     if (isSecondAlive)
-                        action.Execute(ref firstEnumerator.Current, ref secondEnumerator.Current, ref *element);
+                        action.Execute(ref firstEnumerator.Current, ref secondEnumerator.Current, ref element);
                     else
-                        action.Execute(ref firstEnumerator.Current, ref secondDefaultValue, ref *element);
-                    value = *element;
+                        action.Execute(ref firstEnumerator.Current, ref secondDefaultValue, ref element);
+                    value = element;
                     return true;
                 }
                 else
                 {
                     if (isSecondAlive)
                     {
-                        action.Execute(ref firstDefaultValue, ref secondEnumerator.Current, ref *element);
-                        value = *element;
+                        action.Execute(ref firstDefaultValue, ref secondEnumerator.Current, ref element);
+                        value = element;
                         return true;
                     }
                     else
                     {
-                        value = *element;
+                        value = element;
                         return false;
                     }
                 }
@@ -128,14 +124,14 @@ namespace UniNativeLinq
                 if (isFirstAlive)
                 {
                     if (isSecondAlive)
-                        action.Execute(ref firstEnumerator.Current, ref secondEnumerator.Current, ref *element);
+                        action.Execute(ref firstEnumerator.Current, ref secondEnumerator.Current, ref element);
                     else
-                        action.Execute(ref firstEnumerator.Current, ref secondDefaultValue, ref *element);
+                        action.Execute(ref firstEnumerator.Current, ref secondDefaultValue, ref element);
                 }
                 else
                 {
                     if (isSecondAlive)
-                        action.Execute(ref firstDefaultValue, ref secondEnumerator.Current, ref *element);
+                        action.Execute(ref firstDefaultValue, ref secondEnumerator.Current, ref element);
                     else
                         return false;
                 }
@@ -143,23 +139,18 @@ namespace UniNativeLinq
             }
 
             public void Reset() => throw new InvalidOperationException();
-            public readonly ref TSource Current => ref *element;
-            readonly TSource IEnumerator<TSource>.Current => Current;
+            public readonly ref T Current => throw new NotImplementedException();
+            readonly T IEnumerator<T>.Current => Current;
             readonly object IEnumerator.Current => Current;
 
-            public void Dispose()
-            {
-                if (element != null)
-                    UnsafeUtility.Free(element, allocator);
-                this = default;
-            }
+            public void Dispose() => this = default;
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(firstCollection.GetEnumerator(), secondCollection.GetEnumerator(), acts, firstDefault, secondDefault, alloc);
+        public readonly Enumerator GetEnumerator() => new Enumerator(firstCollection.GetEnumerator(), secondCollection.GetEnumerator(), acts, firstDefault, secondDefault);
         
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<TSource> IEnumerable<TSource>.GetEnumerator() => GetEnumerator();
+        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -196,7 +187,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(TSource* dest)
+        public readonly void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -205,30 +196,30 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly TSource[] ToArray()
+        public readonly T[] ToArray()
         {
             var count = LongCount();
-            if (count == 0) return Array.Empty<TSource>();
-            var answer = new TSource[count];
-            CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
+            if (count == 0) return Array.Empty<T>();
+            var answer = new T[count];
+            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
             return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<TSource> ToNativeEnumerable(Allocator allocator)
+        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
-            var ptr = UnsafeUtilityEx.Malloc<TSource>(count, allocator);
+            var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<TSource>(ptr, count);
+            return new NativeEnumerable<T>(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
+        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
-            var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
+            var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(UnsafeUtilityEx.GetPointer(answer));
             return answer;
         }

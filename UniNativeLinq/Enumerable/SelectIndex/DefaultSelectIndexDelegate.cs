@@ -3,15 +3,15 @@
 namespace UniNativeLinq
 {
     public readonly struct
-        DefaultSelectIndexDelegate<TPrevSource, TSource>
-        : ISelectIndex<TPrevSource, TSource>
+        DefaultSelectIndexDelegate<TPrev, T>
+        : ISelectIndex<TPrev, T>
     {
-        private readonly Func<TPrevSource, long, TSource> func;
+        private readonly Func<TPrev, long, T> func;
 
-        public DefaultSelectIndexDelegate(Func<TPrevSource, long, TSource> func) => this.func = func;
+        public DefaultSelectIndexDelegate(Func<TPrev, long, T> func) => this.func = func;
 
-        public void Execute(ref TPrevSource source, long index, ref TSource result) => result = func(source, index);
+        public void Execute(ref TPrev source, long index, ref T result) => result = func(source, index);
 
-        public static implicit operator DefaultSelectIndexDelegate<TPrevSource, TSource>(Func<TPrevSource, long, TSource> func) => new DefaultSelectIndexDelegate<TPrevSource, TSource>(func);
+        public static implicit operator DefaultSelectIndexDelegate<TPrev, T>(Func<TPrev, long, T> func) => new DefaultSelectIndexDelegate<TPrev, T>(func);
     }
 }

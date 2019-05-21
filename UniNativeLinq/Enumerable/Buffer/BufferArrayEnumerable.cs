@@ -6,34 +6,34 @@ using System.Runtime.CompilerServices;
 namespace UniNativeLinq
 {
     public readonly struct
-        BufferArrayEnumerable<TSource>
-        : IEnumerable<ArrayEnumerable<TSource>>
-        where TSource : unmanaged
+        BufferArrayEnumerable<T>
+        : IEnumerable<ArrayEnumerable<T>>
+        where T : unmanaged
     {
-        private readonly ArrayEnumerable<TSource> enumerable;
+        private readonly ArrayEnumerable<T> enumerable;
         private readonly long count;
 
-        public BufferArrayEnumerable(in ArrayEnumerable<TSource> enumerable, long count)
+        public BufferArrayEnumerable(in ArrayEnumerable<T> enumerable, long count)
         {
             this.enumerable = enumerable;
             this.count = count;
         }
         public Enumerator GetEnumerator() => new Enumerator(this);
 
-        public struct Enumerator : IEnumerator<ArrayEnumerable<TSource>>
+        public struct Enumerator : IEnumerator<ArrayEnumerable<T>>
         {
-            private readonly ArrayEnumerable<TSource> enumerable;
+            private readonly ArrayEnumerable<T> enumerable;
             private readonly long count;
             private long index;
 
-            internal Enumerator(in BufferArrayEnumerable<TSource> @this)
+            internal Enumerator(in BufferArrayEnumerable<T> @this)
             {
                 enumerable = @this.enumerable;
                 count = @this.count;
                 index = -count;
             }
 
-            public readonly ArrayEnumerable<TSource> Current => enumerable.Slice(index, count);
+            public readonly ArrayEnumerable<T> Current => enumerable.Slice(index, count);
             readonly object IEnumerator.Current => throw new NotImplementedException();
 
             public void Dispose() => this = default;
@@ -50,11 +50,11 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly ArrayEnumerable<TSource> Flatten() => enumerable;
+        public readonly ArrayEnumerable<T> Flatten() => enumerable;
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<ArrayEnumerable<TSource>> IEnumerable<ArrayEnumerable<TSource>>.GetEnumerator() => GetEnumerator();
+        readonly IEnumerator<ArrayEnumerable<T>> IEnumerable<ArrayEnumerable<T>>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -83,11 +83,11 @@ namespace UniNativeLinq
         public readonly long LongCount() => (enumerable.LongCount() - 1) / count + 1L;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly ArrayEnumerable<TSource>[] ToArray()
+        public readonly ArrayEnumerable<T>[] ToArray()
         {
             var count = LongCount();
-            if (count == 0) return Array.Empty<ArrayEnumerable<TSource>>();
-            var answer = new ArrayEnumerable<TSource>[count];
+            if (count == 0) return Array.Empty<ArrayEnumerable<T>>();
+            var answer = new ArrayEnumerable<T>[count];
             var enumerator = GetEnumerator();
             var index = 0L;
             while (enumerator.MoveNext())

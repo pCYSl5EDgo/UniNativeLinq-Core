@@ -3,7 +3,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public unsafe readonly struct DefaultOrderByAscending<T>
+    public readonly unsafe struct DefaultOrderByAscending<T>
         : IRefFunc<T, T, int>
         where T : unmanaged
     {

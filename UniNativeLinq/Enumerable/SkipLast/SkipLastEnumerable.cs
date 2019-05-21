@@ -7,12 +7,12 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public unsafe partial struct
-        SkipLastEnumerable<TEnumerable, TEnumerator, TSource>
-        : IRefEnumerable<SkipLastEnumerable<TEnumerable, TEnumerator, TSource>.Enumerator, TSource>
-        where TSource : unmanaged
-        where TEnumerator : struct, IRefEnumerator<TSource>
-        where TEnumerable : struct, IRefEnumerable<TEnumerator, TSource>
+    public unsafe struct
+        SkipLastEnumerable<TEnumerable, TEnumerator, T>
+        : IRefEnumerable<SkipLastEnumerable<TEnumerable, TEnumerator, T>.Enumerator, T>
+        where T : unmanaged
+        where TEnumerator : struct, IRefEnumerator<T>
+        where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
         private TEnumerable enumerable;
         private readonly long skipCount;
@@ -25,16 +25,16 @@ namespace UniNativeLinq
             alloc = allocator;
         }
 
-        public struct Enumerator : IRefEnumerator<TSource>
+        public struct Enumerator : IRefEnumerator<T>
         {
             private TEnumerator enumerator;
-            private readonly TSource* buffer;
+            private readonly T* buffer;
             private long index;
             private readonly long skipCount;
             private readonly Allocator allocator;
 
-            public readonly ref TSource Current => ref buffer[index];
-            readonly TSource IEnumerator<TSource>.Current => Current;
+            public readonly ref T Current => ref buffer[index];
+            readonly T IEnumerator<T>.Current => Current;
             readonly object IEnumerator.Current => Current;
 
             public Enumerator(in TEnumerable enumerable, long skipCount, Allocator allocator)
@@ -42,7 +42,7 @@ namespace UniNativeLinq
                 enumerator = enumerable.GetEnumerator();
                 this.skipCount = skipCount;
                 this.allocator = allocator;
-                buffer = skipCount <= 0 ? null : UnsafeUtilityEx.Malloc<TSource>(skipCount + 1, allocator);
+                buffer = skipCount <= 0 ? null : UnsafeUtilityEx.Malloc<T>(skipCount + 1, allocator);
                 index = 0;
                 for (var i = 0L; i < skipCount; i++)
                 {
@@ -76,7 +76,7 @@ namespace UniNativeLinq
                 this = default;
             }
 
-            public ref TSource TryGetNext(out bool success)
+            public ref T TryGetNext(out bool success)
             {
                 ref var value = ref enumerator.TryGetNext(out success);
                 if (!success) return ref value;
@@ -86,7 +86,7 @@ namespace UniNativeLinq
                 return ref buffer[index];
             }
 
-            public bool TryMoveNext(out TSource value)
+            public bool TryMoveNext(out T value)
             {
                 if (!enumerator.TryMoveNext(out value))
                     return false;
@@ -102,7 +102,7 @@ namespace UniNativeLinq
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<TSource> IEnumerable<TSource>.GetEnumerator() => GetEnumerator();
+        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -135,7 +135,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(TSource* dest)
+        public readonly void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -144,30 +144,30 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly TSource[] ToArray()
+        public readonly T[] ToArray()
         {
             var count = LongCount();
-            if (count == 0) return Array.Empty<TSource>();
-            var answer = new TSource[count];
-            CopyTo((TSource*)Unsafe.AsPointer(ref answer[0]));
+            if (count == 0) return Array.Empty<T>();
+            var answer = new T[count];
+            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
             return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<TSource> ToNativeEnumerable(Allocator allocator)
+        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
-            var ptr = UnsafeUtilityEx.Malloc<TSource>(count, allocator);
+            var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<TSource>(ptr, count);
+            return new NativeEnumerable<T>(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<TSource> ToNativeArray(Allocator allocator)
+        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
-            var answer = new NativeArray<TSource>(count, allocator, NativeArrayOptions.UninitializedMemory);
+            var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(UnsafeUtilityEx.GetPointer(answer));
             return answer;
         }

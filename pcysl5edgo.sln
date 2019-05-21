@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28902.138
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UniNativeLinq", "UniNativeLinq\UniNativeLinq.csproj", "{72262A22-0BD1-402D-9704-81D2BA33F03D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CecilRewrite", "CecilRewriteAndAddExtensions\CecilRewrite.csproj", "{6027A5CF-BDCF-4109-BCB2-016A51974A1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CecilRewrite", "CecilRewrite\CecilRewrite.csproj", "{6027A5CF-BDCF-4109-BCB2-016A51974A1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
