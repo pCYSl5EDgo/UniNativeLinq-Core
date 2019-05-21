@@ -46,13 +46,14 @@ namespace UniNativeLinq
                 index = -1;
                 Count = 0;
                 capacity = 16;
-                if (enumerable.CanFastCount() && (capacity = enumerable.Count()) == 0)
+                ref var _enumerable = ref Unsafe.AsRef(enumerable);
+                if (_enumerable.CanFastCount() && (capacity = _enumerable.Count()) == 0)
                 {
                     this = default;
                     return;
                 }
                 Ptr = UnsafeUtilityEx.Malloc<T>(capacity, allocator);
-                var enumerator = enumerable.GetEnumerator();
+                var enumerator = _enumerable.GetEnumerator();
                 if (!enumerator.MoveNext())
                 {
                     enumerator.Dispose();

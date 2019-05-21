@@ -51,7 +51,7 @@ namespace UniNativeLinq
             internal Enumerator(in NativeEnumerable<T> enumerable)
             {
                 kind = ReverseEnumerableKind.NativeArray;
-                enumerator = enumerable.GetReverseEnumerator();
+                enumerator = Unsafe.AsRef(enumerable).GetReverseEnumerator();
                 allocator = Allocator.None;
             }
 

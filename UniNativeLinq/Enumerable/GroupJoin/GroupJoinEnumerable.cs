@@ -30,10 +30,10 @@ namespace UniNativeLinq
             T>
         where TKeyEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
     {
-        private TOuterEnumerable outerEnumerable;
-        private TInnerEnumerable innerEnumerable;
-        private TOuterKeySelector outerKeySelector;
-        private TInnerKeySelector InnerKeySelector;
+        private readonly TOuterEnumerable outerEnumerable;
+        private readonly TInnerEnumerable innerEnumerable;
+        private readonly TOuterKeySelector outerKeySelector;
+        private readonly TInnerKeySelector InnerKeySelector;
         private readonly TSelector sourceSelector;
         private readonly TKeyEqualityComparer keyEqualityComparer;
         private readonly Allocator alloc;
@@ -62,7 +62,7 @@ namespace UniNativeLinq
             private TOuterKeySelector keySelector;
             private TSelector selector;
             private T element;
-            private Allocator allocator;
+            private readonly Allocator allocator;
 
             internal Enumerator(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TSelector sourceSelector, in TKeyEqualityComparer keyEqualityComparer, Allocator allocator)
             {

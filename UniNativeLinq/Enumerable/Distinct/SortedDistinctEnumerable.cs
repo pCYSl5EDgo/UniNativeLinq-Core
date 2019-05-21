@@ -15,7 +15,7 @@ namespace UniNativeLinq
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
-        private TEnumerable enumerable;
+        private readonly TEnumerable enumerable;
         private readonly TComparer orderComparer;
         private readonly Allocator alloc;
 

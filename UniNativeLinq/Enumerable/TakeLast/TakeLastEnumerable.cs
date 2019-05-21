@@ -35,7 +35,7 @@ namespace UniNativeLinq
             public Enumerator(in TEnumerable enumerable, long takeCount, Allocator allocator)
             {
                 var ringBuffer = new RingBuffer<T>(takeCount, allocator);
-                var baseEnumerator = enumerable.GetEnumerator();
+                var baseEnumerator = Unsafe.AsRef(enumerable).GetEnumerator();
                 while (baseEnumerator.MoveNext())
                 {
                     if (ringBuffer.IsFull)

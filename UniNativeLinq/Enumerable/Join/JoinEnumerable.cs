@@ -48,7 +48,7 @@ namespace UniNativeLinq
             private TOuterEnumerator outerEnumerator;
             private TOuterKeySelector outerKeySelector;
             private TKey outerKey;
-            private long innerCount;
+            private readonly long innerCount;
             private long innerIndex;
             private TInnerSource* innerValues;
             private TKey* innerKeys;

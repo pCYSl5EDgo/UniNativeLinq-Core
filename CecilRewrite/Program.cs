@@ -61,17 +61,29 @@ namespace CecilRewriteAndAddExtensions
         private static void TryGetMin(this TypeDefinition @static, TypeDefinition type)
         {
             Console.WriteLine(type.FullName);
-            foreach (var genericParameter in type.GenericParameters)
-            {
-                Console.WriteLine("\t" + genericParameter.FullName);
-                foreach (var genericParameterConstraint in genericParameter.Constraints)
-                {
-                    Console.WriteLine("\t\t" + genericParameterConstraint.ToString());
-                }
-            }
-
+            var instanceType = new GenericInstanceType(type);
             var function = new MethodDefinition(nameof(TryGetMin), StaticMethodAttributes, MainModule.TypeSystem.Boolean);
             function.CustomAttributes.Add(ExtensionAttribute);
+            var instanceFunction = new GenericInstanceMethod(function);
+            foreach ((GenericParameter genericParameter, int index) in type.GenericParameters.Select((genericParameter, index) => (genericParameter, index)))
+            {
+                if (genericParameter.Name == "T")
+                {
+                    instanceType.GenericArguments.Add(MainModule.TypeSystem.Byte);
+                }
+                else
+                {
+                    var newParameter = new GenericParameter(genericParameter);
+                    newParameter.Constraints.Clear();
+                    //foreach (var constraint in genericParameter.Constraints)
+                    //{
+                    //    if(constraint.HasGenericParameters)
+                    //}
+                    instanceType.GenericArguments.Add(newParameter);
+                    instanceFunction.GenericArguments.Add(newParameter);
+                }
+            }
+            @static.Methods.Add(instanceFunction.Resolve());
         }
 
         private static void RewriteThrow(ModuleDefinition module)
@@ -92,9 +104,9 @@ namespace CecilRewriteAndAddExtensions
         {
             var element = type.Fields.First(x => x.Name == "element").FillGenericParams();
             ReWrite(type.Methods.First(x => x.Name == "TryGetNext"), element);
-            static bool predicate(PropertyDefinition x)
+            static bool Predicate(PropertyDefinition x)
                 => x.Name == "Current" && x.PropertyType.IsByReference;
-            ReWrite(type.Properties.First(predicate).GetMethod, element);
+            ReWrite(type.Properties.First(Predicate).GetMethod, element);
         }
 
         private static FieldReference FillGenericParams(this FieldDefinition definition)

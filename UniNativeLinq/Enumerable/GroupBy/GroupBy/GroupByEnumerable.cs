@@ -53,7 +53,9 @@ namespace UniNativeLinq
                 index = -1;
                 Count = 0;
                 this.allocator = allocator;
-                if (enumerable.CanFastCount() && enumerable.LongCount() == 0)
+                // ReSharper disable once InconsistentNaming
+                ref var _enumerable = ref Unsafe.AsRef(enumerable);
+                if (_enumerable.CanFastCount() && _enumerable.LongCount() == 0)
                 {
                     Groups = null;
                     return;
@@ -61,7 +63,7 @@ namespace UniNativeLinq
                 var capacity = INITIAL_CAPACITY;
                 Groups = UnsafeUtilityEx.Malloc<Grouping<TKey, TElement>>(capacity, allocator);
                 var capacities = UnsafeUtilityEx.Malloc<long>(capacity, Allocator.Temp);
-                var enumerator = enumerable.GetEnumerator();
+                var enumerator = _enumerable.GetEnumerator();
                 EnumerateAndSort(ref capacity, ref enumerator, ref capacities, ref keySelector, ref elementSelector, ref equalityComparer);
                 UnsafeUtility.Free(capacities, Allocator.Temp);
                 enumerator.Dispose();
