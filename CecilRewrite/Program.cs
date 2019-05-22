@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
 
 namespace CecilRewriteAndAddExtensions
 {
@@ -18,22 +19,19 @@ namespace CecilRewriteAndAddExtensions
         private static ModuleDefinition MainModule;
         private static ModuleDefinition UnsafeModule;
         private static CustomAttribute ExtensionAttribute;
+        private static CustomAttribute IsReadOnlyAttribute;
         private static ModuleDefinition UnityModule;
 
         private static void Main(string[] args)
         {
-            var directory = args.Length != 0 && !string.IsNullOrEmpty(args[0]) ? args[0] : @"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\netstandard2.0";
-            using var resolver = new DefaultAssemblyResolver();
-            resolver.AddSearchDirectory(directory);
-            using var asm = AssemblyDefinition.ReadAssembly(
-                Path.Combine(directory, "UniNativeLinq.dll"),
-                new ReaderParameters { AssemblyResolver = resolver }
-            );
+            var location = typeof(UniNativeLinq.Enumerable).Assembly.Location;
+            Console.WriteLine(location);
+            using var asm = AssemblyDefinition.ReadAssembly(location);
             MainModule = asm.MainModule;
             InitializeModule(MainModule);
             RewriteThrow(MainModule);
             MinMaxHelper(MainModule);
-            asm.Write(Path.Combine(directory, "../UniNativeLinq.dll"));
+            asm.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
             var s = Console.ReadLine();
         }
 
@@ -41,6 +39,8 @@ namespace CecilRewriteAndAddExtensions
         {
             var nativeEnumerable = module.Types.First(x => x.Name == "NativeEnumerable");
             ExtensionAttribute = nativeEnumerable.CustomAttributes.Single();
+            var negateMethodDefinition = module.Types.First(x => x.Name == "NegatePredicate`2").GetConstructors().First();
+            IsReadOnlyAttribute = negateMethodDefinition.Parameters.First().CustomAttributes.First();
             UnsafeModule = ExtensionAttribute.AttributeType.Module;
             UnityModule = nativeEnumerable.Methods.First(x => x.Parameters.First().ParameterType.IsValueType).Parameters.First().ParameterType.Module;
         }
@@ -54,36 +54,53 @@ namespace CecilRewriteAndAddExtensions
             {
                 if (type.Name == "GroupByEnumerable`8") continue;
                 @static.TryGetMin(type);
-                //Console.WriteLine(type.Name);
             }
         }
 
         private static void TryGetMin(this TypeDefinition @static, TypeDefinition type)
         {
-            Console.WriteLine(type.FullName);
             var instanceType = new GenericInstanceType(type);
-            var function = new MethodDefinition(nameof(TryGetMin), StaticMethodAttributes, MainModule.TypeSystem.Boolean);
-            function.CustomAttributes.Add(ExtensionAttribute);
-            var instanceFunction = new GenericInstanceMethod(function);
-            foreach ((GenericParameter genericParameter, int index) in type.GenericParameters.Select((genericParameter, index) => (genericParameter, index)))
+            var systemByte = MainModule.TypeSystem.Byte;
+            foreach (var parameter in type.GenericParameters)
             {
-                if (genericParameter.Name == "T")
+                if (parameter.Name == "T")
                 {
-                    instanceType.GenericArguments.Add(MainModule.TypeSystem.Byte);
+                    instanceType.GenericArguments.Add(systemByte);
+                    Console.WriteLine("\t" + instanceType.GenericArguments[instanceType.GenericArguments.Count - 1]);
+                    continue;
                 }
-                else
+                if (!parameter.HasConstraints)
                 {
-                    var newParameter = new GenericParameter(genericParameter);
-                    newParameter.Constraints.Clear();
-                    //foreach (var constraint in genericParameter.Constraints)
-                    //{
-                    //    if(constraint.HasGenericParameters)
-                    //}
-                    instanceType.GenericArguments.Add(newParameter);
-                    instanceFunction.GenericArguments.Add(newParameter);
+                    instanceType.GenericArguments.Add(parameter);
+                    Console.WriteLine("\t" + instanceType.GenericArguments[instanceType.GenericArguments.Count - 1]);
+                    continue;
                 }
+                foreach (var constraint in parameter.Constraints.Select(x => x as GenericInstanceType))
+                {
+                    if (constraint is null) continue;
+                    foreach (var (genericArgument, index) in constraint.GenericArguments.Select((genericArgument, index) => (genericArgument, index)))
+                    {
+                        if (genericArgument.Name == "T")
+                            constraint.GenericArguments[index] = systemByte;
+                        Console.WriteLine("\t\t" + constraint.GenericArguments[index]);
+                    }
+                }
+                instanceType.GenericArguments.Add(parameter);
+                Console.WriteLine("\t" + instanceType.GenericArguments[instanceType.GenericArguments.Count - 1].Name);
             }
-            @static.Methods.Add(instanceFunction.Resolve());
+            Console.WriteLine(instanceType.Name);
+            var method = new MethodDefinition("TryGetMin", StaticMethodAttributes, MainModule.TypeSystem.Boolean);
+            method.CustomAttributes.Add(ExtensionAttribute);
+            var firstParameterDefinition = new ParameterDefinition("@this", ParameterAttributes.In, instanceType.MakeByReferenceType());
+            firstParameterDefinition.CustomAttributes.Add(IsReadOnlyAttribute);
+            method.Parameters.Add(firstParameterDefinition);
+            method.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.Out, MainModule.TypeSystem.Byte.MakeByReferenceType()));
+            foreach (var argument in instanceType.GenericArguments)
+            {
+                if (argument.IsGenericParameter)
+                    method.GenericParameters.Add(new GenericParameter(argument));
+            }
+            @static.Methods.Add(method);
         }
 
         private static void RewriteThrow(ModuleDefinition module)

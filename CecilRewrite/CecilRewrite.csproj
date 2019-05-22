@@ -64,5 +64,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UniNativeLinq\UniNativeLinq.csproj">
+      <Project>{72262a22-0bd1-402d-9704-81d2ba33f03d}</Project>
+      <Name>UniNativeLinq</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

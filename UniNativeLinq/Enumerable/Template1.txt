@@ -1032,25 +1032,6 @@ public readonly
     >(this, second);
             
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    ConcatEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        T
-    >
-    Concat
-    (in RingBuffer<T> second)
-    => new ConcatEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        T
-    >(this, second);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
 public readonly 
     ConcatEnumerable<
         XYZXYZXYZ,
@@ -1269,25 +1250,6 @@ public readonly
         Enumerator,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T>,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T>.Enumerator,
-        T
-    >
-    (this, second);
-            
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    ConcatEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        UnrolledLinkedList<T>,
-        UnrolledLinkedList<T>.Enumerator,
-        T
-    >
-    Concat(in UnrolledLinkedList<T> second)
-    => new ConcatEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        UnrolledLinkedList<T>,
-        UnrolledLinkedList<T>.Enumerator,
         T
     >
     (this, second);
@@ -1810,42 +1772,6 @@ public readonly ConcatEnumerable<
     SetOperationEnumerable<
         XYZXYZXYZ,
         Enumerator,
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        T,
-        ExceptOperation<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T,
-            TComparer0
-        >
-    >
-    Except<TComparer0>
-    (in RingBuffer<T> second, in TComparer0 comparer, Allocator allocator = Allocator.Temp)
-    where TComparer0 : struct, IRefFunc<T, T, int>
-    => new SetOperationEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        T,
-        ExceptOperation<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T,
-            TComparer0
-        >
-    >
-    (this, second, comparer, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly
-    SetOperationEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
         SelectEnumerable<TEnumerable0, TEnumerator0, T0, T, TAction0>,
         SelectEnumerable<TEnumerable0, TEnumerator0, T0, T, TAction0>.Enumerator,
         T,
@@ -2124,42 +2050,6 @@ public readonly
             Enumerator,
             TakeLastEnumerable<TEnumerable0, TEnumerator0, T>,
             TakeLastEnumerable<TEnumerable0, TEnumerator0, T>.Enumerator,
-            T,
-            TComparer0
-        >
-    >
-    (this, second, comparer, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly
-    SetOperationEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        UnrolledLinkedList<T>,
-        UnrolledLinkedList<T>.Enumerator,
-        T,
-        ExceptOperation<
-            XYZXYZXYZ,
-            Enumerator,
-            UnrolledLinkedList<T>,
-            UnrolledLinkedList<T>.Enumerator,
-            T,
-            TComparer0
-        >
-    >
-    Except<TComparer0>
-    (in UnrolledLinkedList<T> second, in TComparer0 comparer, Allocator allocator = Allocator.Temp)
-    where TComparer0 : struct, IRefFunc<T, T, int>
-    => new SetOperationEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        UnrolledLinkedList<T>,
-        UnrolledLinkedList<T>.Enumerator,
-        T,
-        ExceptOperation<
-            XYZXYZXYZ,
-            Enumerator,
-            UnrolledLinkedList<T>,
-            UnrolledLinkedList<T>.Enumerator,
             T,
             TComparer0
         >
@@ -2935,48 +2825,6 @@ public readonly
         XYZXYZXYZ,
         Enumerator,
         T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        TEqualityComparer0
-    >
-    GroupJoin<
-        T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0
-    >
-    (in RingBuffer<T0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where T1 : unmanaged
-    where TKey0 : unmanaged
-    where TKeySelector0 : struct, IRefFunc<T, TKey0>
-    where TKeySelector1 : struct, IRefFunc<T0, TKey0>
-    where T0Selector : struct, IRefFunc<T, WhereIndexEnumerable<NativeEnumerable<T0>, NativeEnumerable<T0>.Enumerator, T0, GroupJoinPredicate<T0, TKey0, TEqualityComparer0>>, T1>
-    where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
-    => new GroupJoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        TEqualityComparer0
-    >
-    (this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly
-    GroupJoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
         T0,
@@ -3340,48 +3188,6 @@ public readonly
         T,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        TEqualityComparer0
-    >
-    (this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly
-    GroupJoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        TEqualityComparer0
-    >
-    GroupJoin<
-        T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0
-    >
-    (in UnrolledLinkedList<T0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where T1 : unmanaged
-    where TKey0 : unmanaged
-    where TKeySelector0 : struct, IRefFunc<T, TKey0>
-    where TKeySelector1 : struct, IRefFunc<T0, TKey0>
-    where T0Selector : struct, IRefFunc<T, WhereIndexEnumerable<NativeEnumerable<T0>, NativeEnumerable<T0>.Enumerator, T0, GroupJoinPredicate<T0, TKey0, TEqualityComparer0>>, T1>
-    where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
-    => new GroupJoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
         T0,
         TKey0,
         TKeySelector0,
@@ -3946,42 +3752,6 @@ public readonly
     where TEnumerator0 : struct, IRefEnumerator<T>
     where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T>
     => new SetOperationEnumerable<XYZXYZXYZ, Enumerator, ReverseEnumerable<TEnumerable0, TEnumerator0, T>, ReverseEnumerable<TEnumerable0, TEnumerator0, T>.Enumerator, T, IntersectOperation<XYZXYZXYZ, Enumerator, ReverseEnumerable<TEnumerable0, TEnumerator0, T>, ReverseEnumerable<TEnumerable0, TEnumerator0, T>.Enumerator, T, TComparer0>>
-    (this, second, comparer, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly
-    SetOperationEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        T,
-        IntersectOperation<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T,
-            TComparer0
-        >
-    >
-    Intersect<TComparer0>
-    (in RingBuffer<T> second, in TComparer0 comparer, Allocator allocator = Allocator.Temp)
-    where TComparer0 : struct, IRefFunc<T, T, int>
-    => new SetOperationEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        T,
-        IntersectOperation<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T,
-            TComparer0
-        >
-    >
     (this, second, comparer, allocator);
 
 [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly
@@ -4783,48 +4553,6 @@ public readonly
         XYZXYZXYZ,
         Enumerator,
         T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        TEqualityComparer0
-    >
-    Join<
-        T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0
-    >
-    (in RingBuffer<T0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where T1 : unmanaged
-    where TKey0 : unmanaged
-    where TKeySelector0 : struct, IRefFunc<T, TKey0>
-    where TKeySelector1 : struct, IRefFunc<T0, TKey0>
-    where T0Selector : struct, IRefFunc<T, T0, T1>
-    where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
-    => new JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        TEqualityComparer0
-    >
-    (this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly
-    JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
         T0,
@@ -5188,48 +4916,6 @@ public readonly
         T,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        TEqualityComparer0
-    >
-    (this, inner, outerKeySelector, innerKeySelector, resultSelector, comparer, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly
-    JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        TEqualityComparer0
-    >
-    Join<
-        T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector, TEqualityComparer0
-    >
-    (in UnrolledLinkedList<T0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, in TEqualityComparer0 comparer, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where T1 : unmanaged
-    where TKey0 : unmanaged
-    where TKeySelector0 : struct, IRefFunc<T, TKey0>
-    where TKeySelector1 : struct, IRefFunc<T0, TKey0>
-    where T0Selector : struct, IRefFunc<T, T0, T1>
-    where TEqualityComparer0 : struct, IRefFunc<TKey0, TKey0, bool>
-    => new JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
         T0,
         TKey0,
         TKeySelector0,
@@ -9648,48 +9334,6 @@ public readonly
         TGetHashCodeFunc0>
     (Concat(second), comparer, getHashCodeFunc, allocator);
 
-[MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly
-    DistinctEnumerable<
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T>,
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T>.Enumerator,
-        T,
-        TEqualityComparer0,
-        TGetHashCodeFunc0
-    >
-    Union<TEqualityComparer0, TGetHashCodeFunc0>
-    (in RingBuffer<T>
-        second, TEqualityComparer0 comparer, TGetHashCodeFunc0 getHashCodeFunc, Allocator allocator = Allocator.Temp)
-    where TEqualityComparer0 : struct, IRefFunc<T, T, bool>
-    where TGetHashCodeFunc0 : struct, IRefFunc<T, int>
-    => new DistinctEnumerable<
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T>,
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T>.Enumerator,
-        T,
-        TEqualityComparer0,
-        TGetHashCodeFunc0
-    >
-    (Concat(second), comparer, getHashCodeFunc, allocator);
-
 [MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly DistinctEnumerable<
         ConcatEnumerable<
             XYZXYZXYZ,
@@ -10115,48 +9759,6 @@ public readonly
             Enumerator,
             TakeLastEnumerable<TEnumerable0, TEnumerator0, T>,
             TakeLastEnumerable<TEnumerable0, TEnumerator0, T>.Enumerator,
-            T>.Enumerator,
-        T,
-        TEqualityComparer0,
-        TGetHashCodeFunc0
-    >
-    (Concat(second), comparer, getHashCodeFunc, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly
-    DistinctEnumerable<
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            UnrolledLinkedList<T>,
-            UnrolledLinkedList<T>.Enumerator,
-            T>,
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            UnrolledLinkedList<T>,
-            UnrolledLinkedList<T>.Enumerator,
-            T>.Enumerator,
-        T,
-        TEqualityComparer0,
-        TGetHashCodeFunc0
-    >
-    Union<TEqualityComparer0, TGetHashCodeFunc0>
-    (in UnrolledLinkedList<T>
-        second, TEqualityComparer0 comparer, TGetHashCodeFunc0 getHashCodeFunc, Allocator allocator = Allocator.Temp)
-    where TEqualityComparer0 : struct, IRefFunc<T, T, bool>
-    where TGetHashCodeFunc0 : struct, IRefFunc<T, int>
-    => new DistinctEnumerable<
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            UnrolledLinkedList<T>,
-            UnrolledLinkedList<T>.Enumerator,
-            T>,
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            UnrolledLinkedList<T>,
-            UnrolledLinkedList<T>.Enumerator,
             T>.Enumerator,
         T,
         TEqualityComparer0,
@@ -10716,27 +10318,6 @@ public readonly bool
 
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
 public readonly bool
-    SequenceEqual<TEqualityComparer0>
-    (in RingBuffer<T> second, in TEqualityComparer0 comparer)
-    where TEqualityComparer0 : struct, IRefFunc<T, T, bool>
-    => SequenceEqual<
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        TEqualityComparer0
-    >(second, comparer);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly bool
-    SequenceEqual
-    (in RingBuffer<T> second)
-    => SequenceEqual<
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        DefaultEqualityComparer<T>
-    >(second, default);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly bool
     SequenceEqual<TEnumerable0, TEnumerator0, TEqualityComparer0, T0, TAction0>
     (in SelectEnumerable<TEnumerable0, TEnumerator0, T0, T, TAction0> second, in TEqualityComparer0 comparer)
     where TEnumerator0 : struct, IRefEnumerator<T0>
@@ -10934,17 +10515,6 @@ public readonly bool
     => SequenceEqual<
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T>,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T>.Enumerator,
-        TEqualityComparer0
-    >(second, comparer);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly bool
-    SequenceEqual<TEqualityComparer0>
-    (in UnrolledLinkedList<T> second, in TEqualityComparer0 comparer)
-    where TEqualityComparer0 : struct, IRefFunc<T, T, bool>
-    => SequenceEqual<
-        UnrolledLinkedList<T>,
-        UnrolledLinkedList<T>.Enumerator,
         TEqualityComparer0
     >(second, comparer);
 
@@ -11350,34 +10920,6 @@ public readonly
         XYZXYZXYZ,
         Enumerator,
         T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TResult0,
-        TAction0
-    >
-    Zip<T0, TResult0, TAction0>
-    (in RingBuffer<T0>
-        second, TAction0 action, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where TAction0 : struct, IRefAction<T, T0, TResult0>
-    where TResult0 : unmanaged
-    => new ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TResult0,
-        TAction0
-    >
-    (this, second, action, firstDefaultValue, secondDefaultValue, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction1>.Enumerator,
         T0,
@@ -11657,35 +11199,6 @@ public readonly
         T,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
-        T0,
-        TResult0,
-        TAction0
-    >
-    (this, second, action, firstDefaultValue, secondDefaultValue, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)] public readonly 
-    ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
-        T0,
-        TResult0,
-        TAction0
-    >
-    Zip<T0, TResult0, TAction0>
-    (in UnrolledLinkedList<T0>
-    second, TAction0 action, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where TAction0 : struct, IRefAction<T, T0, TResult0>
-    where TResult0 : unmanaged
-    => new ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
         T0,
         TResult0,
         TAction0
@@ -12148,34 +11661,6 @@ public readonly
         XYZXYZXYZ,
         Enumerator,
         T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        (T, T0),
-        ZipValueTuple<T, T0>
-    >
-    Zip<T0>
-    (in RingBuffer<T0>
-        second, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    => new ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        (T, T0),
-        ZipValueTuple<T, T0>
-    >
-    (this, second, default, firstDefaultValue, secondDefaultValue, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
         T0,
@@ -12477,34 +11962,6 @@ public readonly
         T,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
-        T0,
-        (T, T0),
-        ZipValueTuple<T, T0>
-    >
-    (this, second, default, firstDefaultValue, secondDefaultValue, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
-        T0,
-        (T, T0),
-        ZipValueTuple<T, T0>
-    >
-    Zip<T0>
-    (in UnrolledLinkedList<T0>
-    second, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    => new ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
         T0,
         (T, T0),
         ZipValueTuple<T, T0>
@@ -13936,47 +13393,6 @@ public readonly DistinctEnumerable<
     (Concat(second), default, default, allocator);
 
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    DistinctEnumerable<
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T>,
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T>.Enumerator,
-        T,
-        DefaultEqualityComparer<T>,
-        DefaultGetHashCodeFunc<T>
-    >
-    Union
-    (in RingBuffer<T>
-        second, Allocator allocator = Allocator.Temp)
-    => new DistinctEnumerable<
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T>,
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T>.Enumerator,
-        T,
-        DefaultEqualityComparer<T>,
-        DefaultGetHashCodeFunc<T>
-    >
-    (Concat(second), default, default, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
 public readonly DistinctEnumerable<
         ConcatEnumerable<
             XYZXYZXYZ,
@@ -14403,47 +13819,6 @@ public readonly
             Enumerator,
             TakeLastEnumerable<TEnumerable0, TEnumerator0, T>,
             TakeLastEnumerable<TEnumerable0, TEnumerator0, T>.Enumerator,
-            T>.Enumerator,
-        T,
-        DefaultEqualityComparer<T>,
-        DefaultGetHashCodeFunc<T>
-    >
-    (Concat(second), default, default, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    DistinctEnumerable<
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            UnrolledLinkedList<T>,
-            UnrolledLinkedList<T>.Enumerator,
-            T>,
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            UnrolledLinkedList<T>,
-            UnrolledLinkedList<T>.Enumerator,
-            T>.Enumerator,
-        T,
-        DefaultEqualityComparer<T>,
-        DefaultGetHashCodeFunc<T>
-    >
-    Union
-    (in UnrolledLinkedList<T>
-        second, Allocator allocator = Allocator.Temp)
-    => new DistinctEnumerable<
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            UnrolledLinkedList<T>,
-            UnrolledLinkedList<T>.Enumerator,
-            T>,
-        ConcatEnumerable<
-            XYZXYZXYZ,
-            Enumerator,
-            UnrolledLinkedList<T>,
-            UnrolledLinkedList<T>.Enumerator,
             T>.Enumerator,
         T,
         DefaultEqualityComparer<T>,
@@ -15209,42 +14584,6 @@ public readonly
             Enumerator,
             ReverseEnumerable<TEnumerable0, TEnumerator0, T>,
             ReverseEnumerable<TEnumerable0, TEnumerator0, T>.Enumerator,
-            T,
-            DefaultOrderByAscending<T>
-        >
-    >
-    (this, second, default, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    SetOperationEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        T,
-        IntersectOperation<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T,
-            DefaultOrderByAscending<T>
-        >
-    >
-    Intersect
-    (in RingBuffer<T> second, Allocator allocator = Allocator.Temp)
-    => new SetOperationEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        T,
-        IntersectOperation<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
             T,
             DefaultOrderByAscending<T>
         >
@@ -16081,42 +15420,6 @@ public readonly
             Enumerator,
             ReverseEnumerable<TEnumerable0, TEnumerator0, T>,
             ReverseEnumerable<TEnumerable0, TEnumerator0, T>.Enumerator,
-            T,
-            DefaultOrderByAscending<T>
-        >
-    >
-    (this, second, default, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    SetOperationEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        T,
-        ExceptOperation<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
-            T,
-            DefaultOrderByAscending<T>
-        >
-    >
-    Except
-    (in RingBuffer<T> second, Allocator allocator = Allocator.Temp)
-    => new SetOperationEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        RingBuffer<T>,
-        RingBuffer<T>.Enumerator,
-        T,
-        ExceptOperation<
-            XYZXYZXYZ,
-            Enumerator,
-            RingBuffer<T>,
-            RingBuffer<T>.Enumerator,
             T,
             DefaultOrderByAscending<T>
         >
@@ -17187,48 +16490,6 @@ public readonly
         XYZXYZXYZ,
         Enumerator,
         T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        DefaultEqualityComparer<TKey0>
-    >
-    Join<
-        T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector
-    >
-    (in RingBuffer<T0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where T1 : unmanaged
-    where TKey0 : unmanaged
-    where TKeySelector0 : struct, IRefFunc<T, TKey0>
-    where TKeySelector1 : struct, IRefFunc<T0, TKey0>
-    where T0Selector : struct, IRefFunc<T, T0, T1>
-	=> new JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        DefaultEqualityComparer<TKey0>
-    >
-    (this, inner, outerKeySelector, innerKeySelector, resultSelector, default, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
         T0,
@@ -17624,48 +16885,6 @@ public readonly
         T,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>,
         TakeLastEnumerable<TEnumerable0, TEnumerator0, T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        DefaultEqualityComparer<TKey0>
-    >
-    (this, inner, outerKeySelector, innerKeySelector, resultSelector, default, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
-        T0,
-        TKey0,
-        TKeySelector0,
-        TKeySelector1,
-        T1,
-        T0Selector,
-        DefaultEqualityComparer<TKey0>
-    >
-    Join<
-        T0, TKey0, TKeySelector0, TKeySelector1, T1, T0Selector
-    >
-    (in UnrolledLinkedList<T0> inner, in TKeySelector0 outerKeySelector, in TKeySelector1 innerKeySelector, in T0Selector resultSelector, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where T1 : unmanaged
-    where TKey0 : unmanaged
-    where TKeySelector0 : struct, IRefFunc<T, TKey0>
-    where TKeySelector1 : struct, IRefFunc<T0, TKey0>
-    where T0Selector : struct, IRefFunc<T, T0, T1>
-    => new JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
         T0,
         TKey0,
         TKeySelector0,
@@ -18642,45 +17861,6 @@ public readonly
         XYZXYZXYZ,
         Enumerator,
         T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TKey0,
-        DelegateFuncToStructOperatorFunc<T, TKey0>,
-        DelegateFuncToStructOperatorFunc<T0, TKey0>,
-        T1,
-        DelegateFuncToStructOperatorFunc<T, T0, T1>,
-        DefaultEqualityComparer<TKey0>
-    >
-    Join<
-        T0, TKey0, T1
-    >
-    (in RingBuffer<T0> inner, in DelegateFuncToStructOperatorFunc<T, TKey0> outerKeySelector, in DelegateFuncToStructOperatorFunc<T0, TKey0> innerKeySelector, in Func<T, T0, T1> resultSelector, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where T1 : unmanaged
-    where TKey0 : unmanaged
-    => new JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TKey0,
-        DelegateFuncToStructOperatorFunc<T, TKey0>,
-        DelegateFuncToStructOperatorFunc<T0, TKey0>,
-        T1,
-        DelegateFuncToStructOperatorFunc<T, T0, T1>,
-        DefaultEqualityComparer<TKey0>
-    >
-    (this, inner, outerKeySelector, innerKeySelector, resultSelector, default, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
         T0,
@@ -19083,48 +18263,6 @@ public readonly
         XYZXYZXYZ,
         Enumerator,
         T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
-        T0,
-        TKey0,
-        DelegateFuncToStructOperatorFunc<T, TKey0>,
-        DelegateFuncToStructOperatorFunc<T0, TKey0>,
-        T1,
-        DelegateFuncToStructOperatorFunc<T, T0, T1>,
-        DefaultEqualityComparer<TKey0>
-    >
-    Join<
-        T0, TKey0, T1
-    >
-    (in UnrolledLinkedList<T0> inner, in DelegateFuncToStructOperatorFunc<T, TKey0> outerKeySelector, in DelegateFuncToStructOperatorFunc<T0, TKey0> innerKeySelector, in Func<T, T0, T1> resultSelector, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where T1 : unmanaged
-    where TKey0 : unmanaged
-
-
-
-    => new JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
-        T0,
-        TKey0,
-        DelegateFuncToStructOperatorFunc<T, TKey0>,
-        DelegateFuncToStructOperatorFunc<T0, TKey0>,
-        T1,
-        DelegateFuncToStructOperatorFunc<T, T0, T1>,
-        DefaultEqualityComparer<TKey0>
-    >
-    (this, inner, outerKeySelector, innerKeySelector, resultSelector, default, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    JoinEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
         WhereEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>,
         WhereEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>.Enumerator,
         T0,
@@ -19145,9 +18283,6 @@ public readonly
     where TEnumerator0 : struct, IRefEnumerator<T0>
     where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
     where TKey0 : unmanaged
-
-
-
     where TPredicate0 : struct, IRefFunc<T0, bool>
     => new JoinEnumerable<
         XYZXYZXYZ,
@@ -19191,9 +18326,6 @@ public readonly
     where TEnumerator0 : struct, IRefEnumerator<T0>
     where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T0>
     where TKey0 : unmanaged
-
-
-
     where TPredicate0 : struct, IWhereIndex<T0>
     => new JoinEnumerable<
         XYZXYZXYZ,
@@ -19660,35 +18792,6 @@ public readonly
         XYZXYZXYZ,
         Enumerator,
         T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TResult1,
-        DelegateFuncToAction<T, T0, TResult1>
-    >
-    Zip<T0, TResult1>
-    (in RingBuffer<T0>
-        second, Func<T, T0, TResult1> action, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where TResult1 : unmanaged
-    => new ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        T0,
-        TResult1,
-        DelegateFuncToAction<T, T0, TResult1>
-    >
-    (this, second, action, firstDefaultValue, secondDefaultValue, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>,
         SelectEnumerable<TEnumerable0, TEnumerator0, TPrev0, T0, TAction0>.Enumerator,
         T0,
@@ -20012,35 +19115,6 @@ public readonly
         XYZXYZXYZ,
         Enumerator,
         T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
-        T0,
-        TResult1,
-        DelegateFuncToAction<T, T0, TResult1>
-    >
-    Zip<T0, TResult1>
-    (in UnrolledLinkedList<T0>
-    second, Func<T, T0, TResult1> action, T firstDefaultValue = default, T0 secondDefaultValue = default, Allocator allocator = Allocator.Temp)
-    where T0 : unmanaged
-    where TResult1 : unmanaged
-    => new ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
-        T0,
-        TResult1,
-        DelegateFuncToAction<T, T0, TResult1>
-    >
-    (this, second, action, firstDefaultValue, secondDefaultValue, allocator);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    ZipEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
         WhereEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>,
         WhereEnumerable<TEnumerable0, TEnumerator0, T0, TPredicate0>.Enumerator,
         T0,
@@ -20230,54 +19304,6 @@ public readonly
         ArrayEnumerable<T0>,
         ArrayEnumerable<T0>.Enumerator,
         ArrayToArrayEnumerableActionWrapper<T, T0>
-    >
-    (this, func);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    SelectManyEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        T0,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        DelegateFuncToAction<T, RingBuffer<T0>>
-    >
-    SelectMany<T0>(Func<T, RingBuffer<T0>> func)
-    where T0 : unmanaged
-    => new SelectManyEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        T0,
-        RingBuffer<T0>,
-        RingBuffer<T0>.Enumerator,
-        DelegateFuncToAction<T, RingBuffer<T0>>
-    >
-    (this, func);
-
-[MethodImpl(MethodImplOptions.AggressiveInlining)]
-public readonly
-    SelectManyEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        T0,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
-        DelegateFuncToAction<T, UnrolledLinkedList<T0>>
-    >
-    SelectMany<T0>(Func<T, UnrolledLinkedList<T0>> func)
-    where T0 : unmanaged
-    => new SelectManyEnumerable<
-        XYZXYZXYZ,
-        Enumerator,
-        T,
-        T0,
-        UnrolledLinkedList<T0>,
-        UnrolledLinkedList<T0>.Enumerator,
-        DelegateFuncToAction<T, UnrolledLinkedList<T0>>
     >
     (this, func);
 
