@@ -2,11 +2,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+using Mono.Collections.Generic;
 
 namespace CecilRewriteAndAddExtensions
 {
@@ -16,33 +16,33 @@ namespace CecilRewriteAndAddExtensions
 
         private const TypeAttributes StaticExtensionClassTypeAttributes = TypeAttributes.AnsiClass | TypeAttributes.AutoLayout | TypeAttributes.BeforeFieldInit | TypeAttributes.Sealed | TypeAttributes.Public | TypeAttributes.Abstract;
         private const MethodAttributes StaticMethodAttributes = MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig;
-        private static ModuleDefinition MainModule;
-        private static ModuleDefinition UnsafeModule;
-        private static CustomAttribute ExtensionAttribute;
-        private static CustomAttribute IsReadOnlyAttribute;
-        private static ModuleDefinition UnityModule;
+        private static readonly ModuleDefinition MainModule;
+        private static readonly ModuleDefinition UnsafeModule;
+        private static readonly CustomAttribute ExtensionAttribute;
+        private static readonly CustomAttribute IsReadOnlyAttribute;
+        private static readonly ModuleDefinition UnityModule;
+        private static readonly AssemblyDefinition Assembly;
 
-        private static void Main(string[] args)
+        static Program()
         {
             var location = typeof(UniNativeLinq.Enumerable).Assembly.Location;
             Console.WriteLine(location);
-            using var asm = AssemblyDefinition.ReadAssembly(location);
-            MainModule = asm.MainModule;
-            InitializeModule(MainModule);
-            RewriteThrow(MainModule);
-            MinMaxHelper(MainModule);
-            asm.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
-            var s = Console.ReadLine();
-        }
-
-        private static void InitializeModule(ModuleDefinition module)
-        {
-            var nativeEnumerable = module.Types.First(x => x.Name == "NativeEnumerable");
+            Assembly = AssemblyDefinition.ReadAssembly(location);
+            MainModule = Assembly.MainModule;
+            var nativeEnumerable = MainModule.GetType("UniNativeLinq.NativeEnumerable");
             ExtensionAttribute = nativeEnumerable.CustomAttributes.Single();
-            var negateMethodDefinition = module.Types.First(x => x.Name == "NegatePredicate`2").GetConstructors().First();
+            var negateMethodDefinition = MainModule.GetType("UniNativeLinq.NegatePredicate`2").GetConstructors().First();
             IsReadOnlyAttribute = negateMethodDefinition.Parameters.First().CustomAttributes.First();
             UnsafeModule = ExtensionAttribute.AttributeType.Module;
             UnityModule = nativeEnumerable.Methods.First(x => x.Parameters.First().ParameterType.IsValueType).Parameters.First().ParameterType.Module;
+        }
+
+        private static void Main(string[] args)
+        {
+            RewriteThrow(MainModule);
+            MinMaxHelper(MainModule);
+            Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
+            Console.ReadLine();
         }
 
         private static void MinMaxHelper(ModuleDefinition module)
@@ -59,48 +59,111 @@ namespace CecilRewriteAndAddExtensions
 
         private static void TryGetMin(this TypeDefinition @static, TypeDefinition type)
         {
-            var instanceType = new GenericInstanceType(type);
-            var systemByte = MainModule.TypeSystem.Byte;
-            foreach (var parameter in type.GenericParameters)
+            static void WithType(TypeDefinition @static, TypeDefinition type, TypeReference fillType)
             {
-                if (parameter.Name == "T")
+                var method = new MethodDefinition(nameof(TryGetMin), StaticMethodAttributes, MainModule.TypeSystem.Boolean)
                 {
-                    instanceType.GenericArguments.Add(systemByte);
-                    Console.WriteLine("\t" + instanceType.GenericArguments[instanceType.GenericArguments.Count - 1]);
-                    continue;
-                }
-                if (!parameter.HasConstraints)
+                    DeclaringType = @static,
+                    AggressiveInlining = true,
+                };
+                Console.WriteLine(type);
+                method.CustomAttributes.Add(ExtensionAttribute);
+                method.Parameters.Capacity = 2;
+                method.GenericParameters.Capacity = type.GenericParameters.Count - 1;
+                method.TryGetMinMethodFillTypeArgument(type, fillType);
+                @static.Methods.Add(method);
+            }
+            WithType(@static, type, MainModule.TypeSystem.Byte);
+            //WithType(@static, type, MainModule.TypeSystem.SByte);
+            //WithType(@static, type, MainModule.TypeSystem.Int16);
+            //WithType(@static, type, MainModule.TypeSystem.UInt16);
+            //WithType(@static, type, MainModule.TypeSystem.Int32);
+            //WithType(@static, type, MainModule.TypeSystem.UInt32);
+            //WithType(@static, type, MainModule.TypeSystem.Int64);
+            //WithType(@static, type, MainModule.TypeSystem.UInt64);
+            //WithType(@static, type, MainModule.TypeSystem.Single);
+            //WithType(@static, type, MainModule.TypeSystem.Double);
+        }
+
+        private static void TryGetMinMethodFillTypeArgument(this MethodDefinition method, TypeDefinition collectionTypeDefinition, TypeReference fillTypeReference)
+        {
+            var @this = new GenericInstanceType(collectionTypeDefinition);
+            var typeGenericParameters = collectionTypeDefinition.GenericParameters;
+            var parameterDictionary = new Dictionary<string, GenericParameter>();
+
+            static void DefineParameters(GenericInstanceType @this, Collection<GenericParameter> typeGenericParameters, Dictionary<string, GenericParameter> parameterDictionary, MethodDefinition method, TypeReference fillTypeReference)
+            {
+                foreach (var typeGenericParameter in typeGenericParameters)
                 {
-                    instanceType.GenericArguments.Add(parameter);
-                    Console.WriteLine("\t" + instanceType.GenericArguments[instanceType.GenericArguments.Count - 1]);
-                    continue;
-                }
-                foreach (var constraint in parameter.Constraints.Select(x => x as GenericInstanceType))
-                {
-                    if (constraint is null) continue;
-                    foreach (var (genericArgument, index) in constraint.GenericArguments.Select((genericArgument, index) => (genericArgument, index)))
+                    if (typeGenericParameter.Name == "T")
                     {
-                        if (genericArgument.Name == "T")
-                            constraint.GenericArguments[index] = systemByte;
-                        Console.WriteLine("\t\t" + constraint.GenericArguments[index]);
+                        @this.GenericArguments.Add(fillTypeReference);
+                        continue;
+                    }
+                    var genericParameter = new GenericParameter(typeGenericParameter.Name, method)
+                    {
+                        HasNotNullableValueTypeConstraint = typeGenericParameter.HasNotNullableValueTypeConstraint,
+                    };
+                    genericParameter.Constraints.Clear();
+                    method.GenericParameters.Add(genericParameter);
+                    @this.GenericArguments.Add(genericParameter);
+                    parameterDictionary.Add(genericParameter.Name, genericParameter);
+                }
+            }
+            static void FillConstraint(GenericInstanceType @this, Collection<GenericParameter> typeGenericParameters, Dictionary<string, GenericParameter> parameterDictionary, TypeReference fillTypeReference)
+            {
+                foreach (var typeGenericParameter in typeGenericParameters)
+                {
+                    if (!parameterDictionary.TryGetValue(typeGenericParameter.Name, out var genericParameter) || !typeGenericParameter.HasConstraints)
+                        continue;
+                    foreach (var constraint in typeGenericParameter.Constraints)
+                    {
+                        if (!constraint.IsGenericInstance)
+                        {
+                            genericParameter.Constraints.Add(constraint);
+                            continue;
+                        }
+                        var newConstraint = new GenericInstanceType(MainModule.GetType(constraint.Namespace, constraint.Name));
+                        foreach (var genericParameterConstraint in ((GenericInstanceType)constraint).GenericArguments)
+                        {
+                            var reference = parameterDictionary.TryGetValue(genericParameterConstraint.Name, out var constraintGenericParameter) ? constraintGenericParameter : fillTypeReference;
+                            newConstraint.GenericArguments.Add(reference);
+                        }
+                        genericParameter.Constraints.Add(newConstraint);
                     }
                 }
-                instanceType.GenericArguments.Add(parameter);
-                Console.WriteLine("\t" + instanceType.GenericArguments[instanceType.GenericArguments.Count - 1].Name);
             }
-            Console.WriteLine(instanceType.Name);
-            var method = new MethodDefinition("TryGetMin", StaticMethodAttributes, MainModule.TypeSystem.Boolean);
-            method.CustomAttributes.Add(ExtensionAttribute);
-            var firstParameterDefinition = new ParameterDefinition("@this", ParameterAttributes.In, instanceType.MakeByReferenceType());
-            firstParameterDefinition.CustomAttributes.Add(IsReadOnlyAttribute);
-            method.Parameters.Add(firstParameterDefinition);
-            method.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.Out, MainModule.TypeSystem.Byte.MakeByReferenceType()));
-            foreach (var argument in instanceType.GenericArguments)
+            static void FillParameter(GenericInstanceType @this, MethodDefinition method, TypeReference fillTypeReference)
             {
-                if (argument.IsGenericParameter)
-                    method.GenericParameters.Add(new GenericParameter(argument));
+                var @thisParameter = new ParameterDefinition("@this", ParameterAttributes.In, @this.MakeByReferenceType());
+                @thisParameter.CustomAttributes.Add(IsReadOnlyAttribute);
+                method.Parameters.Add(@thisParameter);
+                method.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.Out, fillTypeReference.MakeByReferenceType()));
             }
-            @static.Methods.Add(method);
+            static void FillBody(GenericInstanceType @this, MethodDefinition method, TypeReference fillTypeReference)
+            {
+                var body = method.Body;
+                body.MaxStackSize = 2;
+                body.Variables.Clear();
+                var enumeratorType = new GenericInstanceType(((TypeDefinition)@this.ElementType).NestedTypes.First(x => x.Name.EndsWith("Enumerator")));
+                foreach (var argument in @this.GenericArguments)
+                    enumeratorType.GenericArguments.Add(argument);
+                body.Variables.Add(new VariableDefinition(enumeratorType));
+                var booleanVariable = new VariableDefinition(MainModule.TypeSystem.Boolean);
+                body.Variables.Add(booleanVariable);
+                body.Variables.Add(booleanVariable);
+                body.Variables.Add(new VariableDefinition(fillTypeReference));
+                body.Variables.Add(booleanVariable);
+                body.Variables.Add(booleanVariable);
+                var il = body.GetILProcessor();
+                il.Append(Instruction.Create(OpCodes.Ldarg_0));
+                //il.Append(Instruction.Create(OpCodes.Call, ));
+            }
+
+            DefineParameters(@this, typeGenericParameters, parameterDictionary, method, fillTypeReference);
+            FillConstraint(@this, typeGenericParameters, parameterDictionary, fillTypeReference);
+            FillParameter(@this, method, fillTypeReference);
+            FillBody(@this, method, fillTypeReference);
         }
 
         private static void RewriteThrow(ModuleDefinition module)

@@ -1,6 +1,6 @@
 ﻿namespace UniNativeLinq
 {
-    public static unsafe class FlattenEnumerable
+    public static class FlattenEnumerable
     {
         public static
             SelectManyEnumerable<

@@ -25,7 +25,7 @@ namespace UniNativeLinq
 
         public DelegateFuncToStructOperatorFunc(Func<TArg0, TResult> Func) => this.Func = Func;
 
-        public unsafe TResult Calc(ref TArg0 arg0) => Func(arg0);
+        public TResult Calc(ref TArg0 arg0) => Func(arg0);
 
         public static implicit operator
             DelegateFuncToStructOperatorFunc<TArg0, TResult>(Func<TArg0, TResult> Func)

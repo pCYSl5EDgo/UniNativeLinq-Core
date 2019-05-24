@@ -8,7 +8,7 @@ namespace UniNativeLinq
 {
     public readonly unsafe struct
         SkipEnumerable<TEnumerable, TEnumerator, T>
-        : IRefEnumerable<TEnumerator, T>
+        : IRefEnumerable<SkipEnumerable<TEnumerable, TEnumerator, T>.Enumerator, T>
         where T : unmanaged
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
@@ -22,18 +22,24 @@ namespace UniNativeLinq
             this.skipCount = skipCount;
         }
 
-        public readonly TEnumerator GetEnumerator()
+        public struct Enumerator : IRefEnumerator<T>
         {
-            var enumerator = enumerable.GetEnumerator();
-            for (var i = 0L; i < skipCount; i++)
-            {
-                if (enumerator.MoveNext())
-                    continue;
-                enumerator.Dispose();
-                return default;
-            }
-            return enumerator;
+            private TEnumerator enumerator;
+            internal Enumerator(in TEnumerator enumerator) => this.enumerator = enumerator;
+            public bool MoveNext() => enumerator.MoveNext();
+
+            public void Reset() => enumerator.MoveNext();
+
+            public ref T Current => ref enumerator.Current;
+            T IEnumerator<T>.Current => Current;
+            object IEnumerator.Current => Current;
+
+            public ref T TryGetNext(out bool success) => ref enumerator.TryGetNext(out success);
+            public bool TryMoveNext(out T value) => enumerator.TryMoveNext(out value);
+            public void Dispose() => enumerator.Dispose();
         }
+
+        public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator());
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

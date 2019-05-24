@@ -4,23 +4,6 @@ namespace UniNativeLinq
 {
     public static class Enumerable
     {
-        public static bool TryGetMin<TEnumerable, TEnumerator>(in this AppendEnumerable<TEnumerable, TEnumerator, byte> @this, out byte value)
-            where TEnumerator : struct, IRefEnumerator<byte>
-            where TEnumerable : struct, IRefEnumerable<TEnumerator, byte>
-        {
-            var enumerator = @this.GetEnumerator();
-            if (!enumerator.TryMoveNext(out value))
-            {
-                enumerator.Dispose();
-                return false;
-            }
-            while (enumerator.TryMoveNext(out var other))
-                if (other < value)
-                    value = other;
-            enumerator.Dispose();
-            return true;
-        }
-
         public static RangeRepeatEnumerable<int, Int32Increment> Range(int start, long length, Allocator allocator = Allocator.Temp)
             => new RangeRepeatEnumerable<int, Int32Increment>(start, length, default);
 
