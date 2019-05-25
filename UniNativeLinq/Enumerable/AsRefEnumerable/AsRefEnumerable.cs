@@ -1,23 +1,34 @@
 using System;
+using System.Runtime.CompilerServices;
 using Unity.Collections;
 
 namespace UniNativeLinq
 {
     public static class NativeEnumerable
     {
-        public static bool TryGetMin<TEnumerable, TEnumerator>(in this AppendEnumerable<TEnumerable, TEnumerator, byte> @this, out byte value)
-            where TEnumerator : struct, IRefEnumerator<byte>
-            where TEnumerable : struct, IRefEnumerable<TEnumerator, byte>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetMin<TEnumerable, TEnumerator, T>(in this AppendEnumerable<TEnumerable, TEnumerator, T> @this, Func<T, byte> func, out byte value)
+            where T : unmanaged
+            where TEnumerator : struct, IRefEnumerator<T>
+            where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
         {
             var enumerator = @this.GetEnumerator();
-            if (!enumerator.TryMoveNext(out value))
+            ref var current = ref enumerator.TryGetNext(out var success);
+            if (!success)
             {
                 enumerator.Dispose();
+                value = default;
                 return false;
             }
-            while (enumerator.TryMoveNext(out var other))
+            value = func(current);
+            while (true)
+            {
+                current = ref enumerator.TryGetNext(out success);
+                if (!success) break;
+                var other = func(current);
                 if (other < value)
                     value = other;
+            }
             enumerator.Dispose();
             return true;
         }
