@@ -3,10 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CecilRewrite;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 using Mono.Collections.Generic;
+// ReSharper disable VariableHidesOuterVariable
 
 namespace CecilRewriteAndAddExtensions
 {
@@ -25,7 +27,7 @@ namespace CecilRewriteAndAddExtensions
 
         static Program()
         {
-            var location = typeof(UniNativeLinq.Enumerable).Assembly.Location;
+            var location = @"C:\Users\conve\source\repos\pcysl5edgo\CecilRewrite\bin\Release\UniNativeLinq.dll";
             Console.WriteLine(location);
             Assembly = AssemblyDefinition.ReadAssembly(location);
             MainModule = Assembly.MainModule;
@@ -49,6 +51,7 @@ namespace CecilRewriteAndAddExtensions
         {
             var @static = new TypeDefinition(NameSpace, nameof(MinMaxHelper), StaticExtensionClassTypeAttributes, module.TypeSystem.Object);
             @static.CustomAttributes.Add(ExtensionAttribute);
+            var z = MainModule.GetType("UniNativeLinq.NativeEnumerable").Methods.First();
             module.Types.Add(@static);
             foreach (var type in module.Types.Where(x => x.IsValueType && x.HasInterfaces && x.Interfaces.Any(y => y.InterfaceType.Name == "IRefEnumerable`2")))
             {
@@ -91,7 +94,7 @@ namespace CecilRewriteAndAddExtensions
             var typeGenericParameters = collectionTypeDefinition.GenericParameters;
             var parameterDictionary = new Dictionary<string, GenericParameter>();
 
-            static void DefineParameters(GenericInstanceType @this, Collection<GenericParameter> typeGenericParameters, Dictionary<string, GenericParameter> parameterDictionary, MethodDefinition method, TypeReference fillTypeReference)
+            static void FillGenericParameters(GenericInstanceType @this, Collection<GenericParameter> typeGenericParameters, Dictionary<string, GenericParameter> parameterDictionary, MethodDefinition method, TypeReference fillTypeReference)
             {
                 foreach (var typeGenericParameter in typeGenericParameters)
                 {
@@ -103,6 +106,9 @@ namespace CecilRewriteAndAddExtensions
                     var genericParameter = new GenericParameter(typeGenericParameter.Name, method)
                     {
                         HasNotNullableValueTypeConstraint = typeGenericParameter.HasNotNullableValueTypeConstraint,
+                        HasDefaultConstructorConstraint = typeGenericParameter.HasDefaultConstructorConstraint,
+                        IsContravariant = typeGenericParameter.IsContravariant,
+                        IsValueType = typeGenericParameter.IsValueType,
                     };
                     genericParameter.Constraints.Clear();
                     method.GenericParameters.Add(genericParameter);
@@ -143,24 +149,69 @@ namespace CecilRewriteAndAddExtensions
             static void FillBody(GenericInstanceType @this, MethodDefinition method, TypeReference fillTypeReference)
             {
                 var body = method.Body;
-                body.MaxStackSize = 2;
                 body.Variables.Clear();
                 var enumeratorType = new GenericInstanceType(((TypeDefinition)@this.ElementType).NestedTypes.First(x => x.Name.EndsWith("Enumerator")));
                 foreach (var argument in @this.GenericArguments)
                     enumeratorType.GenericArguments.Add(argument);
                 body.Variables.Add(new VariableDefinition(enumeratorType));
-                var booleanVariable = new VariableDefinition(MainModule.TypeSystem.Boolean);
-                body.Variables.Add(booleanVariable);
-                body.Variables.Add(booleanVariable);
+                var typeSystemBoolean = MainModule.TypeSystem.Boolean;
+                body.Variables.Add(new VariableDefinition(typeSystemBoolean));
+                body.Variables.Add(new VariableDefinition(typeSystemBoolean));
                 body.Variables.Add(new VariableDefinition(fillTypeReference));
-                body.Variables.Add(booleanVariable);
-                body.Variables.Add(booleanVariable);
+                body.Variables.Add(new VariableDefinition(typeSystemBoolean));
+                body.Variables.Add(new VariableDefinition(typeSystemBoolean));
                 var il = body.GetILProcessor();
-                il.Append(Instruction.Create(OpCodes.Ldarg_0));
-                //il.Append(Instruction.Create(OpCodes.Call, ));
+
+                var loopStart = il.Create(OpCodes.Ldloca_S, body.Variables[0]);
+                var end = il.Create(OpCodes.Ldloc_2);
+                var dispose = il.Create(OpCodes.Ldloca_S, body.Variables[0]);
+                var loopEnd = il.Create(OpCodes.Br_S, loopStart);
+
+                il.Append(il.Create(OpCodes.Ldarg_0));
+                il.Append(il.Create(OpCodes.Call, new MethodReference("GetEnumerator", enumeratorType, @this)));
+                il.Append(il.Create(OpCodes.Stloc_0));
+                il.Append(il.Create(OpCodes.Ldloca_S, body.Variables[0]));
+                il.Append(il.Create(OpCodes.Ldarg_1));
+                var tryMoveNext = enumeratorType.ElementType.Resolve().Methods.First(x => x.Name == "TryMoveNext").MakeHostInstanceGeneric(enumeratorType.GenericArguments);
+                il.Append(il.Create(OpCodes.Call, tryMoveNext));
+                il.Append(il.Create(OpCodes.Ldc_I4_0));
+                il.Append(il.Create(OpCodes.Ceq));
+                il.Append(il.Create(OpCodes.Stloc_1));
+                il.Append(il.Create(OpCodes.Ldloc_1));
+                il.Append(il.Create(OpCodes.Brfalse_S, loopStart));
+                il.Append(il.Create(OpCodes.Ldloca_S, body.Variables[0]));
+                var disposeMethodReference = new MethodReference("Dispose", MainModule.TypeSystem.Void, enumeratorType);
+                il.Append(il.Create(OpCodes.Call, disposeMethodReference));
+                il.Append(il.Create(OpCodes.Ldc_I4_0));
+                il.Append(il.Create(OpCodes.Stloc_2));
+                il.Append(il.Create(OpCodes.Br_S, end));
+                il.Append(loopStart);
+                il.Append(il.Create(OpCodes.Ldloca_S, body.Variables[3]));
+                il.Append(il.Create(OpCodes.Call, tryMoveNext));
+                il.Append(il.Create(OpCodes.Stloc_S, body.Variables[4]));
+                il.Append(il.Create(OpCodes.Ldloc_S, body.Variables[4]));
+                il.Append(il.Create(OpCodes.Brfalse_S, dispose));
+                il.Append(il.Create(OpCodes.Ldloc_3));
+                il.Append(il.Create(OpCodes.Ldarg_1));
+                il.Append(il.Create(OpCodes.Ldind_U1));
+                il.Append(il.Create(OpCodes.Clt));
+                il.Append(il.Create(OpCodes.Stloc_S, body.Variables[5]));
+                il.Append(il.Create(OpCodes.Ldloc_S, body.Variables[5]));
+                il.Append(il.Create(OpCodes.Brfalse_S, loopEnd));
+                il.Append(il.Create(OpCodes.Ldarg_1));
+                il.Append(il.Create(OpCodes.Ldloc_3));
+                il.Append(il.Create(OpCodes.Stind_I1));
+                il.Append(loopEnd);
+                il.Append(dispose);
+                il.Append(il.Create(OpCodes.Call, disposeMethodReference));
+                il.Append(il.Create(OpCodes.Ldc_I4_1));
+                il.Append(il.Create(OpCodes.Stloc_2));
+                il.Append(il.Create(OpCodes.Br_S, end));
+                il.Append(end);
+                il.Append(il.Create(OpCodes.Ret));
             }
 
-            DefineParameters(@this, typeGenericParameters, parameterDictionary, method, fillTypeReference);
+            FillGenericParameters(@this, typeGenericParameters, parameterDictionary, method, fillTypeReference);
             FillConstraint(@this, typeGenericParameters, parameterDictionary, fillTypeReference);
             FillParameter(@this, method, fillTypeReference);
             FillBody(@this, method, fillTypeReference);

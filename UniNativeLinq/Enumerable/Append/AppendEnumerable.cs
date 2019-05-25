@@ -7,16 +7,16 @@ using Unity.Collections;
 namespace UniNativeLinq
 {
     public unsafe struct
-        AppendEnumerable<TPrevEnumerable, TPrevEnumerator, T>
-        : IRefEnumerable<AppendEnumerable<TPrevEnumerable, TPrevEnumerator, T>.Enumerator, T>
+        AppendEnumerable<TEnumerable, TEnumerator, T>
+        : IRefEnumerable<AppendEnumerable<TEnumerable, TEnumerator, T>.Enumerator, T>
         where T : unmanaged
-        where TPrevEnumerable : struct, IRefEnumerable<TPrevEnumerator, T>
-        where TPrevEnumerator : struct, IRefEnumerator<T>
+        where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
+        where TEnumerator : struct, IRefEnumerator<T>
     {
-        private TPrevEnumerable enumerable;
+        private TEnumerable enumerable;
         private readonly T element;
 
-        public AppendEnumerable(in TPrevEnumerable enumerable, in T element)
+        public AppendEnumerable(in TEnumerable enumerable, in T element)
         {
             this.enumerable = enumerable;
             this.element = element;
@@ -26,11 +26,11 @@ namespace UniNativeLinq
         public struct Enumerator
             : IRefEnumerator<T>
         {
-            private TPrevEnumerator enumerator;
+            private TEnumerator enumerator;
             private readonly T element;
             private bool isCurrentEnumerator;
 
-            public Enumerator(in TPrevEnumerator enumerator, in T element)
+            public Enumerator(in TEnumerator enumerator, in T element)
             {
                 this.element = element;
                 this.enumerator = enumerator;
