@@ -18,6 +18,7 @@ namespace CecilRewrite
         internal const MethodAttributes StaticMethodAttributes = MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig;
         internal static readonly ModuleDefinition MainModule;
         internal static readonly ModuleDefinition UnsafeModule;
+        internal static readonly TypeDefinition SystemUnsafeType;
         internal static readonly CustomAttribute ExtensionAttribute;
         // ReSharper disable once InconsistentNaming
         internal static readonly CustomAttribute IsReadOnlyAttribute;
@@ -27,7 +28,6 @@ namespace CecilRewrite
         static Program()
         {
             var location = @"C:\Users\conve\source\repos\pcysl5edgo\CecilRewrite\bin\Release\UniNativeLinq.dll";
-            Console.WriteLine(location);
             Assembly = AssemblyDefinition.ReadAssembly(location);
             MainModule = Assembly.MainModule;
             var nativeEnumerable = MainModule.GetType("UniNativeLinq.NativeEnumerable");
@@ -35,6 +35,7 @@ namespace CecilRewrite
             var negateMethodDefinition = MainModule.GetType("UniNativeLinq.NegatePredicate`2").GetConstructors().First();
             IsReadOnlyAttribute = negateMethodDefinition.Parameters.First().CustomAttributes.First();
             UnsafeModule = ExtensionAttribute.AttributeType.Module;
+            SystemUnsafeType = MainModule.ImportReference(typeof(System.Runtime.CompilerServices.Unsafe)).Resolve();
             UnityModule = nativeEnumerable.Methods.First(x => x.Parameters.First().ParameterType.IsValueType).Parameters.First().ParameterType.Module;
         }
 
@@ -45,8 +46,8 @@ namespace CecilRewrite
             TryGetMaxHelper.Create(MainModule);
             TryGetMinFuncHelper.Create(MainModule);
             TryGetMaxFuncHelper.Create(MainModule);
+            AnyHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
-            //Console.ReadLine();
         }
 
         internal static void RewriteThrow(ModuleDefinition module)
@@ -55,7 +56,6 @@ namespace CecilRewrite
                 .Where(x => x.IsPublic && x.IsValueType && x.HasNestedTypes)
                 .SelectMany(x => x.NestedTypes)
                 .Where(x => x.HasCustomAttributes && x.CustomAttributes.Any(y => y.AttributeType.Name == "LocalRefReturnAttribute"));
-            Console.WriteLine("rewrite 'throw new NotImplemented' to return ref element;");
             foreach (var enumeratorType in enumeratorTypes)
             {
                 ReWriteRefReturn(module, enumeratorType);
