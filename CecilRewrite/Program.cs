@@ -47,6 +47,7 @@ namespace CecilRewrite
             TryGetMinFuncHelper.Create(MainModule);
             TryGetMaxFuncHelper.Create(MainModule);
             AnyHelper.Create(MainModule);
+            AnyFuncHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 

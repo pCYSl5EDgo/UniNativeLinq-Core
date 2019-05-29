@@ -7,13 +7,11 @@ namespace UniNativeLinq
     public static class NativeEnumerable
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Any<TPredicate0, TEnumerable, TEnumerator, T>(in this AppendEnumerable<TEnumerable, TEnumerator, T> @this, in TPredicate0 predicate)
-            where TPredicate0 : struct, IRefFunc<T, bool>
+        public static bool Any<TEnumerable, TEnumerator, T>(in this AppendEnumerable<TEnumerable, TEnumerator, T> @this, Func<T, bool> predicate)
             where T : unmanaged
             where TEnumerator : struct, IRefEnumerator<T>
             where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
         {
-            ref var _predicate = ref Unsafe.AsRef(predicate);
             var enumerator = @this.GetEnumerator();
             while (true)
             {
@@ -23,7 +21,7 @@ namespace UniNativeLinq
                     enumerator.Dispose();
                     return false;
                 }
-                if (_predicate.Calc(ref current))
+                if (predicate(current))
                 {
                     enumerator.Dispose();
                     return true;

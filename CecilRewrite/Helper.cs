@@ -33,13 +33,20 @@ namespace CecilRewrite
         }
 
         public static MethodReference FindMethod(this GenericInstanceType type, string name)
-            => type.Resolve().Methods.Single(x => x.Name == name).MakeHostInstanceGeneric(type.GenericArguments);
+        {
+            var methodDefinition = type.Resolve().Methods.Single(x => x.Name == name);
+            return methodDefinition.MakeHostInstanceGeneric(type.GenericArguments);
+        }
 
         public static MethodReference FindMethodAndImport(this GenericInstanceType type, string name, ModuleDefinition module)
             => module.ImportReference(type.Resolve().Methods.Single(x => x.Name == name)).MakeHostInstanceGeneric(type.GenericArguments);
 
         public static MethodReference FindMethod(this GenericInstanceType type, string name, Func<MethodDefinition, bool> predicate)
-            => type.Resolve().Methods.Single(x => x.Name == name && predicate(x)).MakeHostInstanceGeneric(type.GenericArguments);
+        {
+            var methodDefinitions = type.Resolve().Methods;
+            var methodDefinition = methodDefinitions.Single(x => x.Name == name && predicate(x));
+            return methodDefinition.MakeHostInstanceGeneric(type.GenericArguments);
+        }
 
         public static GenericInstanceType FindNested(this GenericInstanceType type, string name)
         {
@@ -135,6 +142,12 @@ namespace CecilRewrite
             return newConstraint;
         }
 
+        public static MethodReference FindMethodImportGenericType(this Type type, ModuleDefinition importModule, string methodName, Func<MethodDefinition, bool> predicate, IEnumerable<TypeReference> genericParameters)
+            => importModule.ImportReference(type).MakeGenericType(genericParameters).FindMethod(methodName, predicate);
+
+        public static MethodReference FindMethodImportGenericType(this Type type, ModuleDefinition importModule, string methodName, IEnumerable<TypeReference> genericParameters)
+            => importModule.ImportReference(type).MakeGenericType(genericParameters).FindMethod(methodName);
+
         public static TypeReference GetElementTypeOfCollectionType(this TypeReference @this)
         {
             var enumeratorType = @this.GetEnumeratorTypeOfCollectionType().Resolve();
@@ -162,6 +175,9 @@ namespace CecilRewrite
 
         public static void Do(this ILProcessor processor, OpCode code, VariableDefinition variable)
             => processor.Append(Instruction.Create(code, variable));
+
+        public static void LoadLocalAddress(this ILProcessor processor, int index)
+            => processor.Append(Instruction.Create(OpCodes.Ldloca_S, processor.Body.Variables[index]));
 
         public static void Call(this ILProcessor processor, MethodReference method)
             => processor.Append(Instruction.Create(OpCodes.Call, method));

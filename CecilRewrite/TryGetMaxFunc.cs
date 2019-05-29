@@ -93,7 +93,7 @@ namespace CecilRewrite
 
             var il = body.GetILProcessor();
             il.Append(Instruction.Create(OpCodes.Ldarg_0));
-            il.Append(Instruction.Create(OpCodes.Call, @this.FindMethod("GetEnumerator")));
+            il.Append(Instruction.Create(OpCodes.Call, @this.FindMethod("GetEnumerator", x => x.Parameters.Count == 0)));
             il.Append(Instruction.Create(OpCodes.Stloc_0));
             il.Append(Instruction.Create(OpCodes.Ldloca_S, body.Variables[0]));
             il.Append(Instruction.Create(OpCodes.Ldloca_S, body.Variables[2]));
@@ -104,7 +104,7 @@ namespace CecilRewrite
             var il0020 = Instruction.Create(OpCodes.Ldarg_2);
             il.Append(Instruction.Create(OpCodes.Brtrue_S, il0020));
             il.Append(Instruction.Create(OpCodes.Ldloca_S, body.Variables[0]));
-            var methodReferenceDispose = enumeratorType.FindMethod("Dispose");
+            var methodReferenceDispose = enumeratorType.FindMethod("Dispose", x => x.Parameters.Count == 0);
             il.Append(Instruction.Create(OpCodes.Call, methodReferenceDispose));
             il.Append(Instruction.Create(OpCodes.Ldarg_2));
             il.Append(Instruction.Create(OpCodes.Ldc_I4_0));
