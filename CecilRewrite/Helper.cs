@@ -202,6 +202,9 @@ namespace CecilRewrite
         public static void False(this ILProcessor processor, Instruction instruction)
             => processor.Append(Instruction.Create(OpCodes.Brfalse_S, instruction));
 
+        public static void Jump(this ILProcessor processor, Instruction instruction)
+            => processor.Append(Instruction.Create(OpCodes.Br_S, instruction));
+
         public static void Ret(this ILProcessor processor)
             => processor.Append(Instruction.Create(OpCodes.Ret));
 

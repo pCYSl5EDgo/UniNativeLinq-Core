@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AggregateOperatorSmallHelper.cs" />
     <Compile Include="AnyAll\AllFuncHelper.cs" />
     <Compile Include="AnyAll\AllOperatorHelper.cs" />
     <Compile Include="AnyAll\AnyOperator.cs" />

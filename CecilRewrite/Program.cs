@@ -51,6 +51,7 @@ namespace CecilRewrite
             AnyFuncHelper.Create(MainModule);
             AllFuncHelper.Create(MainModule);
             IsEmptyHelper.Create(MainModule);
+            AggregateOperatorSmallHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 
