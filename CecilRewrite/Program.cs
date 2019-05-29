@@ -44,8 +44,12 @@ namespace CecilRewrite
             TryGetMaxHelper.Create(MainModule);
             TryGetMinFuncHelper.Create(MainModule);
             TryGetMaxFuncHelper.Create(MainModule);
-            AnyHelper.Create(MainModule);
+            TryGetMinOperatorHelper.Create(MainModule);
+            TryGetMaxOperatorHelper.Create(MainModule);
+            AnyOperatorHelper.Create(MainModule);
+            AllOperatorHelper.Create(MainModule);
             AnyFuncHelper.Create(MainModule);
+            AllFuncHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 
@@ -82,9 +86,9 @@ namespace CecilRewrite
         {
             var body = method.Body;
             var processor = body.GetILProcessor();
-            var ldflda = processor.Create(OpCodes.Ldflda, field);
-            var ret = processor.Create(OpCodes.Ret);
-            var ldarg0 = processor.Create(OpCodes.Ldarg_0);
+            var ldflda = Instruction.Create(OpCodes.Ldflda, field);
+            var ret = Instruction.Create(OpCodes.Ret);
+            var ldarg0 = Instruction.Create(OpCodes.Ldarg_0);
             for (var i = body.Instructions.Count; --i >= 0;)
             {
                 var instruction = body.Instructions[i];

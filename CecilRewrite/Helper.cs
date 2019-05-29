@@ -192,5 +192,20 @@ namespace CecilRewrite
 
         public static void Call(this ILProcessor processor, MethodReference method)
             => processor.Append(Instruction.Create(OpCodes.Call, method));
+
+        public static void CallVirtual(this ILProcessor processor, MethodReference method)
+            => processor.Append(Instruction.Create(OpCodes.Call, method));
+
+        public static void True(this ILProcessor processor, Instruction instruction)
+            => processor.Append(Instruction.Create(OpCodes.Brtrue_S, instruction));
+
+        public static void False(this ILProcessor processor, Instruction instruction)
+            => processor.Append(Instruction.Create(OpCodes.Brfalse_S, instruction));
+
+        public static void Constrained(this ILProcessor processor, TypeReference type)
+            => processor.Append(Instruction.Create(OpCodes.Constrained, type));
+
+        public static bool NoParameter(this MethodDefinition method)
+            => !method.HasParameters;
     }
 }

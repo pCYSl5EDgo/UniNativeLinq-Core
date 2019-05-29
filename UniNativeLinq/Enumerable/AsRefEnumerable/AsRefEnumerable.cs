@@ -7,25 +7,34 @@ namespace UniNativeLinq
     public static class NativeEnumerable
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Any<TEnumerable, TEnumerator, T>(in this AppendEnumerable<TEnumerable, TEnumerator, T> @this, Func<T, bool> predicate)
+        public static bool All<TEnumerable, TEnumerator, T>(in this AppendEnumerable<TEnumerable, TEnumerator, T> @this, Func<T, bool> func)
             where T : unmanaged
             where TEnumerator : struct, IRefEnumerator<T>
             where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
         {
             var enumerator = @this.GetEnumerator();
+            ref var current = ref enumerator.TryGetNext(out var success);
+            if (!success)
+            {
+                enumerator.Dispose();
+                return true;
+            }
+            if (!func(current))
+            {
+                enumerator.Dispose();
+                return false;
+            }
             while (true)
             {
-                ref var current = ref enumerator.TryGetNext(out var success);
+                current = ref enumerator.TryGetNext(out success);
                 if (!success)
-                {
-                    enumerator.Dispose();
-                    return false;
-                }
-                if (predicate(current))
                 {
                     enumerator.Dispose();
                     return true;
                 }
+                if (func(current)) continue;
+                enumerator.Dispose();
+                return false;
             }
         }
 

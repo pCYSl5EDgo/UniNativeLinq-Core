@@ -60,16 +60,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Any.cs" />
-    <Compile Include="AnyFunc.cs" />
+    <Compile Include="AnyAll\AllFuncHelper.cs" />
+    <Compile Include="AnyAll\AllOperatorHelper.cs" />
+    <Compile Include="AnyAll\AnyOperator.cs" />
+    <Compile Include="AnyAll\AnyFunc.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TryGetMax.cs" />
-    <Compile Include="TryGetMaxFunc.cs" />
-    <Compile Include="TryGetMaxOperator.cs" />
-    <Compile Include="TryGetMin.cs" />
-    <Compile Include="TryGetMinFunc.cs" />
+    <Compile Include="MinMax\TryGetMax.cs" />
+    <Compile Include="MinMax\TryGetMaxFunc.cs" />
+    <Compile Include="MinMax\TryGetMaxOperator.cs" />
+    <Compile Include="MinMax\TryGetMin.cs" />
+    <Compile Include="MinMax\TryGetMinFunc.cs" />
+    <Compile Include="MinMax\TryGetMinOperator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
