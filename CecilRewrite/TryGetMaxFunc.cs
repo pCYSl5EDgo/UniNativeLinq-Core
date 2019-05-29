@@ -9,6 +9,7 @@ using Mono.Cecil.Rocks;
 namespace CecilRewrite
 {
     using static Program;
+
     public static class TryGetMaxFuncHelper
     {
         private const string NameSpace = "UniNativeLinq";
@@ -39,6 +40,7 @@ namespace CecilRewrite
                 method.TryGetMaxMethodFillTypeArgument(type, fillType);
                 @static.Methods.Add(method);
             }
+
             WithType(@static, type, MainModule.TypeSystem.Byte);
             WithType(@static, type, MainModule.TypeSystem.SByte);
             WithType(@static, type, MainModule.TypeSystem.Int16);
@@ -69,10 +71,7 @@ namespace CecilRewrite
             method.Parameters.Add(@thisParameter);
             var elementTypeOfCollectionType = @this.GetElementTypeOfCollectionType();
             var typeReference = elementTypeOfCollectionType.Replace(method.GenericParameters);
-            var funcType = MainModule.ImportReference(typeof(Func<,>)).MakeGenericType(new[] {
-                typeReference,
-                fillTypeReference
-            });
+            var funcType = typeof(Func<,>).ImportGenericType(MainModule, new[] {typeReference, fillTypeReference});
             method.Parameters.Add(new ParameterDefinition("func", ParameterAttributes.None, funcType));
             method.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.Out, fillTypeReference.MakeByReferenceType())
             {
@@ -115,7 +114,7 @@ namespace CecilRewrite
             il.Append(Instruction.Create(OpCodes.Ldarg_1));
             il.Append(Instruction.Create(OpCodes.Ldloc_1));
             il.Append(Instruction.Create(OpCodes.Ldobj, typeReferenceElement));
-            var methodReferenceFuncInvoke = MainModule.ImportReference(typeof(Func<,>)).MakeGenericType(new[] { typeReferenceElement, fillTypeReference }).FindMethodAndImport("Invoke", MainModule);
+            var methodReferenceFuncInvoke = typeof(Func<,>).FindMethodImportGenericType(MainModule, "Invoke", new[] { typeReferenceElement, fillTypeReference });
             il.Append(Instruction.Create(OpCodes.Callvirt, methodReferenceFuncInvoke));
             il.Append(Instruction.Create(OpCodes.Stind_I1));
             var il002E = Instruction.Create(OpCodes.Ldloca_S, body.Variables[0]);

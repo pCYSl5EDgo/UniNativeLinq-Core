@@ -67,6 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TryGetMax.cs" />
     <Compile Include="TryGetMaxFunc.cs" />
+    <Compile Include="TryGetMaxOperator.cs" />
     <Compile Include="TryGetMin.cs" />
     <Compile Include="TryGetMinFunc.cs" />
   </ItemGroup>

@@ -17,6 +17,14 @@ namespace CecilRewrite
             return instance;
         }
 
+        public static GenericInstanceType ImportGenericType(this Type type, ModuleDefinition module, IEnumerable<TypeReference> arguments)
+        {
+            var instance = new GenericInstanceType(module.ImportReference(type));
+            foreach (var argument in arguments)
+                instance.GenericArguments.Add(argument);
+            return instance;
+        }
+
         public static MethodReference MakeHostInstanceGeneric(this MethodReference self, IEnumerable<TypeReference> arguments)
         {
             var reference = new MethodReference(self.Name, self.ReturnType, self.DeclaringType.MakeGenericType(arguments))
@@ -41,6 +49,9 @@ namespace CecilRewrite
         public static MethodReference FindMethodAndImport(this GenericInstanceType type, string name, ModuleDefinition module)
             => module.ImportReference(type.Resolve().Methods.Single(x => x.Name == name)).MakeHostInstanceGeneric(type.GenericArguments);
 
+        public static MethodReference FindMethodAndImport(this GenericInstanceType type, string name, ModuleDefinition module, Func<MethodDefinition, bool> predicate)
+            => module.ImportReference(type.Resolve().Methods.Single(x => x.Name == name && predicate(x))).MakeHostInstanceGeneric(type.GenericArguments);
+
         public static MethodReference FindMethod(this GenericInstanceType type, string name, Func<MethodDefinition, bool> predicate)
         {
             var methodDefinitions = type.Resolve().Methods;
@@ -50,7 +61,7 @@ namespace CecilRewrite
 
         public static GenericInstanceType FindNested(this GenericInstanceType type, string name)
         {
-            var nestedType = new GenericInstanceType(((TypeDefinition)type.ElementType).NestedTypes.First(x => x.Name.EndsWith(name)));
+            var nestedType = new GenericInstanceType(((TypeDefinition) type.ElementType).NestedTypes.First(x => x.Name.EndsWith(name)));
             foreach (var argument in type.GenericArguments)
                 nestedType.GenericArguments.Add(argument);
             return nestedType;
@@ -143,10 +154,10 @@ namespace CecilRewrite
         }
 
         public static MethodReference FindMethodImportGenericType(this Type type, ModuleDefinition importModule, string methodName, Func<MethodDefinition, bool> predicate, IEnumerable<TypeReference> genericParameters)
-            => importModule.ImportReference(type).MakeGenericType(genericParameters).FindMethod(methodName, predicate);
+            => importModule.ImportReference(type).MakeGenericType(genericParameters).FindMethodAndImport(methodName, importModule, predicate);
 
         public static MethodReference FindMethodImportGenericType(this Type type, ModuleDefinition importModule, string methodName, IEnumerable<TypeReference> genericParameters)
-            => importModule.ImportReference(type).MakeGenericType(genericParameters).FindMethod(methodName);
+            => importModule.ImportReference(type).MakeGenericType(genericParameters).FindMethodAndImport(methodName, importModule);
 
         public static TypeReference GetElementTypeOfCollectionType(this TypeReference @this)
         {

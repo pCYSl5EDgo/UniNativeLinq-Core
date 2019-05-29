@@ -71,7 +71,6 @@ namespace CecilRewrite
             body.Variables.Add(new VariableDefinition(MainModule.TypeSystem.Boolean));
 
             var processor = body.GetILProcessor();
-            //var methodDefinitionAsRef = new GenericInstanceMethod(MainModule.ImportReference(SystemUnsafeType.Methods.Single(x => x.Name == "AsRef" && x.Parameters.First().ParameterType.Name != "Void*")));
             if (!(typeReferenceEnumerator is GenericInstanceType genericInstanceEnumerator))
                 throw new Exception();
             var methodReferenceTryGetNext = genericInstanceEnumerator.FindMethod("TryGetNext");
