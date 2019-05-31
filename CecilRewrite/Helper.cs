@@ -61,7 +61,7 @@ namespace CecilRewrite
 
         public static GenericInstanceType FindNested(this GenericInstanceType type, string name)
         {
-            var nestedType = new GenericInstanceType(((TypeDefinition) type.ElementType).NestedTypes.First(x => x.Name.EndsWith(name)));
+            var nestedType = new GenericInstanceType(((TypeDefinition)type.ElementType).NestedTypes.First(x => x.Name.EndsWith(name)));
             foreach (var argument in type.GenericArguments)
                 nestedType.GenericArguments.Add(argument);
             return nestedType;
@@ -196,6 +196,9 @@ namespace CecilRewrite
         public static void CallVirtual(this ILProcessor processor, MethodReference method)
             => processor.Append(Instruction.Create(OpCodes.Call, method));
 
+        public static void GetEnumerator(this ILProcessor processor, GenericInstanceType @this)
+            => processor.Call(@this.FindMethod(nameof(GetEnumerator), NoParameter));
+
         public static void True(this ILProcessor processor, Instruction instruction)
             => processor.Append(Instruction.Create(OpCodes.Brtrue_S, instruction));
 
@@ -204,6 +207,9 @@ namespace CecilRewrite
 
         public static void Jump(this ILProcessor processor, Instruction instruction)
             => processor.Append(Instruction.Create(OpCodes.Br_S, instruction));
+
+        public static void LdObj(this ILProcessor processor, TypeReference type)
+            => processor.Append(Instruction.Create(OpCodes.Ldobj, type));
 
         public static void Ret(this ILProcessor processor)
             => processor.Append(Instruction.Create(OpCodes.Ret));

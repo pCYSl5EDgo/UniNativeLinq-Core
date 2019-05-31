@@ -7,20 +7,20 @@ namespace UniNativeLinq
     public static class NativeEnumerable
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void Aggregate<TEnumerable, TEnumerator, T, TAccumulate0, TFunc0>(in this AppendEnumerable<TEnumerable, TEnumerator, T> @this, ref TAccumulate0 seed, TFunc0 func)
+        public static TResult0 Aggregate<TEnumerable, TEnumerator, T, TAccumulate0, TFunc0, TResult0, TResultFunc0>(in this AppendEnumerable<TEnumerable, TEnumerator, T> @this, ref TAccumulate0 seed, Func<TAccumulate0, T, TAccumulate0> func, Func<TAccumulate0, TResult0> resultFunc)
             where T : unmanaged
             where TEnumerator : struct, IRefEnumerator<T>
             where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
-            where TFunc0 : IRefAction<TAccumulate0, T>
         {
             var enumerator = @this.GetEnumerator();
             while (true)
             {
                 ref var current = ref enumerator.TryGetNext(out var success);
                 if (!success) break;
-                func.Execute(ref seed, ref current);
+                seed = func(seed, current);
             }
             enumerator.Dispose();
+            return resultFunc(seed);
         }
 
         public static NativeEnumerable<T> AsRefEnumerable<T>(this NativeArray<T> array)

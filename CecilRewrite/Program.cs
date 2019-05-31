@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
@@ -52,6 +51,9 @@ namespace CecilRewrite
             AllFuncHelper.Create(MainModule);
             IsEmptyHelper.Create(MainModule);
             AggregateOperatorSmallHelper.Create(MainModule);
+            AggregateFunctionSmallHelper.Create(MainModule);
+            AggregateOperatorWithResultTypeHelper.Create(MainModule);
+            AggregateFunctionWithResultTypeHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 
