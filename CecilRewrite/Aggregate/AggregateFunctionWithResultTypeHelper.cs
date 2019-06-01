@@ -34,7 +34,7 @@ namespace CecilRewrite
             method.CustomAttributes.Add(ExtensionAttribute);
 
             var added = method.FromTypeToMethodParam(type.GenericParameters);
-            var @this = type.MakeGenericType(added);
+            var @this = type.MakeGenericInstanceType(added);
 
             GenericParameter TAccumulate0;
             TAccumulate0 = new GenericParameter(nameof(TAccumulate0), method);
@@ -73,7 +73,7 @@ namespace CecilRewrite
             processor.GetEnumerator(@this);
             processor.Do(OpCodes.Stloc_0);
             processor.Append(il0007);
-            processor.LoadLocalAddress(2);
+            processor.LdLocaS(2);
             processor.Call(Enumerator.FindMethod("TryGetNext"));
             processor.Do(OpCodes.Stloc_1);
             processor.Do(OpCodes.Ldloc_2);

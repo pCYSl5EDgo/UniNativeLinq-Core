@@ -68,6 +68,9 @@
     <Compile Include="AnyAll\AllOperatorHelper.cs" />
     <Compile Include="AnyAll\AnyOperator.cs" />
     <Compile Include="AnyAll\AnyFunc.cs" />
+    <Compile Include="ContainsDefaultEqualityComparerHelper.cs" />
+    <Compile Include="ContainsFuncHelper.cs" />
+    <Compile Include="ContainsOperatorHelper.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="IsEmpty.cs" />
     <Compile Include="Program.cs" />

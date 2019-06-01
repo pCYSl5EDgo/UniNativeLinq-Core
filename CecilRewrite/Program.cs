@@ -39,21 +39,23 @@ namespace CecilRewrite
         internal static void Main(string[] args)
         {
             RewriteThrow(MainModule);
-            TryGetMinHelper.Create(MainModule);
-            TryGetMaxHelper.Create(MainModule);
-            TryGetMinFuncHelper.Create(MainModule);
-            TryGetMaxFuncHelper.Create(MainModule);
-            TryGetMinOperatorHelper.Create(MainModule);
-            TryGetMaxOperatorHelper.Create(MainModule);
-            AnyOperatorHelper.Create(MainModule);
-            AllOperatorHelper.Create(MainModule);
-            AnyFuncHelper.Create(MainModule);
-            AllFuncHelper.Create(MainModule);
-            IsEmptyHelper.Create(MainModule);
-            AggregateOperatorSmallHelper.Create(MainModule);
-            AggregateFunctionSmallHelper.Create(MainModule);
-            AggregateOperatorWithResultTypeHelper.Create(MainModule);
-            AggregateFunctionWithResultTypeHelper.Create(MainModule);
+            //TryGetMinHelper.Create(MainModule);
+            //TryGetMaxHelper.Create(MainModule);
+            //TryGetMinFuncHelper.Create(MainModule);
+            //TryGetMaxFuncHelper.Create(MainModule);
+            //TryGetMinOperatorHelper.Create(MainModule);
+            //TryGetMaxOperatorHelper.Create(MainModule);
+            //AnyOperatorHelper.Create(MainModule);
+            //AllOperatorHelper.Create(MainModule);
+            //AnyFuncHelper.Create(MainModule);
+            //AllFuncHelper.Create(MainModule);
+            //IsEmptyHelper.Create(MainModule);
+            //AggregateOperatorSmallHelper.Create(MainModule);
+            //AggregateFunctionSmallHelper.Create(MainModule);
+            //AggregateOperatorWithResultTypeHelper.Create(MainModule);
+            //AggregateFunctionWithResultTypeHelper.Create(MainModule);
+            //ContainsDefaultEqualityComparerHelper.Create(MainModule);
+            ContainsFuncHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 

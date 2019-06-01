@@ -32,7 +32,7 @@ namespace CecilRewrite
             method.CustomAttributes.Add(ExtensionAttribute);
             method.Parameters.Capacity = 1;
             var argumentsFromTypeToMethodParam = method.FromTypeToMethodParam(type.GenericParameters);
-            var @this = type.MakeGenericType(argumentsFromTypeToMethodParam);
+            var @this = type.MakeGenericInstanceType(argumentsFromTypeToMethodParam);
             FillParameter(@this, method);
             FillBody(@this, method);
             @static.Methods.Add(method);
@@ -50,7 +50,7 @@ namespace CecilRewrite
                 IsNonVariant = true,
             };
             genericParameter.Constraints.Add(MainModule.ImportReference(typeof(ValueType)));
-            genericParameter.Constraints.Add(MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericType(new[]
+            genericParameter.Constraints.Add(MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericInstanceType(new[]
             {
                 @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters),
                 MainModule.TypeSystem.Boolean
@@ -81,14 +81,14 @@ namespace CecilRewrite
             processor.Do(OpCodes.Ldarg_0);
             processor.Call(@this.FindMethod("GetEnumerator", Helper.NoParameter));
             processor.Do(OpCodes.Stloc_0);
-            processor.LoadLocalAddress(0);
-            processor.LoadLocalAddress(2);
+            processor.LdLocaS(0);
+            processor.LdLocaS(2);
             var TryGetNext = typeReferenceEnumerator.FindMethod("TryGetNext");
             processor.Call(TryGetNext);
             processor.Do(OpCodes.Stloc_1);
             processor.Do(OpCodes.Ldloc_2);
             processor.True(il001D);
-            processor.LoadLocalAddress(0);
+            processor.LdLocaS(0);
             var Dispose = typeReferenceEnumerator.FindMethod("Dispose");
             processor.Call(Dispose);
             processor.Do(OpCodes.Ldc_I4_1);
@@ -96,20 +96,20 @@ namespace CecilRewrite
             processor.Append(il001D);
             processor.Do(OpCodes.Ldloc_1);
             processor.Constrained(typeReferencePredicate);
-            var Calc = MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericType(new[] { typeReferenceElement, MainModule.TypeSystem.Boolean }).FindMethod("Calc");
+            var Calc = MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericInstanceType(new[] { typeReferenceElement, MainModule.TypeSystem.Boolean }).FindMethod("Calc");
             processor.CallVirtual(Calc);
             processor.True(il0036);
-            processor.LoadLocalAddress(0);
+            processor.LdLocaS(0);
             processor.Call(Dispose);
             processor.Do(OpCodes.Ldc_I4_0);
             processor.Do(OpCodes.Ret);
             processor.Append(il0036);
-            processor.LoadLocalAddress(2);
+            processor.LdLocaS(2);
             processor.Call(TryGetNext);
             processor.Do(OpCodes.Stloc_1);
             processor.Do(OpCodes.Ldloc_2);
             processor.True(il004C);
-            processor.LoadLocalAddress(0);
+            processor.LdLocaS(0);
             processor.Call(Dispose);
             processor.Do(OpCodes.Ldc_I4_1);
             processor.Do(OpCodes.Ret);
@@ -118,7 +118,7 @@ namespace CecilRewrite
             processor.Constrained(typeReferencePredicate);
             processor.CallVirtual(Calc);
             processor.True(il0036);
-            processor.LoadLocalAddress(0);
+            processor.LdLocaS(0);
             processor.Call(Dispose);
             processor.Do(OpCodes.Ldc_I4_0);
             processor.Do(OpCodes.Ret);

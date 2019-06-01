@@ -9,7 +9,7 @@ namespace CecilRewrite
 {
     internal static class Helper
     {
-        public static GenericInstanceType MakeGenericType(this TypeReference self, IEnumerable<TypeReference> arguments)
+        public static GenericInstanceType MakeGenericInstanceType(this TypeReference self, IEnumerable<TypeReference> arguments)
         {
             var instance = new GenericInstanceType(self);
             foreach (var argument in arguments)
@@ -27,7 +27,7 @@ namespace CecilRewrite
 
         public static MethodReference MakeHostInstanceGeneric(this MethodReference self, IEnumerable<TypeReference> arguments)
         {
-            var reference = new MethodReference(self.Name, self.ReturnType, self.DeclaringType.MakeGenericType(arguments))
+            var reference = new MethodReference(self.Name, self.ReturnType, self.DeclaringType.MakeGenericInstanceType(arguments))
             {
                 HasThis = self.HasThis,
                 ExplicitThis = self.ExplicitThis,
@@ -154,10 +154,10 @@ namespace CecilRewrite
         }
 
         public static MethodReference FindMethodImportGenericType(this Type type, ModuleDefinition importModule, string methodName, Func<MethodDefinition, bool> predicate, IEnumerable<TypeReference> genericParameters)
-            => importModule.ImportReference(type).MakeGenericType(genericParameters).FindMethodAndImport(methodName, importModule, predicate);
+            => importModule.ImportReference(type).MakeGenericInstanceType(genericParameters).FindMethodAndImport(methodName, importModule, predicate);
 
         public static MethodReference FindMethodImportGenericType(this Type type, ModuleDefinition importModule, string methodName, IEnumerable<TypeReference> genericParameters)
-            => importModule.ImportReference(type).MakeGenericType(genericParameters).FindMethodAndImport(methodName, importModule);
+            => importModule.ImportReference(type).MakeGenericInstanceType(genericParameters).FindMethodAndImport(methodName, importModule);
 
         public static TypeReference GetElementTypeOfCollectionType(this TypeReference @this)
         {
@@ -187,7 +187,7 @@ namespace CecilRewrite
         public static void Do(this ILProcessor processor, OpCode code, VariableDefinition variable)
             => processor.Append(Instruction.Create(code, variable));
 
-        public static void LoadLocalAddress(this ILProcessor processor, int index)
+        public static void LdLocaS(this ILProcessor processor, int index)
             => processor.Append(Instruction.Create(OpCodes.Ldloca_S, processor.Body.Variables[index]));
 
         public static void Call(this ILProcessor processor, MethodReference method)

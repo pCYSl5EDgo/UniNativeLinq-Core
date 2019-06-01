@@ -34,7 +34,7 @@ namespace CecilRewrite
             method.CustomAttributes.Add(ExtensionAttribute);
             method.Parameters.Capacity = 1;
             var argumentsFromTypeToMethodParam = method.FromTypeToMethodParam(type.GenericParameters);
-            var @this = type.MakeGenericType(argumentsFromTypeToMethodParam);
+            var @this = type.MakeGenericInstanceType(argumentsFromTypeToMethodParam);
             FillParameter(@this, method);
             FillBody(@this, method);
             @static.Methods.Add(method);
@@ -52,7 +52,7 @@ namespace CecilRewrite
                 IsNonVariant = true,
             };
             genericParameter.Constraints.Add(MainModule.ImportReference(typeof(ValueType)));
-            genericParameter.Constraints.Add(MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericType(new[]
+            genericParameter.Constraints.Add(MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericInstanceType(new[]
             {
                 @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters),
                 MainModule.TypeSystem.Boolean
@@ -103,7 +103,7 @@ namespace CecilRewrite
                 processor.Append(il0024);
                 processor.Do(OpCodes.Ldloc_2);
                 processor.Append(Instruction.Create(OpCodes.Constrained, ((ByReferenceType)method.Parameters[1].ParameterType).ElementType));
-                processor.Append(Instruction.Create(OpCodes.Callvirt, MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericType(new[] { typeReferenceElement, MainModule.TypeSystem.Boolean }).FindMethod("Calc")));
+                processor.Append(Instruction.Create(OpCodes.Callvirt, MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericInstanceType(new[] { typeReferenceElement, MainModule.TypeSystem.Boolean }).FindMethod("Calc")));
                 processor.Append(Instruction.Create(OpCodes.Brfalse_S, il000E));
                 processor.Do(OpCodes.Ldloca_S, body.Variables[1]);
                 processor.Call(methodReferenceDispose);

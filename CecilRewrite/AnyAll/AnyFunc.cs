@@ -34,7 +34,7 @@ namespace CecilRewrite
             method.CustomAttributes.Add(ExtensionAttribute);
             method.Parameters.Capacity = 1;
             var argumentsFromTypeToMethodParam = method.FromTypeToMethodParam(type.GenericParameters);
-            var @this = type.MakeGenericType(argumentsFromTypeToMethodParam);
+            var @this = type.MakeGenericInstanceType(argumentsFromTypeToMethodParam);
             FillParameter(@this, method);
             FillBody(@this, method);
             @static.Methods.Add(method);
@@ -45,7 +45,7 @@ namespace CecilRewrite
             var thisParameterDefinition = new ParameterDefinition("this", ParameterAttributes.In, @this.MakeByReferenceType());
             thisParameterDefinition.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(thisParameterDefinition);
-            var funcReference = MainModule.ImportReference(typeof(Func<,>)).MakeGenericType(new[]
+            var funcReference = MainModule.ImportReference(typeof(Func<,>)).MakeGenericInstanceType(new[]
             {
                 @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters),
                 MainModule.TypeSystem.Boolean
@@ -76,12 +76,12 @@ namespace CecilRewrite
             processor.Call(@this.FindMethod("GetEnumerator", x => !x.HasParameters));
             processor.Do(OpCodes.Stloc_0);
             processor.Append(il0007);
-            processor.LoadLocalAddress(2);
+            processor.LdLocaS(2);
             processor.Call(methodReferenceTryGetNext);
             processor.Do(OpCodes.Stloc_1);
             processor.Do(OpCodes.Ldloc_2);
             processor.Append(Instruction.Create(OpCodes.Brtrue_S, il001D));
-            processor.LoadLocalAddress(0);
+            processor.LdLocaS(0);
             processor.Call(methodReferenceDispose);
             processor.Do(OpCodes.Ldc_I4_0);
             processor.Do(OpCodes.Ret);
@@ -91,7 +91,7 @@ namespace CecilRewrite
             var methodReferenceFuncInvoke = typeof(Func<,>).FindMethodImportGenericType(MainModule, "Invoke", new[] { typeReferenceElement, MainModule.TypeSystem.Boolean });
             processor.Append(Instruction.Create(OpCodes.Callvirt, methodReferenceFuncInvoke));
             processor.Append(Instruction.Create(OpCodes.Brfalse_S, il0007));
-            processor.LoadLocalAddress(0);
+            processor.LdLocaS(0);
             processor.Call(methodReferenceDispose);
             processor.Do(OpCodes.Ldc_I4_1);
             processor.Do(OpCodes.Ret);

@@ -56,7 +56,7 @@ namespace CecilRewrite
         private static void TryGetMaxMethodFillTypeArgument(this MethodDefinition method, TypeDefinition collectionTypeDefinition, TypeReference fillTypeReference)
         {
             var addedParams = method.FromTypeToMethodParam(collectionTypeDefinition.GenericParameters);
-            var @this = collectionTypeDefinition.MakeGenericType(addedParams);
+            var @this = collectionTypeDefinition.MakeGenericInstanceType(addedParams);
             FillParameter(@this, method, fillTypeReference);
             FillBody(@this, method, fillTypeReference, OpCodes.Ble_S);
         }

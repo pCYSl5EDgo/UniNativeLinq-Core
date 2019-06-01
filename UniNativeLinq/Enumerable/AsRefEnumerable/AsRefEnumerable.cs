@@ -7,7 +7,7 @@ namespace UniNativeLinq
     public static class NativeEnumerable
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TResult0 Aggregate<TEnumerable, TEnumerator, T, TAccumulate0, TFunc0, TResult0, TResultFunc0>(in this AppendEnumerable<TEnumerable, TEnumerator, T> @this, ref TAccumulate0 seed, Func<TAccumulate0, T, TAccumulate0> func, Func<TAccumulate0, TResult0> resultFunc)
+        public static bool Contains<TEnumerable, TEnumerator, T, TEqualityComparer>(in this AppendEnumerable<TEnumerable, TEnumerator, T> @this, ref T value, Func<T, T, bool> comparer)
             where T : unmanaged
             where TEnumerator : struct, IRefEnumerator<T>
             where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
@@ -17,10 +17,12 @@ namespace UniNativeLinq
             {
                 ref var current = ref enumerator.TryGetNext(out var success);
                 if (!success) break;
-                seed = func(seed, current);
+                if (!comparer(value, current)) continue;
+                enumerator.Dispose();
+                return true;
             }
             enumerator.Dispose();
-            return resultFunc(seed);
+            return false;
         }
 
         public static NativeEnumerable<T> AsRefEnumerable<T>(this NativeArray<T> array)

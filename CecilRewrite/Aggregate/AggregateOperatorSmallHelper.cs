@@ -32,11 +32,11 @@ namespace CecilRewrite
             };
             method.CustomAttributes.Add(ExtensionAttribute);
             var added = method.FromTypeToMethodParam(type.GenericParameters);
-            var @this = type.MakeGenericType(added);
+            var @this = type.MakeGenericInstanceType(added);
             GenericParameter TAccumulate0, TFunc0;
             TAccumulate0 = new GenericParameter(nameof(TAccumulate0), method);
             TFunc0 = new GenericParameter(nameof(TFunc0), method);
-            TFunc0.Constraints.Add(MainModule.GetType(NameSpace, "IRefAction`2").MakeGenericType(new[]
+            TFunc0.Constraints.Add(MainModule.GetType(NameSpace, "IRefAction`2").MakeGenericInstanceType(new[]
             {
                 TAccumulate0,
                 @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters),
@@ -79,7 +79,7 @@ namespace CecilRewrite
             processor.GetEnumerator(@this);
             processor.Do(OpCodes.Stloc_0);
             processor.Append(il0007);
-            processor.LoadLocalAddress(2);
+            processor.LdLocaS(2);
             processor.Call(EnumeratorType.FindMethod("TryGetNext"));
             processor.Do(OpCodes.Stloc_1);
             processor.Do(OpCodes.Ldloc_2);
@@ -87,7 +87,7 @@ namespace CecilRewrite
             processor.Do(OpCodes.Ldarg_2);
             processor.Do(OpCodes.Ldarg_1);
             processor.Do(OpCodes.Ldloc_1);
-            var Execute = MainModule.GetType(NameSpace, "IRefAction`2").MakeGenericType(new[] { accumulate0, ElementType }).FindMethod("Execute");
+            var Execute = MainModule.GetType(NameSpace, "IRefAction`2").MakeGenericInstanceType(new[] { accumulate0, ElementType }).FindMethod("Execute");
             processor.Constrained(func0);
             processor.CallVirtual(Execute);
             processor.Jump(il0007);

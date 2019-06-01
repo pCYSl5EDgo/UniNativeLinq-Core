@@ -37,7 +37,7 @@ namespace CecilRewrite
             method.CustomAttributes.Add(ExtensionAttribute);
 
             var added = method.FromTypeToMethodParam(type.GenericParameters);
-            var @this = type.MakeGenericType(added);
+            var @this = type.MakeGenericInstanceType(added);
 
             GenericParameter TAccumulate0;
             TAccumulate0 = new GenericParameter(nameof(TAccumulate0), method);
@@ -46,7 +46,7 @@ namespace CecilRewrite
             GenericParameter TFunc0;
             TFunc0 = new GenericParameter(nameof(TFunc0), method);
             var Element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters);
-            TFunc0.Constraints.Add(MainModule.GetType(NameSpace, "IRefAction`2").MakeGenericType(new[]
+            TFunc0.Constraints.Add(MainModule.GetType(NameSpace, "IRefAction`2").MakeGenericInstanceType(new[]
             {
                 TAccumulate0,
                 Element,
@@ -57,7 +57,7 @@ namespace CecilRewrite
 
             GenericParameter TResultFunc0;
             TResultFunc0 = new GenericParameter(nameof(TResultFunc0), method);
-            TFunc0.Constraints.Add(MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericType(new[]
+            TFunc0.Constraints.Add(MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericInstanceType(new[]
             {
                 TAccumulate0,
                 TResult0,
@@ -94,7 +94,7 @@ namespace CecilRewrite
             processor.GetEnumerator(@this);
             processor.Do(OpCodes.Stloc_0);
             processor.Append(il0007);
-            processor.LoadLocalAddress(2);
+            processor.LdLocaS(2);
             processor.Call(Enumerator.FindMethod("TryGetNext"));
             processor.Do(OpCodes.Stloc_1);
             processor.Do(OpCodes.Ldloc_2);
@@ -103,14 +103,14 @@ namespace CecilRewrite
             processor.Do(OpCodes.Ldarg_1);
             processor.Do(OpCodes.Ldloc_1);
             processor.Constrained(TFunc0);
-            processor.CallVirtual(MainModule.GetType(NameSpace, "IRefAction`2").MakeGenericType(new[] { TAccumulate0, Element }).FindMethod("Execute"));
+            processor.CallVirtual(MainModule.GetType(NameSpace, "IRefAction`2").MakeGenericInstanceType(new[] { TAccumulate0, Element }).FindMethod("Execute"));
             processor.Jump(il0007);
             processor.Append(il0025);
             processor.Call(Enumerator.FindMethod("Dispose", Helper.NoParameter));
             processor.Do(OpCodes.Ldarg_3);
             processor.Do(OpCodes.Ldarg_1);
             processor.Constrained(TResultFunc0);
-            processor.CallVirtual(MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericType(new[] { TAccumulate0, TResultFunc0 }).FindMethod("Calc"));
+            processor.CallVirtual(MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericInstanceType(new[] { TAccumulate0, TResultFunc0 }).FindMethod("Calc"));
             processor.Ret();
 
             @static.Methods.Add(method);
