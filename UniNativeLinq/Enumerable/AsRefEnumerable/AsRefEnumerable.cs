@@ -7,7 +7,7 @@ namespace UniNativeLinq
     public static class NativeEnumerable
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains<TEnumerable, TEnumerator, T, TEqualityComparer>(in this AppendEnumerable<TEnumerable, TEnumerator, T> @this, ref T value, Func<T, T, bool> comparer)
+        public static bool Count<TEnumerable, TEnumerator, T, TPredicate>(in this AppendEnumerable<TEnumerable, TEnumerator, T> @this, ref T value, Func<T, T, bool> comparer)
             where T : unmanaged
             where TEnumerator : struct, IRefEnumerator<T>
             where TEnumerable : struct, IRefEnumerable<TEnumerator, T>

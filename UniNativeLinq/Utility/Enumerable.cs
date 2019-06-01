@@ -1,6 +1,4 @@
-﻿using Unity.Collections;
-
-namespace UniNativeLinq
+﻿namespace UniNativeLinq
 {
     public static class Enumerable
     {
