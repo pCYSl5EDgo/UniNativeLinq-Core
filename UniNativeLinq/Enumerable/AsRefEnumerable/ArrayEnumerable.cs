@@ -7,6 +7,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
+    [CanFastCountAttribute]
     public unsafe struct
         ArrayEnumerable<T>
         : IRefEnumerable<ArrayEnumerable<T>.Enumerator, T>

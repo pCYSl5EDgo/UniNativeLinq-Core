@@ -6,6 +6,7 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
+    [CanFastCount]
     public readonly unsafe struct
         RangeRepeatEnumerable<T, TAction>
         : IRefEnumerable<RangeRepeatEnumerable<T, TAction>.Enumerator, T>
@@ -13,13 +14,14 @@ namespace UniNativeLinq
         where TAction : struct, IRangeRepeat<T>
     {
         private readonly T start;
-        private readonly long length;
+        // ReSharper disable once InconsistentNaming
+        private readonly long Length;
         private readonly TAction acts;
 
         public RangeRepeatEnumerable(T start, long length, TAction acts)
         {
             this.start = start;
-            this.length = length;
+            this.Length = length;
             this.acts = acts;
         }
 
@@ -84,7 +86,7 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(start, length, acts);
+        public readonly Enumerator GetEnumerator() => new Enumerator(start, Length, acts);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -97,13 +99,13 @@ namespace UniNativeLinq
         public readonly bool CanFastCount() => true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any() => length != 0;
+        public readonly bool Any() => Length != 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count() => (int)length;
+        public readonly int Count() => (int)Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount() => length;
+        public readonly long LongCount() => Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly void CopyTo(T* dest)
