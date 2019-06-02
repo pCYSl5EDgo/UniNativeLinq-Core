@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using CecilRewrite.Contains;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
@@ -55,7 +56,8 @@ namespace CecilRewrite
             //AggregateOperatorWithResultTypeHelper.Create(MainModule);
             //AggregateFunctionWithResultTypeHelper.Create(MainModule);
             //ContainsDefaultEqualityComparerHelper.Create(MainModule);
-            ContainsFuncHelper.Create(MainModule);
+            //ContainsFuncHelper.Create(MainModule);
+            TryGetElementAtHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 

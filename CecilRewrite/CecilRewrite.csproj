@@ -71,7 +71,6 @@
     <Compile Include="Contains\ContainsDefaultEqualityComparerHelper.cs" />
     <Compile Include="Contains\ContainsFuncHelper.cs" />
     <Compile Include="Contains\ContainsOperatorHelper.cs" />
-    <Compile Include="CountOperatorHelper.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="IsEmpty.cs" />
     <Compile Include="Program.cs" />
@@ -82,6 +81,7 @@
     <Compile Include="MinMax\TryGetMin.cs" />
     <Compile Include="MinMax\TryGetMinFunc.cs" />
     <Compile Include="MinMax\TryGetMinOperator.cs" />
+    <Compile Include="TryGetElementAtHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
