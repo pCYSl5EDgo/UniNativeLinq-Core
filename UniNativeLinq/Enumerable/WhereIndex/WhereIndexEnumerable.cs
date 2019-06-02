@@ -6,6 +6,7 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
+    [SlowCount]
     public unsafe struct
         WhereIndexEnumerable<TPrevEnumerable, TPrevEnumerator, T, TPredicate>
         : IRefEnumerable<WhereIndexEnumerable<TPrevEnumerable, TPrevEnumerator, T, TPredicate>.Enumerator, T>

@@ -7,6 +7,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
+    [SlowCount]
     public readonly unsafe struct
         GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>
         : IRefEnumerable<GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>.Enumerator, Grouping<TKey, TElement>>

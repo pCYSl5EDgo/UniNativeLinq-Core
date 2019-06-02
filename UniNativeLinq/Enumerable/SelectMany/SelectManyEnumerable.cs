@@ -6,6 +6,7 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
+    [SlowCount]
     public readonly unsafe struct
         SelectManyEnumerable<TEnumerable, TEnumerator, TPrev, T, TAnotherEnumerable, TAnotherEnumerator, TAction>
         : IRefEnumerable<SelectManyEnumerable<TEnumerable, TEnumerator, TPrev, T, TAnotherEnumerable, TAnotherEnumerator, TAction>.Enumerator, T>

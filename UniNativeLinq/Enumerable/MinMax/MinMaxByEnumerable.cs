@@ -6,6 +6,7 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
+    [SlowCount]
     public readonly unsafe struct
         MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>
         : IRefEnumerable<MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>.Enumerator, T>

@@ -7,6 +7,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
+    [SlowCount]
     public readonly unsafe struct
         JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, T, TSelector, TKeyEqualityComparer>
         : IRefEnumerable<JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, T, TSelector, TKeyEqualityComparer>.Enumerator, T>

@@ -7,6 +7,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
+    [SlowCount]
     public unsafe struct
         Grouping<TKey, T>
         : IRefEnumerable<Grouping<TKey, T>.Enumerator, T>, IDisposable

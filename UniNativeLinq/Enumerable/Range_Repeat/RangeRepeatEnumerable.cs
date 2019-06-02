@@ -6,7 +6,7 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
-    [CanFastCount]
+    [FastCount]
     public readonly unsafe struct
         RangeRepeatEnumerable<T, TAction>
         : IRefEnumerable<RangeRepeatEnumerable<T, TAction>.Enumerator, T>

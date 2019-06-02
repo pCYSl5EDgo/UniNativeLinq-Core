@@ -6,6 +6,7 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
+    [SlowCount]
     public unsafe struct
         SkipWhileEnumerable<TEnumerable, TEnumerator, T, TPredicate>
         : IRefEnumerable<SkipWhileEnumerable<TEnumerable, TEnumerator, T, TPredicate>.Enumerator, T>

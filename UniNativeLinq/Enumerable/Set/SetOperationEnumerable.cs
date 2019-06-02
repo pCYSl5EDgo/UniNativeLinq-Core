@@ -7,6 +7,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
+    [SlowCount]
     public readonly unsafe struct
         SetOperationEnumerable<TFirstEnumerable, TFirstEnumerator, TSecondEnumerable, TSecondEnumerator, T, TSetOperation>
         : IRefEnumerable<SetOperationEnumerable<TFirstEnumerable, TFirstEnumerator, TSecondEnumerable, TSecondEnumerator, T, TSetOperation>.Enumerator, T>

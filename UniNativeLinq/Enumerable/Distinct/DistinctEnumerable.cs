@@ -7,6 +7,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
+    [SlowCount]
     public unsafe struct
         DistinctEnumerable<TEnumerable, TEnumerator, T, TEqualityComparer, TGetHashCodeFunc>
         : IRefEnumerable<DistinctEnumerable<TEnumerable, TEnumerator, T, TEqualityComparer, TGetHashCodeFunc>.Enumerator, T>
