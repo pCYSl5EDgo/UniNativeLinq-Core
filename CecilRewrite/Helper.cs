@@ -42,7 +42,8 @@ namespace CecilRewrite
 
         public static MethodReference FindMethod(this GenericInstanceType type, string name)
         {
-            var methodDefinition = type.Resolve().Methods.Single(x => x.Name == name);
+            var typeDefinition = type.Resolve();
+            var methodDefinition = typeDefinition.Methods.Single(x => x.Name == name);
             return methodDefinition.MakeHostInstanceGeneric(type.GenericArguments);
         }
 

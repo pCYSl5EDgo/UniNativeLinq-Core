@@ -4,6 +4,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 // ReSharper disable InconsistentNaming
+// ReSharper disable LocalNameCapturedOnly
 
 namespace CecilRewrite.Contains
 {
@@ -66,54 +67,29 @@ namespace CecilRewrite.Contains
             MethodReference Dispose;
             Dispose = Enumerator.FindMethod(nameof(Dispose), Helper.NoParameter);
 
-            processor.Do(OpCodes.Ldarg_1);
-            processor.Do(OpCodes.Ldc_I4_0);
-            processor.Do(OpCodes.Conv_I8);
             if (!(type.CustomAttributes.FirstOrDefault(x => x.AttributeType.Name == "FastCountAttribute") is null))
             {
-                var il000E = Instruction.Create(OpCodes.Ldarg_0);
-                var il001A = Instruction.Create(OpCodes.Ldloca_S, variables[0]); 
-                var il0033 = Instruction.Create(OpCodes.Ldloc_2);
-                var il0038 = Instruction.Create(OpCodes.Ldloc_2);
+                MethodReference get_Item;
+                get_Item = @this.FindMethod(nameof(get_Item));
 
-                processor.Append(Instruction.Create(OpCodes.Bge_S, il000E));
-                processor.Do(OpCodes.Ldarg_2);
-                processor.InitObj(Element);
-                processor.Do(OpCodes.Ldc_I4_0);
-                processor.Ret();
-                processor.Append(il000E);
-                processor.Call(GetEnumerator);
-                processor.Do(OpCodes.Stloc_0);
-                processor.Do(OpCodes.Ldc_I4_0);
-                processor.Do(OpCodes.Conv_I8);
-                processor.Do(OpCodes.Stloc_2);
-                processor.Jump(il0038);
-                processor.Append(il001A);
-                processor.Call(MoveNext);
-                processor.True(il0033);
-                processor.Do(OpCodes.Ldarg_2);
-                processor.InitObj(Element);
-                processor.LdLocaS(0);
-                processor.Call(Dispose);
-                processor.Do(OpCodes.Ldc_I4_0);
-                processor.Ret();
-                processor.Append(il0033);
-                processor.Do(OpCodes.Ldc_I4_1);
-                processor.Do(OpCodes.Conv_I8);
-                processor.Do(OpCodes.Add);
-                processor.Do(OpCodes.Stloc_2);
-                processor.Append(il0038);
+                var il0012 = Instruction.Create(OpCodes.Ldarg_2);
+
+                processor.Do(OpCodes.Ldarg_0);
+                processor.Call(@this.FindMethod("LongCount"));
                 processor.Do(OpCodes.Ldarg_1);
-                processor.Append(Instruction.Create(OpCodes.Blt_S, il001A));
+                processor.Append(Instruction.Create(OpCodes.Bgt_S, il0012));
                 processor.Do(OpCodes.Ldarg_2);
-                processor.LdLocaS(0);
-                processor.LdLocaS(1);
-                processor.Call(TryGetNext);
-                processor.LdObj(Element);
+                processor.InitObj(Element);
+                processor.Do(OpCodes.Ldc_I4_0);
+                processor.Ret();
+                processor.Append(il0012);
+                processor.Do(OpCodes.Ldarg_0);
+                processor.Do(OpCodes.Ldarg_1);
+                processor.Call(@this.FindMethod("get_Item"));
+                if (get_Item.ReturnType.IsByReference)
+                    processor.LdObj(Element);
                 processor.StObj(Element);
-                processor.LdLocaS(0);
-                processor.Call(Dispose);
-                processor.Do(OpCodes.Ldloc_1);
+                processor.Do(OpCodes.Ldc_I4_1);
                 processor.Ret();
             }
             else if (!(type.CustomAttributes.FirstOrDefault(x => x.AttributeType.Name == "SlowCountAttribute") is null))
@@ -123,6 +99,9 @@ namespace CecilRewrite.Contains
                 var il001A = Instruction.Create(OpCodes.Ldloca_S, variables[0]);
                 var il0033 = Instruction.Create(OpCodes.Ldloc_2);
 
+                processor.Do(OpCodes.Ldarg_1);
+                processor.Do(OpCodes.Ldc_I4_0);
+                processor.Do(OpCodes.Conv_I8);
                 processor.Append(Instruction.Create(OpCodes.Bge_S, il000E));
                 processor.Do(OpCodes.Ldarg_2);
                 processor.Append(Instruction.Create(OpCodes.Initobj, Element));
@@ -163,77 +142,6 @@ namespace CecilRewrite.Contains
                 processor.Do(OpCodes.Ldloc_1);
                 processor.Ret();
             }
-            /*
-	// if (index < 0)
-	IL_0000: ldarg.1
-	IL_0001: ldc.i4.0
-	IL_0002: conv.i8
-	IL_0003: bge.s IL_000e
-
-	// value = default(T);
-	IL_0005: ldarg.2
-	IL_0006: initobj !!T
-	// return false;
-	IL_000c: ldc.i4.0
-	// (no C# code)
-	IL_000d: ret
-
-	// WhereEnumerable<TEnumerable, TEnumerator, T, TPredicate0>.Enumerator enumerator = @this.GetEnumerator();
-	IL_000e: ldarg.0
-	IL_000f: call instance valuetype UniNativeLinq.WhereEnumerable`4/Enumerator<!0, !1, !2, !3> valuetype UniNativeLinq.WhereEnumerable`4<!!TEnumerable, !!TEnumerator, !!T, !!TPredicate0>::GetEnumerator()
-	IL_0014: stloc.0
-	// for (long num = 0L; num < index; num++)
-	IL_0015: ldc.i4.0
-	IL_0016: conv.i8
-	IL_0017: stloc.2
-	// (no C# code)
-	IL_0018: br.s IL_0038
-	// loop start (head: IL_0038)
-		// if (!enumerator.MoveNext())
-		IL_001a: ldloca.s 0
-		IL_001c: call instance bool valuetype UniNativeLinq.WhereEnumerable`4/Enumerator<!!TEnumerable, !!TEnumerator, !!T, !!TPredicate0>::MoveNext()
-		// (no C# code)
-		IL_0021: brtrue.s IL_0033
-
-		// value = default(T);
-		IL_0023: ldarg.2
-		IL_0024: initobj !!T
-		// enumerator.Dispose();
-		IL_002a: ldloca.s 0
-		IL_002c: call instance void valuetype UniNativeLinq.WhereEnumerable`4/Enumerator<!!TEnumerable, !!TEnumerator, !!T, !!TPredicate0>::Dispose()
-		// return false;
-		IL_0031: ldc.i4.0
-		// (no C# code)
-		IL_0032: ret
-
-		// for (long num = 0L; num < index; num++)
-		IL_0033: ldloc.2
-		IL_0034: ldc.i4.1
-		IL_0035: conv.i8
-		IL_0036: add
-		IL_0037: stloc.2
-
-		// for (long num = 0L; num < index; num++)
-		IL_0038: ldloc.2
-		IL_0039: ldarg.1
-		IL_003a: blt.s IL_001a
-	// end loop
-
-	// value = enumerator.TryGetNext(out bool success);
-	IL_003c: ldarg.2
-	IL_003d: ldloca.s 0
-	IL_003f: ldloca.s 1
-	IL_0041: call instance !2& valuetype UniNativeLinq.WhereEnumerable`4/Enumerator<!!TEnumerable, !!TEnumerator, !!T, !!TPredicate0>::TryGetNext(bool&)
-	IL_0046: ldobj !!T
-	IL_004b: stobj !!T
-	// enumerator.Dispose();
-	IL_0050: ldloca.s 0
-	IL_0052: call instance void valuetype UniNativeLinq.WhereEnumerable`4/Enumerator<!!TEnumerable, !!TEnumerator, !!T, !!TPredicate0>::Dispose()
-	// return success;
-	IL_0057: ldloc.1
-	// (no C# code)
-	IL_0058: ret
-             */
             else
             {
                 variables.Add(new VariableDefinition(MainModule.TypeSystem.Int64));
@@ -244,6 +152,9 @@ namespace CecilRewrite.Contains
                 var il0041 = Instruction.Create(OpCodes.Ldloc_2);
                 var il0047 = Instruction.Create(OpCodes.Ldarg_0);
 
+                processor.Do(OpCodes.Ldarg_1);
+                processor.Do(OpCodes.Ldc_I4_0);
+                processor.Do(OpCodes.Conv_I8);
                 processor.Append(Instruction.Create(OpCodes.Bge_S, il000E));
                 processor.Do(OpCodes.Ldarg_2);
                 processor.Append(Instruction.Create(OpCodes.Initobj, Element));

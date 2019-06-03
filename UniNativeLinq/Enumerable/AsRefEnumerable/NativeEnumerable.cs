@@ -16,7 +16,7 @@ namespace UniNativeLinq
         public readonly T* Ptr;
         public readonly long Length;
 
-        public ref T this[long index] => ref Ptr[index];
+        public readonly ref T this[long index] => ref Ptr[index];
 
         public NativeEnumerable(NativeArray<T> array)
         {
@@ -157,7 +157,7 @@ namespace UniNativeLinq
 
             public bool TryMoveNext(out T value)
             {
-                if(--index >= 0)
+                if (--index >= 0)
                 {
                     value = Ptr[index];
                     return true;
@@ -264,6 +264,14 @@ namespace UniNativeLinq
             if (count >= Length) return this;
             if (Ptr == null || count <= 0) return default;
             return new NativeEnumerable<T>(Ptr + Length - count, count);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly bool TryGetLast(out T value)
+        {
+            var answer = Length != 0;
+            value = Ptr[Length - 1];
+            return answer;
         }
     }
 }

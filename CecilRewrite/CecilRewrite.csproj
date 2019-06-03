@@ -82,6 +82,8 @@
     <Compile Include="MinMax\TryGetMinFunc.cs" />
     <Compile Include="MinMax\TryGetMinOperator.cs" />
     <Compile Include="TryGetElementAtHelper.cs" />
+    <Compile Include="TryGetFirstHelper.cs" />
+    <Compile Include="TryGetLastHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

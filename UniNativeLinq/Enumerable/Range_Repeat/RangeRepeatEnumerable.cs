@@ -18,6 +18,16 @@ namespace UniNativeLinq
         private readonly long Length;
         private readonly TAction acts;
 
+        public readonly T this[long index]
+        {
+            get
+            {
+                var answer = start;
+                acts.Execute(ref answer, index);
+                return answer;
+            }
+        }
+
         public RangeRepeatEnumerable(T start, long length, TAction acts)
         {
             this.start = start;
@@ -74,7 +84,7 @@ namespace UniNativeLinq
 
             public bool TryMoveNext(out T value)
             {
-                if(++index < count)
+                if (++index < count)
                 {
                     if (index > 0)
                         action.Execute(ref element);

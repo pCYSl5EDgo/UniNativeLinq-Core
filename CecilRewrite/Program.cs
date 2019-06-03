@@ -57,7 +57,9 @@ namespace CecilRewrite
             //AggregateFunctionWithResultTypeHelper.Create(MainModule);
             //ContainsDefaultEqualityComparerHelper.Create(MainModule);
             //ContainsFuncHelper.Create(MainModule);
-            TryGetElementAtHelper.Create(MainModule);
+            //TryGetElementAtHelper.Create(MainModule);
+            //TryGetFirstHelper.Create(MainModule);
+            TryGetLastHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 

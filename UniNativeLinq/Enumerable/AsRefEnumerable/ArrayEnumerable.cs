@@ -41,6 +41,8 @@ namespace UniNativeLinq
             this.offset = offset;
         }
 
+        public readonly ref T this[long index] => ref array[offset + index];
+
         public struct Enumerator : IRefEnumerator<T>
         {
             private readonly T* ptr;
@@ -133,7 +135,7 @@ namespace UniNativeLinq
 
             public bool TryMoveNext(out T value)
             {
-                if(--index >= 0)
+                if (--index >= 0)
                 {
                     value = ptr[index];
                     return true;
@@ -221,5 +223,13 @@ namespace UniNativeLinq
             return answer;
         }
         #endregion
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly bool TryGetLast(out T value)
+        {
+            var answer = Length != 0;
+            value = array[offset + Length - 1];
+            return answer;
+        }
     }
 }

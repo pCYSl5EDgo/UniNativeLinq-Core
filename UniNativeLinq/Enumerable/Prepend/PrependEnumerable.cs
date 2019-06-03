@@ -153,5 +153,11 @@ namespace UniNativeLinq
             return answer;
         }
         #endregion
+
+        public readonly bool TryGetFirst(out T value)
+        {
+            value = prepend;
+            return true;
+        }
     }
 }

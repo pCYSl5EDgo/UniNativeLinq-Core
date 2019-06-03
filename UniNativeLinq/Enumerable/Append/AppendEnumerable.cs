@@ -153,5 +153,12 @@ namespace UniNativeLinq
             return answer;
         }
         #endregion
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly bool TryGetLast(out T value)
+        {
+            value = element;
+            return true;
+        }
     }
 }
