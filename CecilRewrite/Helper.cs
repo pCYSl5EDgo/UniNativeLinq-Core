@@ -40,11 +40,21 @@ namespace CecilRewrite
             return reference;
         }
 
+        public static FieldReference MakeHostInstanceGeneric(this FieldReference self, IEnumerable<TypeReference> arguments) 
+            => new FieldReference(self.Name, self.FieldType, self.DeclaringType.MakeGenericInstanceType(arguments));
+
         public static MethodReference FindMethod(this GenericInstanceType type, string name)
         {
             var typeDefinition = type.Resolve();
             var methodDefinition = typeDefinition.Methods.Single(x => x.Name == name);
             return methodDefinition.MakeHostInstanceGeneric(type.GenericArguments);
+        }
+
+        public static FieldReference FindField(this GenericInstanceType type, string name)
+        {
+            var typeDefinition = type.Resolve();
+            var definition = typeDefinition.Fields.Single(x => x.Name == name);
+            return definition.MakeHostInstanceGeneric(type.GenericArguments);
         }
 
         public static MethodReference FindMethodAndImport(this GenericInstanceType type, string name, ModuleDefinition module)
@@ -131,7 +141,7 @@ namespace CecilRewrite
         private static TypeReference ReplaceDefault(this IEnumerable<GenericParameter> methodGenericParameters, TypeReference constraint)
             => constraint.IsGenericParameter ? methodGenericParameters.SingleOrDefault(x => x.Name == constraint.Name) ?? constraint : constraint;
 
-        private static TypeReference Replace(this TypeReference constraint, IEnumerable<GenericParameter> methodGenericParameters, string specialName, TypeReference specialType)
+        internal static TypeReference Replace(this TypeReference constraint, IEnumerable<GenericParameter> methodGenericParameters, string specialName, TypeReference specialType)
             => Replace(constraint, methodGenericParameters, y => y.Name == specialName ? specialType : y.IsGenericParameter ? methodGenericParameters.SingleOrDefault(x => x.Name == y.Name) ?? y : y);
 
         internal static TypeReference Replace(this TypeReference constraint, IEnumerable<GenericParameter> methodGenericParameters)
@@ -223,6 +233,12 @@ namespace CecilRewrite
 
         public static void Constrained(this ILProcessor processor, TypeReference type)
             => processor.Append(Instruction.Create(OpCodes.Constrained, type));
+
+        public static void LdFld(this ILProcessor processor, FieldReference field)
+            => processor.Append(Instruction.Create(OpCodes.Ldfld, field));
+
+        public static void StFld(this ILProcessor processor, FieldReference field)
+            => processor.Append(Instruction.Create(OpCodes.Stfld, field));
 
         public static bool NoParameter(this MethodDefinition method)
             => !method.HasParameters;

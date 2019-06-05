@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using CecilRewrite.Contains;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
@@ -59,7 +58,9 @@ namespace CecilRewrite
             //ContainsFuncHelper.Create(MainModule);
             //TryGetElementAtHelper.Create(MainModule);
             //TryGetFirstHelper.Create(MainModule);
-            TryGetLastHelper.Create(MainModule);
+            //TryGetLastHelper.Create(MainModule);
+            //TryGetSingleHelper.Create(MainModule);
+            SumHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 
