@@ -60,7 +60,8 @@ namespace CecilRewrite
             //TryGetFirstHelper.Create(MainModule);
             //TryGetLastHelper.Create(MainModule);
             //TryGetSingleHelper.Create(MainModule);
-            SumHelper.Create(MainModule);
+            //SumHelper.Create(MainModule);
+            AverageHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 
