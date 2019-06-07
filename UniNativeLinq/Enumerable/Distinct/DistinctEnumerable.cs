@@ -17,7 +17,7 @@ namespace UniNativeLinq
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
-        private readonly TEnumerable enumerable;
+        private TEnumerable enumerable;
         private readonly TEqualityComparer equalityComparer;
         private readonly TGetHashCodeFunc getHashCodeFunc;
         private readonly Allocator alloc;
@@ -42,12 +42,11 @@ namespace UniNativeLinq
             private TGetHashCodeFunc getHashCodeFunc;
             private long currentIndex;
 
-            public Enumerator(in TEnumerable enumerable, in TEqualityComparer comparer, in TGetHashCodeFunc getHashCodeFunc, Allocator allocator)
+            public Enumerator([PsuedoIsReadOnly]ref TEnumerable enumerable, in TEqualityComparer comparer, in TGetHashCodeFunc getHashCodeFunc, Allocator allocator)
             {
-                ref var _enumerable = ref Unsafe.AsRef(enumerable);
-                if (_enumerable.CanFastCount())
+                if (enumerable.CanFastCount())
                 {
-                    if ((capacity = _enumerable.LongCount()) == 0)
+                    if ((capacity = enumerable.LongCount()) == 0)
                     {
                         this = default;
                         return;
@@ -58,7 +57,7 @@ namespace UniNativeLinq
                     capacity = 16;
                 }
                 count = 0;
-                enumerator = _enumerable.GetEnumerator();
+                enumerator = enumerable.GetEnumerator();
                 alloc = allocator;
                 ptr = UnsafeUtilityEx.Malloc<T>(capacity, alloc);
                 codes = UnsafeUtilityEx.Malloc<int>(capacity, alloc);
@@ -211,12 +210,12 @@ namespace UniNativeLinq
             public ref T TryGetNext(out bool success)
             {
                 if (!(success = ptr != null))
-                    return ref Unsafe.AsRef<T>(null);
+                    return ref Psuedo.AsRefNull<T>();
                 while (true)
                 {
                     ref var current = ref enumerator.TryGetNext(out success);
                     if (!success)
-                        return ref Unsafe.AsRef<T>(null);
+                        return ref Psuedo.AsRefNull<T>();
                     var hash = getHashCodeFunc.Calc(ref current);
                     if (count == 0)
                     {
@@ -233,7 +232,7 @@ namespace UniNativeLinq
 
             public bool TryMoveNext(out T value)
             {
-                if(ptr == null)
+                if (ptr == null)
                 {
                     value = default;
                     return false;
@@ -250,7 +249,7 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(in enumerable, equalityComparer, getHashCodeFunc, alloc);
+        [PsuedoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref enumerable, equalityComparer, getHashCodeFunc, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -305,7 +304,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
+            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

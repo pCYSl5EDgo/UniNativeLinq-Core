@@ -8,7 +8,7 @@ using Unity.Collections.LowLevel.Unsafe;
 namespace UniNativeLinq
 {
     [SlowCount]
-    public readonly unsafe struct
+    public unsafe struct
         GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>
         : IRefEnumerable<GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>.Enumerator, Grouping<TKey, TElement>>
         where T : unmanaged
@@ -20,7 +20,7 @@ namespace UniNativeLinq
         where TElementSelector : struct, IRefFunc<T, TElement>
         where TEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
     {
-        private readonly TEnumerable enumerable;
+        private TEnumerable enumerable;
         private readonly TKeySelector keySelector;
         private readonly TElementSelector elementSelector;
         private readonly TEqualityComparer equalityComparer;
@@ -48,15 +48,13 @@ namespace UniNativeLinq
 
             private const long INITIAL_CAPACITY = 16L;
 
-            internal Enumerator(in TEnumerable enumerable, TKeySelector keySelector, TElementSelector elementSelector, TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions option)
+            internal Enumerator([PsuedoIsReadOnly]ref TEnumerable enumerable, TKeySelector keySelector, TElementSelector elementSelector, TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions option)
             {
                 this.option = option;
                 index = -1;
                 Count = 0;
                 this.allocator = allocator;
-                // ReSharper disable once InconsistentNaming
-                ref var _enumerable = ref Unsafe.AsRef(enumerable);
-                if (_enumerable.CanFastCount() && _enumerable.LongCount() == 0)
+                if (enumerable.CanFastCount() && enumerable.LongCount() == 0)
                 {
                     Groups = null;
                     return;
@@ -64,7 +62,7 @@ namespace UniNativeLinq
                 var capacity = INITIAL_CAPACITY;
                 Groups = UnsafeUtilityEx.Malloc<Grouping<TKey, TElement>>(capacity, allocator);
                 var capacities = UnsafeUtilityEx.Malloc<long>(capacity, Allocator.Temp);
-                var enumerator = _enumerable.GetEnumerator();
+                var enumerator = enumerable.GetEnumerator();
                 EnumerateAndSort(ref capacity, ref enumerator, ref capacities, ref keySelector, ref elementSelector, ref equalityComparer);
                 UnsafeUtility.Free(capacities, Allocator.Temp);
                 enumerator.Dispose();
@@ -157,12 +155,12 @@ namespace UniNativeLinq
                 if (success)
                     return ref Groups[index];
                 index = Count;
-                return ref Unsafe.AsRef<Grouping<TKey, TElement>>(null);
+                return ref Psuedo.AsRefNull<Grouping<TKey, TElement>>();
             }
 
             public bool TryMoveNext(out Grouping<TKey, TElement> value)
             {
-                if(++index < Count)
+                if (++index < Count)
                 {
                     value = Groups[index];
                     return true;
@@ -176,8 +174,8 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(in enumerable, keySelector, elementSelector, equalityComparer, alloc, GroupByDisposeOption);
-        public readonly Enumerator GetEnumerator(Allocator allocator, GroupByDisposeOptions option) => new Enumerator(in enumerable, keySelector, elementSelector, equalityComparer, allocator, option);
+        [PsuedoIsReadOnly]public Enumerator GetEnumerator() => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, alloc, GroupByDisposeOption);
+        [PsuedoIsReadOnly]public Enumerator GetEnumerator(Allocator allocator, GroupByDisposeOptions option) => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, allocator, option);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -232,7 +230,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<Grouping<TKey, TElement>>();
             var answer = new Grouping<TKey, TElement>[count];
-            CopyTo((Grouping<TKey, TElement>*)Unsafe.AsPointer(ref answer[0]));
+            CopyTo(Psuedo.AsPointer(ref answer[0]));
             return answer;
         }
 

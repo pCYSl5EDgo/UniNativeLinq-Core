@@ -8,7 +8,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public readonly unsafe struct
+    public unsafe struct
         OrderByEnumerable<TEnumerable, TEnumerator, T, TComparer>
         : IRefOrderedEnumerable<
             OrderByEnumerable<TEnumerable, TEnumerator, T, TComparer>.Enumerator,
@@ -21,7 +21,7 @@ namespace UniNativeLinq
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
         where TComparer : struct, IRefFunc<T, T, int>
     {
-        private readonly TEnumerable enumerable;
+        private TEnumerable enumerable;
         private readonly TComparer orderComparer;
         private readonly Allocator alloc;
 
@@ -40,20 +40,19 @@ namespace UniNativeLinq
             private long index;
             private readonly Allocator allocator;
 
-            internal Enumerator(in TEnumerable enumerable, TComparer orderComparer, Allocator allocator)
+            internal Enumerator([PsuedoIsReadOnly]ref TEnumerable enumerable, TComparer orderComparer, Allocator allocator)
             {
                 this.allocator = allocator;
                 index = -1;
                 Count = 0;
                 capacity = 16;
-                ref var _enumerable = ref Unsafe.AsRef(enumerable);
-                if (_enumerable.CanFastCount() && (capacity = _enumerable.Count()) == 0)
+                if (enumerable.CanFastCount() && (capacity = enumerable.Count()) == 0)
                 {
                     this = default;
                     return;
                 }
                 Ptr = UnsafeUtilityEx.Malloc<T>(capacity, allocator);
-                var enumerator = _enumerable.GetEnumerator();
+                var enumerator = enumerable.GetEnumerator();
                 if (!enumerator.MoveNext())
                 {
                     enumerator.Dispose();
@@ -159,12 +158,12 @@ namespace UniNativeLinq
                 if (success)
                     return ref Ptr[index];
                 index = Count;
-                return ref Unsafe.AsRef<T>(null);
+                return ref Psuedo.AsRefNull<T>();
             }
 
             public bool TryMoveNext(out T value)
             {
-                if(++index < Count)
+                if (++index < Count)
                 {
                     value = Ptr[index];
                     return true;
@@ -224,7 +223,7 @@ namespace UniNativeLinq
                 new OrderByDelegateKeySelector<T, TKey0>(keySelector, comparer, descending)),
                 alloc);
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(enumerable, orderComparer, alloc);
+        [PsuedoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref enumerable, orderComparer, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -260,7 +259,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
+            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

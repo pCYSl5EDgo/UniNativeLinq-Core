@@ -17,7 +17,7 @@ namespace UniNativeLinq
         private readonly long offset;
         internal readonly long Length;
 
-        internal readonly T* GetPointer() => (T*)Unsafe.AsPointer(ref array[offset]);
+        internal readonly T* GetPointer() => Psuedo.AsPointer<T>(ref array[offset]);
         private readonly T* GetPinPointer(out ulong gcHandle) => (T*)UnsafeUtility.PinGCArrayAndGetDataAddress(array, out gcHandle) + offset;
 
         public ArrayEnumerable(T[] array)
@@ -77,7 +77,7 @@ namespace UniNativeLinq
                 if (success)
                     return ref ptr[index];
                 index = length;
-                return ref Unsafe.AsRef<T>(null);
+                return ref Psuedo.AsRefNull<T>();
             }
 
             public bool TryMoveNext(out T value)
@@ -130,7 +130,7 @@ namespace UniNativeLinq
                 if (success)
                     return ref ptr[index];
                 index = 0;
-                return ref Unsafe.AsRef<T>(null);
+                return ref Psuedo.AsRefNull<T>();
             }
 
             public bool TryMoveNext(out T value)
@@ -200,7 +200,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
+            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

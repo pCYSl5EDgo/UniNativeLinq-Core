@@ -40,7 +40,7 @@ namespace CecilRewrite
             return reference;
         }
 
-        public static FieldReference MakeHostInstanceGeneric(this FieldReference self, IEnumerable<TypeReference> arguments) 
+        public static FieldReference MakeHostInstanceGeneric(this FieldReference self, IEnumerable<TypeReference> arguments)
             => new FieldReference(self.Name, self.FieldType, self.DeclaringType.MakeGenericInstanceType(arguments));
 
         public static MethodReference FindMethod(this GenericInstanceType type, string name)
@@ -125,7 +125,9 @@ namespace CecilRewrite
                     IsValueType = typeGenericParameter.IsValueType,
                 };
                 foreach (var customAttribute in typeGenericParameter.CustomAttributes)
+                {
                     methodGenericParameter.CustomAttributes.Add(customAttribute);
+                }
                 method.GenericParameters.Add(methodGenericParameter);
                 answer.Add(methodGenericParameter);
             }
@@ -133,7 +135,10 @@ namespace CecilRewrite
             {
                 var methodGenericParameter = method.GenericParameters[j + initialLength];
                 foreach (var constraint in typeGenericParameters[j < skipIndex ? j : j + 1].Constraints)
-                    methodGenericParameter.Constraints.Add(constraint.Replace(answer, specialReplaceName, specialReplaceType));
+                {
+                    if (constraint.Module.Name == methodGenericParameter.Module.Name)
+                        methodGenericParameter.Constraints.Add(constraint.Replace(answer, specialReplaceName, specialReplaceType));
+                }
             }
             return answer;
         }
@@ -148,7 +153,7 @@ namespace CecilRewrite
         {
             if (!(constraint is GenericInstanceType genericConstraint))
                 return constraint.IsGenericParameter ? methodGenericParameters.SingleOrDefault(x => x.Name == constraint.Name) ?? constraint : constraint;
-            var newConstraint = new GenericInstanceType(constraint.Resolve());
+            var newConstraint = (GenericInstanceType)constraint.Module.ImportReference(new GenericInstanceType(constraint.Resolve()));
             foreach (var argument in genericConstraint.GenericArguments)
                 newConstraint.GenericArguments.Add(argument.Replace(methodGenericParameters));
             return newConstraint;
@@ -158,7 +163,7 @@ namespace CecilRewrite
         {
             if (!(constraint is GenericInstanceType genericConstraint))
                 return replace(constraint);
-            var newConstraint = new GenericInstanceType(constraint.Resolve());
+            var newConstraint = (GenericInstanceType)constraint.Module.ImportReference(new GenericInstanceType(constraint.Resolve()));
             foreach (var argument in genericConstraint.GenericArguments)
                 newConstraint.GenericArguments.Add(argument.Replace(methodGenericParameters, replace));
             return newConstraint;

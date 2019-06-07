@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
@@ -73,7 +73,7 @@ namespace UniNativeLinq
         public readonly T[] ToArray()
         {
             var answer = new T[Length];
-            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
+            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 
@@ -111,7 +111,7 @@ namespace UniNativeLinq
                     success = ++index < count;
                 if(success)
                     return ref ptr[index];
-                return ref Unsafe.AsRef<T>(null);
+                return ref Psuedo.AsRefNull<T>();
             }
 
             public bool TryMoveNext(out T value)

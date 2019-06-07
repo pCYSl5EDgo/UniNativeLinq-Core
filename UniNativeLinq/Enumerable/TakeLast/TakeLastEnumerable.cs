@@ -6,14 +6,14 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
-    public readonly unsafe struct
+    public unsafe struct
         TakeLastEnumerable<TEnumerable, TEnumerator, T>
         : IRefEnumerable<TakeLastEnumerable<TEnumerable, TEnumerator, T>.Enumerator, T>
         where T : unmanaged
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
-        private readonly TEnumerable enumerable;
+        private TEnumerable enumerable;
         private readonly long takeCount;
         private readonly Allocator alloc;
 
@@ -32,10 +32,10 @@ namespace UniNativeLinq
             readonly T IEnumerator<T>.Current => Current;
             readonly object IEnumerator.Current => Current;
 
-            public Enumerator(in TEnumerable enumerable, long takeCount, Allocator allocator)
+            public Enumerator([PsuedoIsReadOnly]ref TEnumerable enumerable, long takeCount, Allocator allocator)
             {
                 var ringBuffer = new RingBuffer<T>(takeCount, allocator);
-                var baseEnumerator = Unsafe.AsRef(enumerable).GetEnumerator();
+                var baseEnumerator = enumerable.GetEnumerator();
                 while (baseEnumerator.MoveNext())
                 {
                     if (ringBuffer.IsFull)
@@ -61,7 +61,7 @@ namespace UniNativeLinq
             public bool TryMoveNext(out T value) => enumerator.TryMoveNext(out value);
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(enumerable, takeCount, alloc);
+        [PsuedoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref enumerable, takeCount, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -102,7 +102,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
+            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

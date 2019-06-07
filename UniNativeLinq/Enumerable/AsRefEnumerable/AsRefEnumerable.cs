@@ -8,6 +8,21 @@ namespace UniNativeLinq
     public static class NativeEnumerable
     {
         public static
+            bool Any<T, TPredicate0>(ref NativeEnumerable<T> array, ref TPredicate0 predicate)
+            where T : unmanaged
+            where TPredicate0 : struct, IRefFunc<T, bool>
+        {
+            var enumerator = array.GetEnumerator();
+            while (enumerator.TryMoveNext(out var value))
+            {
+                if (!predicate.Calc(ref value)) continue;
+                enumerator.Dispose();
+                return true;
+            }
+            enumerator.Dispose();
+            return false;
+        }
+        public static
             OrderByEnumerable<
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,

@@ -57,7 +57,7 @@ public readonly T[] ToArray()
     var count = LongCount();
     if(count == 0) return Array.Empty<T>();
     var answer = new T[count];
-    CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
+    CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
     return answer;
 }
 
@@ -5044,11 +5044,11 @@ public readonly bool TryGetMax(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, byte>(ref value);
+        ref var max = ref Psuedo.As<T, byte>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, byte>(ref current) > max)
+            if (Psuedo.As<T, byte>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5063,11 +5063,11 @@ public readonly bool TryGetMax(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, sbyte>(ref value);
+        ref var max = ref Psuedo.As<T, sbyte>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, sbyte>(ref current) > max)
+            if (Psuedo.As<T, sbyte>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5082,11 +5082,11 @@ public readonly bool TryGetMax(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, short>(ref value);
+        ref var max = ref Psuedo.As<T, short>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, short>(ref current) > max)
+            if (Psuedo.As<T, short>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5101,11 +5101,11 @@ public readonly bool TryGetMax(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, ushort>(ref value);
+        ref var max = ref Psuedo.As<T, ushort>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, ushort>(ref current) > max)
+            if (Psuedo.As<T, ushort>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5120,11 +5120,11 @@ public readonly bool TryGetMax(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, int>(ref value);
+        ref var max = ref Psuedo.As<T, int>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, int>(ref current) > max)
+            if (Psuedo.As<T, int>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5139,11 +5139,11 @@ public readonly bool TryGetMax(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, uint>(ref value);
+        ref var max = ref Psuedo.As<T, uint>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, uint>(ref current) > max)
+            if (Psuedo.As<T, uint>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5158,11 +5158,11 @@ public readonly bool TryGetMax(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, long>(ref value);
+        ref var max = ref Psuedo.As<T, long>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, long>(ref current) > max)
+            if (Psuedo.As<T, long>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5177,11 +5177,11 @@ public readonly bool TryGetMax(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, ulong>(ref value);
+        ref var max = ref Psuedo.As<T, ulong>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, ulong>(ref current) > max)
+            if (Psuedo.As<T, ulong>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5196,11 +5196,11 @@ public readonly bool TryGetMax(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, float>(ref value);
+        ref var max = ref Psuedo.As<T, float>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, float>(ref current) > max)
+            if (Psuedo.As<T, float>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5215,11 +5215,11 @@ public readonly bool TryGetMax(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, double>(ref value);
+        ref var max = ref Psuedo.As<T, double>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, double>(ref current) > max)
+            if (Psuedo.As<T, double>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5234,11 +5234,11 @@ public readonly bool TryGetMax(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, decimal>(ref value);
+        ref var max = ref Psuedo.As<T, decimal>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, decimal>(ref current) > max)
+            if (Psuedo.As<T, decimal>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5247,7 +5247,7 @@ public readonly bool TryGetMax(out T value)
     else if (typeof(T) == typeof(byte?))
     {
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, byte?>(ref value);
+        ref var max = ref Psuedo.As<T, byte?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5259,7 +5259,7 @@ public readonly bool TryGetMax(out T value)
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, byte?>(ref enumerator.Current);
+            var current = Psuedo.As<T, byte?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5269,7 +5269,7 @@ public readonly bool TryGetMax(out T value)
     else if (typeof(T) == typeof(sbyte?))
     {
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, sbyte?>(ref value);
+        ref var max = ref Psuedo.As<T, sbyte?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5281,7 +5281,7 @@ public readonly bool TryGetMax(out T value)
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, sbyte?>(ref enumerator.Current);
+            var current = Psuedo.As<T, sbyte?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5291,7 +5291,7 @@ public readonly bool TryGetMax(out T value)
     else if (typeof(T) == typeof(short?))
     {
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, short?>(ref value);
+        ref var max = ref Psuedo.As<T, short?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5303,7 +5303,7 @@ public readonly bool TryGetMax(out T value)
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, short?>(ref enumerator.Current);
+            var current = Psuedo.As<T, short?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5313,7 +5313,7 @@ public readonly bool TryGetMax(out T value)
     else if (typeof(T) == typeof(ushort?))
     {
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, ushort?>(ref value);
+        ref var max = ref Psuedo.As<T, ushort?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5325,7 +5325,7 @@ public readonly bool TryGetMax(out T value)
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, ushort?>(ref enumerator.Current);
+            var current = Psuedo.As<T, ushort?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5335,7 +5335,7 @@ public readonly bool TryGetMax(out T value)
     else if (typeof(T) == typeof(int?))
     {
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, int?>(ref value);
+        ref var max = ref Psuedo.As<T, int?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5347,7 +5347,7 @@ public readonly bool TryGetMax(out T value)
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, int?>(ref enumerator.Current);
+            var current = Psuedo.As<T, int?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5357,7 +5357,7 @@ public readonly bool TryGetMax(out T value)
     else if (typeof(T) == typeof(uint?))
     {
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, uint?>(ref value);
+        ref var max = ref Psuedo.As<T, uint?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5369,7 +5369,7 @@ public readonly bool TryGetMax(out T value)
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, uint?>(ref enumerator.Current);
+            var current = Psuedo.As<T, uint?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5379,7 +5379,7 @@ public readonly bool TryGetMax(out T value)
     else if (typeof(T) == typeof(long?))
     {
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, long?>(ref value);
+        ref var max = ref Psuedo.As<T, long?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5391,7 +5391,7 @@ public readonly bool TryGetMax(out T value)
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, long?>(ref enumerator.Current);
+            var current = Psuedo.As<T, long?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5401,7 +5401,7 @@ public readonly bool TryGetMax(out T value)
     else if (typeof(T) == typeof(ulong?))
     {
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, ulong?>(ref value);
+        ref var max = ref Psuedo.As<T, ulong?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5413,7 +5413,7 @@ public readonly bool TryGetMax(out T value)
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, ulong?>(ref enumerator.Current);
+            var current = Psuedo.As<T, ulong?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5423,7 +5423,7 @@ public readonly bool TryGetMax(out T value)
     else if (typeof(T) == typeof(float?))
     {
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, float?>(ref value);
+        ref var max = ref Psuedo.As<T, float?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5435,7 +5435,7 @@ public readonly bool TryGetMax(out T value)
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, float?>(ref enumerator.Current);
+            var current = Psuedo.As<T, float?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5445,7 +5445,7 @@ public readonly bool TryGetMax(out T value)
     else if (typeof(T) == typeof(double?))
     {
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, double?>(ref value);
+        ref var max = ref Psuedo.As<T, double?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5457,7 +5457,7 @@ public readonly bool TryGetMax(out T value)
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, double?>(ref enumerator.Current);
+            var current = Psuedo.As<T, double?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5467,7 +5467,7 @@ public readonly bool TryGetMax(out T value)
     else if (typeof(T) == typeof(decimal?))
     {
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, decimal?>(ref value);
+        ref var max = ref Psuedo.As<T, decimal?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5479,7 +5479,7 @@ public readonly bool TryGetMax(out T value)
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, decimal?>(ref enumerator.Current);
+            var current = Psuedo.As<T, decimal?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5505,11 +5505,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, byte>(ref value);
+        ref var max = ref Psuedo.As<T, byte>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, byte>(ref current) > max)
+            if (Psuedo.As<T, byte>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5524,11 +5524,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, sbyte>(ref value);
+        ref var max = ref Psuedo.As<T, sbyte>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, sbyte>(ref current) > max)
+            if (Psuedo.As<T, sbyte>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5543,11 +5543,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, short>(ref value);
+        ref var max = ref Psuedo.As<T, short>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, short>(ref current) > max)
+            if (Psuedo.As<T, short>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5562,11 +5562,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, ushort>(ref value);
+        ref var max = ref Psuedo.As<T, ushort>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, ushort>(ref current) > max)
+            if (Psuedo.As<T, ushort>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5581,11 +5581,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, int>(ref value);
+        ref var max = ref Psuedo.As<T, int>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, int>(ref current) > max)
+            if (Psuedo.As<T, int>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5600,11 +5600,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, uint>(ref value);
+        ref var max = ref Psuedo.As<T, uint>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, uint>(ref current) > max)
+            if (Psuedo.As<T, uint>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5619,11 +5619,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, long>(ref value);
+        ref var max = ref Psuedo.As<T, long>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, long>(ref current) > max)
+            if (Psuedo.As<T, long>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5638,11 +5638,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, ulong>(ref value);
+        ref var max = ref Psuedo.As<T, ulong>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, ulong>(ref current) > max)
+            if (Psuedo.As<T, ulong>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5657,11 +5657,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, float>(ref value);
+        ref var max = ref Psuedo.As<T, float>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, float>(ref current) > max)
+            if (Psuedo.As<T, float>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5676,11 +5676,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, double>(ref value);
+        ref var max = ref Psuedo.As<T, double>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, double>(ref current) > max)
+            if (Psuedo.As<T, double>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5695,11 +5695,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, decimal>(ref value);
+        ref var max = ref Psuedo.As<T, decimal>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, decimal>(ref current) > max)
+            if (Psuedo.As<T, decimal>(ref current) > max)
                 value = current;
         }
         enumerator.Dispose();
@@ -5715,11 +5715,11 @@ public readonly T Max()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var max = ref Unsafe.As<T, decimal?>(ref value);
+        ref var max = ref Psuedo.As<T, decimal?>(ref value);
         if (!max.HasValue) goto INITIALIZE;
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, decimal?>(ref enumerator.Current);
+            var current = Psuedo.As<T, decimal?>(ref enumerator.Current);
             if (!current.HasValue || current.Value <= max.Value) continue;
             max = current;
         }
@@ -5730,7 +5730,7 @@ public readonly T Max()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, byte?>(ref value);
+        ref var max = ref Psuedo.As<T, byte?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5742,7 +5742,7 @@ public readonly T Max()
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, byte?>(ref enumerator.Current);
+            var current = Psuedo.As<T, byte?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5753,7 +5753,7 @@ public readonly T Max()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, sbyte?>(ref value);
+        ref var max = ref Psuedo.As<T, sbyte?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5765,7 +5765,7 @@ public readonly T Max()
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, sbyte?>(ref enumerator.Current);
+            var current = Psuedo.As<T, sbyte?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5776,7 +5776,7 @@ public readonly T Max()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, short?>(ref value);
+        ref var max = ref Psuedo.As<T, short?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5788,7 +5788,7 @@ public readonly T Max()
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, short?>(ref enumerator.Current);
+            var current = Psuedo.As<T, short?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5799,7 +5799,7 @@ public readonly T Max()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, ushort?>(ref value);
+        ref var max = ref Psuedo.As<T, ushort?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5811,7 +5811,7 @@ public readonly T Max()
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, ushort?>(ref enumerator.Current);
+            var current = Psuedo.As<T, ushort?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5822,7 +5822,7 @@ public readonly T Max()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, int?>(ref value);
+        ref var max = ref Psuedo.As<T, int?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5834,7 +5834,7 @@ public readonly T Max()
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, int?>(ref enumerator.Current);
+            var current = Psuedo.As<T, int?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5845,7 +5845,7 @@ public readonly T Max()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, uint?>(ref value);
+        ref var max = ref Psuedo.As<T, uint?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5857,7 +5857,7 @@ public readonly T Max()
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, uint?>(ref enumerator.Current);
+            var current = Psuedo.As<T, uint?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5868,7 +5868,7 @@ public readonly T Max()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, long?>(ref value);
+        ref var max = ref Psuedo.As<T, long?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5880,7 +5880,7 @@ public readonly T Max()
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, long?>(ref enumerator.Current);
+            var current = Psuedo.As<T, long?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5891,7 +5891,7 @@ public readonly T Max()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, ulong?>(ref value);
+        ref var max = ref Psuedo.As<T, ulong?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5903,7 +5903,7 @@ public readonly T Max()
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, ulong?>(ref enumerator.Current);
+            var current = Psuedo.As<T, ulong?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5914,7 +5914,7 @@ public readonly T Max()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, float?>(ref value);
+        ref var max = ref Psuedo.As<T, float?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5926,7 +5926,7 @@ public readonly T Max()
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, float?>(ref enumerator.Current);
+            var current = Psuedo.As<T, float?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5937,7 +5937,7 @@ public readonly T Max()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, double?>(ref value);
+        ref var max = ref Psuedo.As<T, double?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5949,7 +5949,7 @@ public readonly T Max()
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, double?>(ref enumerator.Current);
+            var current = Psuedo.As<T, double?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5960,7 +5960,7 @@ public readonly T Max()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var max = ref Unsafe.As<T, decimal?>(ref value);
+        ref var max = ref Psuedo.As<T, decimal?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -5972,7 +5972,7 @@ public readonly T Max()
         } while (!max.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, decimal?>(ref enumerator.Current);
+            var current = Psuedo.As<T, decimal?>(ref enumerator.Current);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -5999,11 +5999,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, byte>(ref value);
+        ref var max = ref Psuedo.As<TResult0, byte>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, byte>(ref result);
+            ref var current = ref Psuedo.As<TResult0, byte>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6018,11 +6018,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, byte?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, byte?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, byte?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, byte?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6037,11 +6037,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, sbyte>(ref value);
+        ref var max = ref Psuedo.As<TResult0, sbyte>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, sbyte>(ref result);
+            ref var current = ref Psuedo.As<TResult0, sbyte>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6056,11 +6056,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, sbyte?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, sbyte?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, sbyte?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, sbyte?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6075,11 +6075,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, short>(ref value);
+        ref var max = ref Psuedo.As<TResult0, short>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, short>(ref result);
+            ref var current = ref Psuedo.As<TResult0, short>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6094,11 +6094,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, short?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, short?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, short?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, short?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6113,11 +6113,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, ushort>(ref value);
+        ref var max = ref Psuedo.As<TResult0, ushort>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ushort>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ushort>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6132,11 +6132,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, ushort?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, ushort?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ushort?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ushort?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6151,11 +6151,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, int>(ref value);
+        ref var max = ref Psuedo.As<TResult0, int>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, int>(ref result);
+            ref var current = ref Psuedo.As<TResult0, int>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6170,11 +6170,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, int?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, int?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, int?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, int?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6189,11 +6189,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, uint>(ref value);
+        ref var max = ref Psuedo.As<TResult0, uint>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, uint>(ref result);
+            ref var current = ref Psuedo.As<TResult0, uint>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6208,11 +6208,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, uint?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, uint?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, uint?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, uint?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6227,11 +6227,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, long>(ref value);
+        ref var max = ref Psuedo.As<TResult0, long>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, long>(ref result);
+            ref var current = ref Psuedo.As<TResult0, long>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6246,11 +6246,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, long?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, long?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, long?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, long?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6265,11 +6265,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, ulong>(ref value);
+        ref var max = ref Psuedo.As<TResult0, ulong>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ulong>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ulong>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6284,11 +6284,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, ulong?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, ulong?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ulong?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ulong?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6303,11 +6303,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, float>(ref value);
+        ref var max = ref Psuedo.As<TResult0, float>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, float>(ref result);
+            ref var current = ref Psuedo.As<TResult0, float>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6322,11 +6322,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, float?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, float?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, float?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, float?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6341,11 +6341,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, double>(ref value);
+        ref var max = ref Psuedo.As<TResult0, double>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, double>(ref result);
+            ref var current = ref Psuedo.As<TResult0, double>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6360,11 +6360,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, double?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, double?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, double?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, double?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6379,11 +6379,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, decimal>(ref value);
+        ref var max = ref Psuedo.As<TResult0, decimal>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, decimal>(ref result);
+            ref var current = ref Psuedo.As<TResult0, decimal>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6398,11 +6398,11 @@ public bool TryGetMax<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, decimal?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, decimal?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, decimal?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, decimal?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6428,11 +6428,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, byte>(ref value);
+        ref var max = ref Psuedo.As<TResult0, byte>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, byte>(ref result);
+            ref var current = ref Psuedo.As<TResult0, byte>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6447,11 +6447,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, byte?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, byte?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, byte?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, byte?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6466,11 +6466,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, sbyte>(ref value);
+        ref var max = ref Psuedo.As<TResult0, sbyte>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, sbyte>(ref result);
+            ref var current = ref Psuedo.As<TResult0, sbyte>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6485,11 +6485,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, sbyte?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, sbyte?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, sbyte?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, sbyte?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6504,11 +6504,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, short>(ref value);
+        ref var max = ref Psuedo.As<TResult0, short>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, short>(ref result);
+            ref var current = ref Psuedo.As<TResult0, short>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6523,11 +6523,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, short?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, short?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, short?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, short?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6542,11 +6542,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, ushort>(ref value);
+        ref var max = ref Psuedo.As<TResult0, ushort>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ushort>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ushort>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6561,11 +6561,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, ushort?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, ushort?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ushort?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ushort?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6580,11 +6580,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, int>(ref value);
+        ref var max = ref Psuedo.As<TResult0, int>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, int>(ref result);
+            ref var current = ref Psuedo.As<TResult0, int>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6599,11 +6599,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, int?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, int?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, int?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, int?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6618,11 +6618,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, uint>(ref value);
+        ref var max = ref Psuedo.As<TResult0, uint>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, uint>(ref result);
+            ref var current = ref Psuedo.As<TResult0, uint>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6637,11 +6637,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, uint?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, uint?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, uint?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, uint?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6656,11 +6656,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, long>(ref value);
+        ref var max = ref Psuedo.As<TResult0, long>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, long>(ref result);
+            ref var current = ref Psuedo.As<TResult0, long>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6675,11 +6675,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, long?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, long?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, long?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, long?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6694,11 +6694,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, ulong>(ref value);
+        ref var max = ref Psuedo.As<TResult0, ulong>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ulong>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ulong>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6713,11 +6713,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, ulong?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, ulong?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ulong?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ulong?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6732,11 +6732,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, float>(ref value);
+        ref var max = ref Psuedo.As<TResult0, float>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, float>(ref result);
+            ref var current = ref Psuedo.As<TResult0, float>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6751,11 +6751,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, float?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, float?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, float?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, float?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6770,11 +6770,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, double>(ref value);
+        ref var max = ref Psuedo.As<TResult0, double>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, double>(ref result);
+            ref var current = ref Psuedo.As<TResult0, double>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6789,11 +6789,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, double?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, double?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, double?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, double?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6808,11 +6808,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, decimal>(ref value);
+        ref var max = ref Psuedo.As<TResult0, decimal>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, decimal>(ref result);
+            ref var current = ref Psuedo.As<TResult0, decimal>(ref result);
             if (current > max)
                 max = current;
         }
@@ -6827,11 +6827,11 @@ public TResult0 Max<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var max = ref Unsafe.As<TResult0, decimal?>(ref value);
+        ref var max = ref Psuedo.As<TResult0, decimal?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, decimal?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, decimal?>(ref result);
             if (current.HasValue && current.Value > max.Value)
                 max = current;
         }
@@ -6858,11 +6858,11 @@ public readonly bool TryGetMin(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, byte>(ref value);
+        ref var min = ref Psuedo.As<T, byte>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, byte>(ref current) < min)
+            if (Psuedo.As<T, byte>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -6877,11 +6877,11 @@ public readonly bool TryGetMin(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, sbyte>(ref value);
+        ref var min = ref Psuedo.As<T, sbyte>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, sbyte>(ref current) < min)
+            if (Psuedo.As<T, sbyte>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -6896,11 +6896,11 @@ public readonly bool TryGetMin(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, short>(ref value);
+        ref var min = ref Psuedo.As<T, short>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, short>(ref current) < min)
+            if (Psuedo.As<T, short>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -6915,11 +6915,11 @@ public readonly bool TryGetMin(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, ushort>(ref value);
+        ref var min = ref Psuedo.As<T, ushort>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, ushort>(ref current) < min)
+            if (Psuedo.As<T, ushort>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -6934,11 +6934,11 @@ public readonly bool TryGetMin(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, int>(ref value);
+        ref var min = ref Psuedo.As<T, int>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, int>(ref current) < min)
+            if (Psuedo.As<T, int>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -6953,11 +6953,11 @@ public readonly bool TryGetMin(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, uint>(ref value);
+        ref var min = ref Psuedo.As<T, uint>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, uint>(ref current) < min)
+            if (Psuedo.As<T, uint>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -6972,11 +6972,11 @@ public readonly bool TryGetMin(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, long>(ref value);
+        ref var min = ref Psuedo.As<T, long>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, long>(ref current) < min)
+            if (Psuedo.As<T, long>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -6991,11 +6991,11 @@ public readonly bool TryGetMin(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, ulong>(ref value);
+        ref var min = ref Psuedo.As<T, ulong>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, ulong>(ref current) < min)
+            if (Psuedo.As<T, ulong>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7010,11 +7010,11 @@ public readonly bool TryGetMin(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, float>(ref value);
+        ref var min = ref Psuedo.As<T, float>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, float>(ref current) < min)
+            if (Psuedo.As<T, float>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7029,11 +7029,11 @@ public readonly bool TryGetMin(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, double>(ref value);
+        ref var min = ref Psuedo.As<T, double>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, double>(ref current) < min)
+            if (Psuedo.As<T, double>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7048,11 +7048,11 @@ public readonly bool TryGetMin(out T value)
             return false;
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, decimal>(ref value);
+        ref var min = ref Psuedo.As<T, decimal>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, decimal>(ref current) < min)
+            if (Psuedo.As<T, decimal>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7061,7 +7061,7 @@ public readonly bool TryGetMin(out T value)
     else if (typeof(T) == typeof(byte?))
     {
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, byte?>(ref value);
+        ref var min = ref Psuedo.As<T, byte?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7073,7 +7073,7 @@ public readonly bool TryGetMin(out T value)
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, byte?>(ref enumerator.Current);
+            var current = Psuedo.As<T, byte?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7083,7 +7083,7 @@ public readonly bool TryGetMin(out T value)
     else if (typeof(T) == typeof(sbyte?))
     {
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, sbyte?>(ref value);
+        ref var min = ref Psuedo.As<T, sbyte?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7095,7 +7095,7 @@ public readonly bool TryGetMin(out T value)
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, sbyte?>(ref enumerator.Current);
+            var current = Psuedo.As<T, sbyte?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7105,7 +7105,7 @@ public readonly bool TryGetMin(out T value)
     else if (typeof(T) == typeof(short?))
     {
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, short?>(ref value);
+        ref var min = ref Psuedo.As<T, short?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7117,7 +7117,7 @@ public readonly bool TryGetMin(out T value)
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, short?>(ref enumerator.Current);
+            var current = Psuedo.As<T, short?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7127,7 +7127,7 @@ public readonly bool TryGetMin(out T value)
     else if (typeof(T) == typeof(ushort?))
     {
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, ushort?>(ref value);
+        ref var min = ref Psuedo.As<T, ushort?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7139,7 +7139,7 @@ public readonly bool TryGetMin(out T value)
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, ushort?>(ref enumerator.Current);
+            var current = Psuedo.As<T, ushort?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7149,7 +7149,7 @@ public readonly bool TryGetMin(out T value)
     else if (typeof(T) == typeof(int?))
     {
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, int?>(ref value);
+        ref var min = ref Psuedo.As<T, int?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7161,7 +7161,7 @@ public readonly bool TryGetMin(out T value)
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, int?>(ref enumerator.Current);
+            var current = Psuedo.As<T, int?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7171,7 +7171,7 @@ public readonly bool TryGetMin(out T value)
     else if (typeof(T) == typeof(uint?))
     {
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, uint?>(ref value);
+        ref var min = ref Psuedo.As<T, uint?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7183,7 +7183,7 @@ public readonly bool TryGetMin(out T value)
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, uint?>(ref enumerator.Current);
+            var current = Psuedo.As<T, uint?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7193,7 +7193,7 @@ public readonly bool TryGetMin(out T value)
     else if (typeof(T) == typeof(long?))
     {
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, long?>(ref value);
+        ref var min = ref Psuedo.As<T, long?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7205,7 +7205,7 @@ public readonly bool TryGetMin(out T value)
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, long?>(ref enumerator.Current);
+            var current = Psuedo.As<T, long?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7215,7 +7215,7 @@ public readonly bool TryGetMin(out T value)
     else if (typeof(T) == typeof(ulong?))
     {
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, ulong?>(ref value);
+        ref var min = ref Psuedo.As<T, ulong?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7227,7 +7227,7 @@ public readonly bool TryGetMin(out T value)
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, ulong?>(ref enumerator.Current);
+            var current = Psuedo.As<T, ulong?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7237,7 +7237,7 @@ public readonly bool TryGetMin(out T value)
     else if (typeof(T) == typeof(float?))
     {
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, float?>(ref value);
+        ref var min = ref Psuedo.As<T, float?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7249,7 +7249,7 @@ public readonly bool TryGetMin(out T value)
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, float?>(ref enumerator.Current);
+            var current = Psuedo.As<T, float?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7259,7 +7259,7 @@ public readonly bool TryGetMin(out T value)
     else if (typeof(T) == typeof(double?))
     {
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, double?>(ref value);
+        ref var min = ref Psuedo.As<T, double?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7271,7 +7271,7 @@ public readonly bool TryGetMin(out T value)
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, double?>(ref enumerator.Current);
+            var current = Psuedo.As<T, double?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7281,7 +7281,7 @@ public readonly bool TryGetMin(out T value)
     else if (typeof(T) == typeof(decimal?))
     {
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, decimal?>(ref value);
+        ref var min = ref Psuedo.As<T, decimal?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7293,7 +7293,7 @@ public readonly bool TryGetMin(out T value)
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, decimal?>(ref enumerator.Current);
+            var current = Psuedo.As<T, decimal?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7319,11 +7319,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, byte>(ref value);
+        ref var min = ref Psuedo.As<T, byte>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, byte>(ref current) < min)
+            if (Psuedo.As<T, byte>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7338,11 +7338,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, sbyte>(ref value);
+        ref var min = ref Psuedo.As<T, sbyte>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, sbyte>(ref current) < min)
+            if (Psuedo.As<T, sbyte>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7357,11 +7357,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, short>(ref value);
+        ref var min = ref Psuedo.As<T, short>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, short>(ref current) < min)
+            if (Psuedo.As<T, short>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7376,11 +7376,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, ushort>(ref value);
+        ref var min = ref Psuedo.As<T, ushort>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, ushort>(ref current) < min)
+            if (Psuedo.As<T, ushort>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7395,11 +7395,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, int>(ref value);
+        ref var min = ref Psuedo.As<T, int>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, int>(ref current) < min)
+            if (Psuedo.As<T, int>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7414,11 +7414,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, uint>(ref value);
+        ref var min = ref Psuedo.As<T, uint>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, uint>(ref current) < min)
+            if (Psuedo.As<T, uint>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7433,11 +7433,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, long>(ref value);
+        ref var min = ref Psuedo.As<T, long>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, long>(ref current) < min)
+            if (Psuedo.As<T, long>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7452,11 +7452,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, ulong>(ref value);
+        ref var min = ref Psuedo.As<T, ulong>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, ulong>(ref current) < min)
+            if (Psuedo.As<T, ulong>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7471,11 +7471,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, float>(ref value);
+        ref var min = ref Psuedo.As<T, float>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, float>(ref current) < min)
+            if (Psuedo.As<T, float>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7490,11 +7490,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, double>(ref value);
+        ref var min = ref Psuedo.As<T, double>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, double>(ref current) < min)
+            if (Psuedo.As<T, double>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7509,11 +7509,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, decimal>(ref value);
+        ref var min = ref Psuedo.As<T, decimal>(ref value);
         while (enumerator.MoveNext())
         {
             var current = enumerator.Current;
-            if (Unsafe.As<T, decimal>(ref current) < min)
+            if (Psuedo.As<T, decimal>(ref current) < min)
                 value = current;
         }
         enumerator.Dispose();
@@ -7529,11 +7529,11 @@ public readonly T Min()
             throw new InvalidOperationException();
         }
         value = enumerator.Current;
-        ref var min = ref Unsafe.As<T, decimal?>(ref value);
+        ref var min = ref Psuedo.As<T, decimal?>(ref value);
         if (!min.HasValue) goto INITIALIZE;
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, decimal?>(ref enumerator.Current);
+            var current = Psuedo.As<T, decimal?>(ref enumerator.Current);
             if (!current.HasValue || current.Value <= min.Value) continue;
             min = current;
         }
@@ -7544,7 +7544,7 @@ public readonly T Min()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, byte?>(ref value);
+        ref var min = ref Psuedo.As<T, byte?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7556,7 +7556,7 @@ public readonly T Min()
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, byte?>(ref enumerator.Current);
+            var current = Psuedo.As<T, byte?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7567,7 +7567,7 @@ public readonly T Min()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, sbyte?>(ref value);
+        ref var min = ref Psuedo.As<T, sbyte?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7579,7 +7579,7 @@ public readonly T Min()
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, sbyte?>(ref enumerator.Current);
+            var current = Psuedo.As<T, sbyte?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7590,7 +7590,7 @@ public readonly T Min()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, short?>(ref value);
+        ref var min = ref Psuedo.As<T, short?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7602,7 +7602,7 @@ public readonly T Min()
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, short?>(ref enumerator.Current);
+            var current = Psuedo.As<T, short?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7613,7 +7613,7 @@ public readonly T Min()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, ushort?>(ref value);
+        ref var min = ref Psuedo.As<T, ushort?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7625,7 +7625,7 @@ public readonly T Min()
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, ushort?>(ref enumerator.Current);
+            var current = Psuedo.As<T, ushort?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7636,7 +7636,7 @@ public readonly T Min()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, int?>(ref value);
+        ref var min = ref Psuedo.As<T, int?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7648,7 +7648,7 @@ public readonly T Min()
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, int?>(ref enumerator.Current);
+            var current = Psuedo.As<T, int?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7659,7 +7659,7 @@ public readonly T Min()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, uint?>(ref value);
+        ref var min = ref Psuedo.As<T, uint?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7671,7 +7671,7 @@ public readonly T Min()
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, uint?>(ref enumerator.Current);
+            var current = Psuedo.As<T, uint?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7682,7 +7682,7 @@ public readonly T Min()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, long?>(ref value);
+        ref var min = ref Psuedo.As<T, long?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7694,7 +7694,7 @@ public readonly T Min()
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, long?>(ref enumerator.Current);
+            var current = Psuedo.As<T, long?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7705,7 +7705,7 @@ public readonly T Min()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, ulong?>(ref value);
+        ref var min = ref Psuedo.As<T, ulong?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7717,7 +7717,7 @@ public readonly T Min()
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, ulong?>(ref enumerator.Current);
+            var current = Psuedo.As<T, ulong?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7728,7 +7728,7 @@ public readonly T Min()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, float?>(ref value);
+        ref var min = ref Psuedo.As<T, float?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7740,7 +7740,7 @@ public readonly T Min()
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, float?>(ref enumerator.Current);
+            var current = Psuedo.As<T, float?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7751,7 +7751,7 @@ public readonly T Min()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, double?>(ref value);
+        ref var min = ref Psuedo.As<T, double?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7763,7 +7763,7 @@ public readonly T Min()
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, double?>(ref enumerator.Current);
+            var current = Psuedo.As<T, double?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7774,7 +7774,7 @@ public readonly T Min()
     {
         value = default;
         var enumerator = GetEnumerator();
-        ref var min = ref Unsafe.As<T, decimal?>(ref value);
+        ref var min = ref Psuedo.As<T, decimal?>(ref value);
         do
         {
             if (!enumerator.MoveNext())
@@ -7786,7 +7786,7 @@ public readonly T Min()
         } while (!min.HasValue);
         while (enumerator.MoveNext())
         {
-            var current = Unsafe.As<T, decimal?>(ref enumerator.Current);
+            var current = Psuedo.As<T, decimal?>(ref enumerator.Current);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7813,11 +7813,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, byte>(ref value);
+        ref var min = ref Psuedo.As<TResult0, byte>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, byte>(ref result);
+            ref var current = ref Psuedo.As<TResult0, byte>(ref result);
             if (current < min)
                 min = current;
         }
@@ -7832,11 +7832,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, byte?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, byte?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, byte?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, byte?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7851,11 +7851,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, sbyte>(ref value);
+        ref var min = ref Psuedo.As<TResult0, sbyte>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, sbyte>(ref result);
+            ref var current = ref Psuedo.As<TResult0, sbyte>(ref result);
             if (current < min)
                 min = current;
         }
@@ -7870,11 +7870,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, sbyte?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, sbyte?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, sbyte?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, sbyte?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7889,11 +7889,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, short>(ref value);
+        ref var min = ref Psuedo.As<TResult0, short>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, short>(ref result);
+            ref var current = ref Psuedo.As<TResult0, short>(ref result);
             if (current < min)
                 min = current;
         }
@@ -7908,11 +7908,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, short?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, short?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, short?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, short?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7927,11 +7927,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, ushort>(ref value);
+        ref var min = ref Psuedo.As<TResult0, ushort>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ushort>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ushort>(ref result);
             if (current < min)
                 min = current;
         }
@@ -7946,11 +7946,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, ushort?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, ushort?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ushort?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ushort?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -7965,11 +7965,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, int>(ref value);
+        ref var min = ref Psuedo.As<TResult0, int>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, int>(ref result);
+            ref var current = ref Psuedo.As<TResult0, int>(ref result);
             if (current < min)
                 min = current;
         }
@@ -7984,11 +7984,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, int?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, int?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, int?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, int?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8003,11 +8003,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, uint>(ref value);
+        ref var min = ref Psuedo.As<TResult0, uint>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, uint>(ref result);
+            ref var current = ref Psuedo.As<TResult0, uint>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8022,11 +8022,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, uint?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, uint?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, uint?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, uint?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8041,11 +8041,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, long>(ref value);
+        ref var min = ref Psuedo.As<TResult0, long>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, long>(ref result);
+            ref var current = ref Psuedo.As<TResult0, long>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8060,11 +8060,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, long?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, long?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, long?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, long?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8079,11 +8079,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, ulong>(ref value);
+        ref var min = ref Psuedo.As<TResult0, ulong>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ulong>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ulong>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8098,11 +8098,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, ulong?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, ulong?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ulong?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ulong?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8117,11 +8117,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, float>(ref value);
+        ref var min = ref Psuedo.As<TResult0, float>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, float>(ref result);
+            ref var current = ref Psuedo.As<TResult0, float>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8136,11 +8136,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, float?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, float?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, float?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, float?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8155,11 +8155,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, double>(ref value);
+        ref var min = ref Psuedo.As<TResult0, double>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, double>(ref result);
+            ref var current = ref Psuedo.As<TResult0, double>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8174,11 +8174,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, double?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, double?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, double?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, double?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8193,11 +8193,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, decimal>(ref value);
+        ref var min = ref Psuedo.As<TResult0, decimal>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, decimal>(ref result);
+            ref var current = ref Psuedo.As<TResult0, decimal>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8212,11 +8212,11 @@ public bool TryGetMin<TResult0>(Func<T, TResult0> func, out TResult0 value)
             return false;
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, decimal?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, decimal?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, decimal?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, decimal?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8242,11 +8242,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, byte>(ref value);
+        ref var min = ref Psuedo.As<TResult0, byte>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, byte>(ref result);
+            ref var current = ref Psuedo.As<TResult0, byte>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8261,11 +8261,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, byte?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, byte?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, byte?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, byte?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8280,11 +8280,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, sbyte>(ref value);
+        ref var min = ref Psuedo.As<TResult0, sbyte>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, sbyte>(ref result);
+            ref var current = ref Psuedo.As<TResult0, sbyte>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8299,11 +8299,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, sbyte?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, sbyte?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, sbyte?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, sbyte?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8318,11 +8318,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, short>(ref value);
+        ref var min = ref Psuedo.As<TResult0, short>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, short>(ref result);
+            ref var current = ref Psuedo.As<TResult0, short>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8337,11 +8337,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, short?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, short?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, short?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, short?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8356,11 +8356,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, ushort>(ref value);
+        ref var min = ref Psuedo.As<TResult0, ushort>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ushort>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ushort>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8375,11 +8375,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, ushort?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, ushort?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ushort?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ushort?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8394,11 +8394,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, int>(ref value);
+        ref var min = ref Psuedo.As<TResult0, int>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, int>(ref result);
+            ref var current = ref Psuedo.As<TResult0, int>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8413,11 +8413,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, int?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, int?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, int?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, int?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8432,11 +8432,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, uint>(ref value);
+        ref var min = ref Psuedo.As<TResult0, uint>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, uint>(ref result);
+            ref var current = ref Psuedo.As<TResult0, uint>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8451,11 +8451,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, uint?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, uint?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, uint?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, uint?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8470,11 +8470,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, long>(ref value);
+        ref var min = ref Psuedo.As<TResult0, long>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, long>(ref result);
+            ref var current = ref Psuedo.As<TResult0, long>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8489,11 +8489,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, long?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, long?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, long?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, long?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8508,11 +8508,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, ulong>(ref value);
+        ref var min = ref Psuedo.As<TResult0, ulong>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ulong>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ulong>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8527,11 +8527,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, ulong?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, ulong?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, ulong?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, ulong?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8546,11 +8546,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, float>(ref value);
+        ref var min = ref Psuedo.As<TResult0, float>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, float>(ref result);
+            ref var current = ref Psuedo.As<TResult0, float>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8565,11 +8565,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, float?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, float?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, float?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, float?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8584,11 +8584,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, double>(ref value);
+        ref var min = ref Psuedo.As<TResult0, double>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, double>(ref result);
+            ref var current = ref Psuedo.As<TResult0, double>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8603,11 +8603,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, double?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, double?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, double?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, double?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -8622,11 +8622,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, decimal>(ref value);
+        ref var min = ref Psuedo.As<TResult0, decimal>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, decimal>(ref result);
+            ref var current = ref Psuedo.As<TResult0, decimal>(ref result);
             if (current < min)
                 min = current;
         }
@@ -8641,11 +8641,11 @@ public TResult0 Min<TResult0>(Func<T, TResult0> func)
             throw new InvalidOperationException();
         }
         value = func(enumerator.Current);
-        ref var min = ref Unsafe.As<TResult0, decimal?>(ref value);
+        ref var min = ref Psuedo.As<TResult0, decimal?>(ref value);
         while (enumerator.MoveNext())
         {
             var result = func(enumerator.Current);
-            ref var current = ref Unsafe.As<TResult0, decimal?>(ref result);
+            ref var current = ref Psuedo.As<TResult0, decimal?>(ref result);
             if (current.HasValue && current.Value < min.Value)
                 min = current;
         }
@@ -12505,91 +12505,91 @@ public readonly
 	}
 	if(typeof(T) == typeof(byte))
 	{
-		var sum = Unsafe.As<T, byte>(ref enumerator.Current);
+		var sum = Psuedo.As<T, byte>(ref enumerator.Current);
 		while (enumerator.MoveNext())
-			sum += Unsafe.As<T, byte>(ref enumerator.Current);
+			sum += Psuedo.As<T, byte>(ref enumerator.Current);
 		enumerator.Dispose();
-		return Unsafe.As<byte, T>(ref sum);
+		return Psuedo.As<byte, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(sbyte))
 	{
-		var sum = Unsafe.As<T, sbyte>(ref enumerator.Current);
+		var sum = Psuedo.As<T, sbyte>(ref enumerator.Current);
 		while (enumerator.MoveNext())
-			sum += Unsafe.As<T, sbyte>(ref enumerator.Current);
+			sum += Psuedo.As<T, sbyte>(ref enumerator.Current);
 		enumerator.Dispose();
-		return Unsafe.As<sbyte, T>(ref sum);
+		return Psuedo.As<sbyte, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(short))
 	{
-		var sum = Unsafe.As<T, short>(ref enumerator.Current);
+		var sum = Psuedo.As<T, short>(ref enumerator.Current);
 		while (enumerator.MoveNext())
-			sum += Unsafe.As<T, short>(ref enumerator.Current);
+			sum += Psuedo.As<T, short>(ref enumerator.Current);
 		enumerator.Dispose();
-		return Unsafe.As<short, T>(ref sum);
+		return Psuedo.As<short, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(ushort))
 	{
-		var sum = Unsafe.As<T, ushort>(ref enumerator.Current);
+		var sum = Psuedo.As<T, ushort>(ref enumerator.Current);
 		while (enumerator.MoveNext())
-			sum += Unsafe.As<T, ushort>(ref enumerator.Current);
+			sum += Psuedo.As<T, ushort>(ref enumerator.Current);
 		enumerator.Dispose();
-		return Unsafe.As<ushort, T>(ref sum);
+		return Psuedo.As<ushort, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(int))
 	{
-		var sum = Unsafe.As<T, int>(ref enumerator.Current);
+		var sum = Psuedo.As<T, int>(ref enumerator.Current);
 		while (enumerator.MoveNext())
-			sum += Unsafe.As<T, int>(ref enumerator.Current);
+			sum += Psuedo.As<T, int>(ref enumerator.Current);
 		enumerator.Dispose();
-		return Unsafe.As<int, T>(ref sum);
+		return Psuedo.As<int, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(uint))
 	{
-		var sum = Unsafe.As<T, uint>(ref enumerator.Current);
+		var sum = Psuedo.As<T, uint>(ref enumerator.Current);
 		while (enumerator.MoveNext())
-			sum += Unsafe.As<T, uint>(ref enumerator.Current);
+			sum += Psuedo.As<T, uint>(ref enumerator.Current);
 		enumerator.Dispose();
-		return Unsafe.As<uint, T>(ref sum);
+		return Psuedo.As<uint, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(long))
 	{
-		var sum = Unsafe.As<T, long>(ref enumerator.Current);
+		var sum = Psuedo.As<T, long>(ref enumerator.Current);
 		while (enumerator.MoveNext())
-			sum += Unsafe.As<T, long>(ref enumerator.Current);
+			sum += Psuedo.As<T, long>(ref enumerator.Current);
 		enumerator.Dispose();
-		return Unsafe.As<long, T>(ref sum);
+		return Psuedo.As<long, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(ulong))
 	{
-		var sum = Unsafe.As<T, ulong>(ref enumerator.Current);
+		var sum = Psuedo.As<T, ulong>(ref enumerator.Current);
 		while (enumerator.MoveNext())
-			sum += Unsafe.As<T, ulong>(ref enumerator.Current);
+			sum += Psuedo.As<T, ulong>(ref enumerator.Current);
 		enumerator.Dispose();
-		return Unsafe.As<ulong, T>(ref sum);
+		return Psuedo.As<ulong, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(float))
 	{
-		var sum = Unsafe.As<T, float>(ref enumerator.Current);
+		var sum = Psuedo.As<T, float>(ref enumerator.Current);
 		while (enumerator.MoveNext())
-			sum += Unsafe.As<T, float>(ref enumerator.Current);
+			sum += Psuedo.As<T, float>(ref enumerator.Current);
 		enumerator.Dispose();
-		return Unsafe.As<float, T>(ref sum);
+		return Psuedo.As<float, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(double))
 	{
-		var sum = Unsafe.As<T, double>(ref enumerator.Current);
+		var sum = Psuedo.As<T, double>(ref enumerator.Current);
 		while (enumerator.MoveNext())
-			sum += Unsafe.As<T, double>(ref enumerator.Current);
+			sum += Psuedo.As<T, double>(ref enumerator.Current);
 		enumerator.Dispose();
-		return Unsafe.As<double, T>(ref sum);
+		return Psuedo.As<double, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(decimal))
 	{
-		var sum = Unsafe.As<T, decimal>(ref enumerator.Current);
+		var sum = Psuedo.As<T, decimal>(ref enumerator.Current);
 		while (enumerator.MoveNext())
-			sum += Unsafe.As<T, decimal>(ref enumerator.Current);
+			sum += Psuedo.As<T, decimal>(ref enumerator.Current);
 		enumerator.Dispose();
-		return Unsafe.As<decimal, T>(ref sum);
+		return Psuedo.As<decimal, T>(ref sum);
 	}
 	return default;
 }
@@ -12611,124 +12611,124 @@ public readonly
 	var count = 1L;
 	if(typeof(T) == typeof(byte))
 	{
-		long sum = Unsafe.As<T, byte>(ref enumerator.Current);
+		long sum = Psuedo.As<T, byte>(ref enumerator.Current);
 		while (enumerator.MoveNext())
 		{
 			++count;
-			sum += Unsafe.As<T, byte>(ref enumerator.Current);
+			sum += Psuedo.As<T, byte>(ref enumerator.Current);
 		}
 		var val = (byte)(sum / count);
-		value = Unsafe.As<byte, T>(ref val);
+		value = Psuedo.As<byte, T>(ref val);
 	}
 	else if(typeof(T) == typeof(sbyte))
 	{
-		long sum = Unsafe.As<T, sbyte>(ref enumerator.Current);
+		long sum = Psuedo.As<T, sbyte>(ref enumerator.Current);
 		while (enumerator.MoveNext())
 		{
 			++count;
-			sum += Unsafe.As<T, sbyte>(ref enumerator.Current);
+			sum += Psuedo.As<T, sbyte>(ref enumerator.Current);
 		}
 		var val = (sbyte)(sum / count);
-		value = Unsafe.As<sbyte, T>(ref val);
+		value = Psuedo.As<sbyte, T>(ref val);
 	}
 	else if(typeof(T) == typeof(short))
 	{
-		long sum = Unsafe.As<T, short>(ref enumerator.Current);
+		long sum = Psuedo.As<T, short>(ref enumerator.Current);
 		while (enumerator.MoveNext())
 		{
 			++count;
-			sum += Unsafe.As<T, short>(ref enumerator.Current);
+			sum += Psuedo.As<T, short>(ref enumerator.Current);
 		}
 		var val = (short)(sum / count);
-		value = Unsafe.As<short, T>(ref val);
+		value = Psuedo.As<short, T>(ref val);
 	}
 	else if(typeof(T) == typeof(ushort))
 	{
-		long sum = Unsafe.As<T, ushort>(ref enumerator.Current);
+		long sum = Psuedo.As<T, ushort>(ref enumerator.Current);
 		while (enumerator.MoveNext())
 		{
 			++count;
-			sum += Unsafe.As<T, ushort>(ref enumerator.Current);
+			sum += Psuedo.As<T, ushort>(ref enumerator.Current);
 		}
 		var val = (ushort)(sum / count);
-		value = Unsafe.As<ushort, T>(ref val);
+		value = Psuedo.As<ushort, T>(ref val);
 	}
 	else if(typeof(T) == typeof(int))
 	{
-		long sum = Unsafe.As<T, int>(ref enumerator.Current);
+		long sum = Psuedo.As<T, int>(ref enumerator.Current);
 		while (enumerator.MoveNext())
 		{
 			++count;
-			sum += Unsafe.As<T, int>(ref enumerator.Current);
+			sum += Psuedo.As<T, int>(ref enumerator.Current);
 		}
 		var val = (int)(sum / count);
-		value = Unsafe.As<int, T>(ref val);
+		value = Psuedo.As<int, T>(ref val);
 	}
 	else if(typeof(T) == typeof(uint))
 	{
-		long sum = Unsafe.As<T, uint>(ref enumerator.Current);
+		long sum = Psuedo.As<T, uint>(ref enumerator.Current);
 		while (enumerator.MoveNext())
 		{
 			++count;
-			sum += Unsafe.As<T, uint>(ref enumerator.Current);
+			sum += Psuedo.As<T, uint>(ref enumerator.Current);
 		}
 		var val = (uint)(sum / count);
-		value = Unsafe.As<uint, T>(ref val);
+		value = Psuedo.As<uint, T>(ref val);
 	}
 	else if(typeof(T) == typeof(long))
 	{
-		var sum = Unsafe.As<T, long>(ref enumerator.Current);
+		var sum = Psuedo.As<T, long>(ref enumerator.Current);
 		while (enumerator.MoveNext())
 		{
 			++count;
-			sum += Unsafe.As<T, long>(ref enumerator.Current);
+			sum += Psuedo.As<T, long>(ref enumerator.Current);
 		}
 		sum /= count;
-		value = Unsafe.As<long, T>(ref sum);
+		value = Psuedo.As<long, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(ulong))
 	{
-		var sum = Unsafe.As<T, ulong>(ref enumerator.Current);
+		var sum = Psuedo.As<T, ulong>(ref enumerator.Current);
 		while (enumerator.MoveNext())
 		{
 			++count;
-			sum += Unsafe.As<T, ulong>(ref enumerator.Current);
+			sum += Psuedo.As<T, ulong>(ref enumerator.Current);
 		}
 		sum /= (ulong)count;
-		value = Unsafe.As<ulong, T>(ref sum);
+		value = Psuedo.As<ulong, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(float))
 	{
-		var sum = Unsafe.As<T, float>(ref enumerator.Current);
+		var sum = Psuedo.As<T, float>(ref enumerator.Current);
 		while (enumerator.MoveNext())
 		{
 			++count;
-			sum += Unsafe.As<T, float>(ref enumerator.Current);
+			sum += Psuedo.As<T, float>(ref enumerator.Current);
 		}
 		sum /= count;
-		value = Unsafe.As<float, T>(ref sum);
+		value = Psuedo.As<float, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(double))
 	{
-		var sum = Unsafe.As<T, double>(ref enumerator.Current);
+		var sum = Psuedo.As<T, double>(ref enumerator.Current);
 		while (enumerator.MoveNext())
 		{
 			++count;
-			sum += Unsafe.As<T, double>(ref enumerator.Current);
+			sum += Psuedo.As<T, double>(ref enumerator.Current);
 		}
 		sum /= count;
-		value = Unsafe.As<double, T>(ref sum);
+		value = Psuedo.As<double, T>(ref sum);
 	}
 	else if(typeof(T) == typeof(decimal))
 	{
-		var sum = Unsafe.As<T, decimal>(ref enumerator.Current);
+		var sum = Psuedo.As<T, decimal>(ref enumerator.Current);
 		while (enumerator.MoveNext())
 		{
 			++count;
-			sum += Unsafe.As<T, decimal>(ref enumerator.Current);
+			sum += Psuedo.As<T, decimal>(ref enumerator.Current);
 		}
 		sum /= count;
-		value = Unsafe.As<decimal, T>(ref sum);
+		value = Psuedo.As<decimal, T>(ref sum);
 	}
 	else
 	{

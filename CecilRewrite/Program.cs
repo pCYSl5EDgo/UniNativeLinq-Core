@@ -15,7 +15,6 @@ namespace CecilRewrite
         internal const MethodAttributes StaticMethodAttributes = MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig;
         internal static readonly ModuleDefinition MainModule;
         internal static readonly ModuleDefinition UnsafeModule;
-        internal static readonly TypeDefinition SystemUnsafeType;
         internal static readonly CustomAttribute ExtensionAttribute;
         // ReSharper disable once InconsistentNaming
         internal static readonly CustomAttribute IsReadOnlyAttribute;
@@ -32,7 +31,6 @@ namespace CecilRewrite
             var negateMethodDefinition = MainModule.GetType("UniNativeLinq.NegatePredicate`2").GetConstructors().First();
             IsReadOnlyAttribute = negateMethodDefinition.Parameters.First().CustomAttributes.First();
             UnsafeModule = ExtensionAttribute.AttributeType.Module;
-            SystemUnsafeType = MainModule.ImportReference(typeof(System.Runtime.CompilerServices.Unsafe)).Resolve();
             UnityModule = nativeEnumerable.Methods.First(x => x.Parameters.First().ParameterType.IsValueType).Parameters.First().ParameterType.Module;
         }
 

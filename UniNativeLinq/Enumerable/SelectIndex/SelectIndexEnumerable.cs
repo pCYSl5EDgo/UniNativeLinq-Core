@@ -58,7 +58,7 @@ namespace UniNativeLinq
             {
                 ++index;
                 ref var prevSource = ref enumerator.TryGetNext(out success);
-                if (!success) return ref Unsafe.AsRef<T>(null);
+                if (!success) return ref Psuedo.AsRefNull<T>();
                 action.Execute(ref enumerator.Current, index, ref element);
                 throw new NotImplementedException();
             }
@@ -113,7 +113,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
+            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

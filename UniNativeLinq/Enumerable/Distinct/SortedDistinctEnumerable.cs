@@ -15,7 +15,7 @@ namespace UniNativeLinq
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
-        private readonly TEnumerable enumerable;
+        private TEnumerable enumerable;
         private readonly TComparer orderComparer;
         private readonly Allocator alloc;
 
@@ -26,7 +26,7 @@ namespace UniNativeLinq
             alloc = allocator;
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(in enumerable, orderComparer, alloc);
+        [PsuedoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref enumerable, orderComparer, alloc);
 
         public struct Enumerator : IRefEnumerator<T>
         {
@@ -38,13 +38,12 @@ namespace UniNativeLinq
             private TComparer comparer;
             private readonly Allocator allocator;
 
-            internal Enumerator(in TEnumerable enumerable, in TComparer comparer, Allocator allocator)
+            internal Enumerator([PsuedoIsReadOnly]ref TEnumerable enumerable, in TComparer comparer, Allocator allocator)
             {
-                ref var _enumerable = ref Unsafe.AsRef(enumerable);
-                enumerator = _enumerable.GetEnumerator();
+                enumerator = enumerable.GetEnumerator();
                 this.allocator = allocator;
                 count = 0L;
-                capacity = _enumerable.CanFastCount() ? _enumerable.LongCount() : 16L;
+                capacity = enumerable.CanFastCount() ? enumerable.LongCount() : 16L;
                 ptr = UnsafeUtilityEx.Malloc<T>(capacity, allocator);
                 this.comparer = comparer;
                 lastInsertIndex = -1L;
@@ -196,7 +195,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
+            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

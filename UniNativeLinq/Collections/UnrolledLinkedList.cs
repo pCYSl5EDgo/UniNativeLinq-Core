@@ -107,7 +107,7 @@ namespace UniNativeLinq
                         index = count;
                     if (success)
                         return ref values[index];
-                    return ref Unsafe.AsRef<T>(null);
+                    return ref Psuedo.AsRefNull<T>();
                 }
 
                 public bool TryMoveNext(out T value)
@@ -173,7 +173,7 @@ namespace UniNativeLinq
             public readonly T[] ToArray()
             {
                 var answer = new T[Count];
-                CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
+                CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
                 return answer;
             }
 
@@ -382,7 +382,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[LongCount()];
-            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
+            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

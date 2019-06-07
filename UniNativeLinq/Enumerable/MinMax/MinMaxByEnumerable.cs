@@ -13,7 +13,7 @@ namespace UniNativeLinq
         where T : unmanaged
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
-        where TKey : unmanaged
+        where TKey : unmanaged, IEquatable<TKey>
         where TKeySelector : struct, IRefFunc<T, TKey>
         where TKeyRenewPredicate : struct, IRefFunc<TKey, TKey, bool>
         where TKeyEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
@@ -204,7 +204,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo((T*)Unsafe.AsPointer(ref answer[0]));
+            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 
