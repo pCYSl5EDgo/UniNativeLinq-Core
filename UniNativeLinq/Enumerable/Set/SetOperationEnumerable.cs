@@ -8,6 +8,7 @@ using Unity.Collections.LowLevel.Unsafe;
 namespace UniNativeLinq
 {
     [SlowCount]
+    [PseudoIsReadOnly]
     public unsafe struct
         SetOperationEnumerable<TFirstEnumerable, TFirstEnumerator, TSecondEnumerable, TSecondEnumerator, T, TSetOperation>
         : IRefEnumerable<SetOperationEnumerable<TFirstEnumerable, TFirstEnumerator, TSecondEnumerable, TSecondEnumerator, T, TSetOperation>.Enumerator, T>
@@ -18,11 +19,11 @@ namespace UniNativeLinq
         where TSecondEnumerator : struct, IRefEnumerator<T>
         where TSetOperation : struct, ISetOperation<TFirstEnumerable, TFirstEnumerator, TSecondEnumerable, TSecondEnumerator, T>
     {
-        private TFirstEnumerable firstEnumerable;
-        private TSecondEnumerable secondEnumerable;
+        [PseudoIsReadOnly] private TFirstEnumerable firstEnumerable;
+        [PseudoIsReadOnly] private TSecondEnumerable secondEnumerable;
         private readonly Allocator alloc;
 
-        private TSetOperation setOperation;
+        [PseudoIsReadOnly] private TSetOperation setOperation;
 
         public SetOperationEnumerable(in TFirstEnumerable firstEnumerable, in TSecondEnumerable secondEnumerable, TSetOperation setOperation, Allocator alloc)
         {
@@ -37,7 +38,7 @@ namespace UniNativeLinq
             private NativeEnumerable<T>.Enumerator mergedEnumerator;
             private readonly Allocator allocator;
 
-            public Enumerator([PsuedoIsReadOnly]ref TFirstEnumerable firstEnumerable, [PsuedoIsReadOnly]ref TSecondEnumerable secondEnumerable, [PsuedoIsReadOnly]ref TSetOperation setOperation, Allocator allocator)
+            public Enumerator([PseudoIsReadOnly]ref TFirstEnumerable firstEnumerable, [PseudoIsReadOnly]ref TSecondEnumerable secondEnumerable, [PseudoIsReadOnly]ref TSetOperation setOperation, Allocator allocator)
             {
                 this.allocator = allocator;
                 mergedEnumerator = setOperation.Calc(ref firstEnumerable, ref secondEnumerable, allocator).GetEnumerator();
@@ -61,7 +62,7 @@ namespace UniNativeLinq
             public bool TryMoveNext(out T value) => mergedEnumerator.TryMoveNext(out value);
         }
 
-        [PsuedoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref firstEnumerable, ref secondEnumerable, ref setOperation, alloc);
+        [PseudoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref firstEnumerable, ref secondEnumerable, ref setOperation, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -116,7 +117,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

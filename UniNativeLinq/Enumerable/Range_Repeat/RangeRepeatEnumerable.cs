@@ -75,7 +75,7 @@ namespace UniNativeLinq
                 if (!success)
                 {
                     index = count;
-                    return ref Psuedo.AsRefNull<T>();
+                    return ref Pseudo.AsRefNull<T>();
                 }
                 if (index > 0)
                     action.Execute(ref element);
@@ -132,7 +132,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

@@ -87,7 +87,7 @@ namespace UniNativeLinq
                 if (success)
                     return ref Parent.Elements[Parent.StartIndex];
                 else
-                    return ref Psuedo.AsRefNull<T>();
+                    return ref Pseudo.AsRefNull<T>();
             }
 
             public bool TryMoveNext(out T value)
@@ -136,7 +136,7 @@ namespace UniNativeLinq
         public readonly T[] ToArray()
         {
             var answer = new T[Length];
-            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

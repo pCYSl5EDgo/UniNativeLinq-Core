@@ -94,7 +94,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<SkipEnumerable<TEnumerable, TEnumerator, T>>();
             var answer = new SkipEnumerable<TEnumerable, TEnumerator, T>[count];
-            CopyTo(Psuedo.AsPointer(ref answer[0]));
+            CopyTo(Pseudo.AsPointer(ref answer[0]));
             return answer;
         }
 

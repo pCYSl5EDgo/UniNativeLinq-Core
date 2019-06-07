@@ -40,7 +40,7 @@ namespace UniNativeLinq
             private long index;
             private readonly Allocator allocator;
 
-            internal Enumerator([PsuedoIsReadOnly]ref TEnumerable enumerable, TComparer orderComparer, Allocator allocator)
+            internal Enumerator([PseudoIsReadOnly]ref TEnumerable enumerable, TComparer orderComparer, Allocator allocator)
             {
                 this.allocator = allocator;
                 index = -1;
@@ -158,7 +158,7 @@ namespace UniNativeLinq
                 if (success)
                     return ref Ptr[index];
                 index = Count;
-                return ref Psuedo.AsRefNull<T>();
+                return ref Pseudo.AsRefNull<T>();
             }
 
             public bool TryMoveNext(out T value)
@@ -223,7 +223,7 @@ namespace UniNativeLinq
                 new OrderByDelegateKeySelector<T, TKey0>(keySelector, comparer, descending)),
                 alloc);
 
-        [PsuedoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref enumerable, orderComparer, alloc);
+        [PseudoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref enumerable, orderComparer, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -259,7 +259,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

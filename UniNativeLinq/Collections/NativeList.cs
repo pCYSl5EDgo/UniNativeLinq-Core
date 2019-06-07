@@ -73,7 +73,7 @@ namespace UniNativeLinq
         public readonly T[] ToArray()
         {
             var answer = new T[Length];
-            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 
@@ -111,7 +111,7 @@ namespace UniNativeLinq
                     success = ++index < count;
                 if(success)
                     return ref ptr[index];
-                return ref Psuedo.AsRefNull<T>();
+                return ref Pseudo.AsRefNull<T>();
             }
 
             public bool TryMoveNext(out T value)

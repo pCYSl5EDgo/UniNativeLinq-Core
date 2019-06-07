@@ -32,7 +32,7 @@ namespace UniNativeLinq
             readonly T IEnumerator<T>.Current => Current;
             readonly object IEnumerator.Current => Current;
 
-            public Enumerator([PsuedoIsReadOnly]ref TEnumerable enumerable, long takeCount, Allocator allocator)
+            public Enumerator([PseudoIsReadOnly]ref TEnumerable enumerable, long takeCount, Allocator allocator)
             {
                 var ringBuffer = new RingBuffer<T>(takeCount, allocator);
                 var baseEnumerator = enumerable.GetEnumerator();
@@ -61,7 +61,7 @@ namespace UniNativeLinq
             public bool TryMoveNext(out T value) => enumerator.TryMoveNext(out value);
         }
 
-        [PsuedoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref enumerable, takeCount, alloc);
+        [PseudoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref enumerable, takeCount, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -102,7 +102,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

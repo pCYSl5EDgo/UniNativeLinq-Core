@@ -37,6 +37,8 @@ namespace CecilRewrite
         internal static void Main(string[] args)
         {
             RewriteThrow(MainModule);
+            ReWritePseudoIsReadOnly(MainModule);
+            ReWritePseudoUtility(MainModule);
             //TryGetMinHelper.Create(MainModule);
             //TryGetMaxHelper.Create(MainModule);
             //TryGetMinFuncHelper.Create(MainModule);
@@ -59,19 +61,106 @@ namespace CecilRewrite
             //TryGetLastHelper.Create(MainModule);
             //TryGetSingleHelper.Create(MainModule);
             //SumHelper.Create(MainModule);
-            AverageHelper.Create(MainModule);
+            //AverageHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
+        }
+
+        private static void ReWritePseudoUtility(ModuleDefinition module)
+        {
+            foreach (var type in module.GetTypes()
+                .Where(x => x.IsValueType))
+            {
+                foreach (var method in type.Methods)
+                {
+                    var processor = method.Body.GetILProcessor();
+                    var instructions = method.Body.Instructions;
+                    for (int i = instructions.Count; --i >= 0;)
+                    {
+                        var instruction = instructions[i];
+                        if (instruction.OpCode == OpCodes.Call && instruction.Operand is MethodReference methodReference)
+                        {
+                            if (methodReference.DeclaringType.Name == "Pseudo")
+                            {
+                                if (methodReference.Name == "AsRefNull")
+                                {
+                                    processor.InsertBefore(instruction, Instruction.Create(OpCodes.Ldc_I4_0));
+                                    processor.InsertBefore(instruction, Instruction.Create(OpCodes.Conv_U));
+                                }
+                                processor.Remove(instruction);
+                            }
+                        }
+                    }
+                }
+            }
+            var pseudo = module.GetType(NameSpace, "Pseudo");
+            module.Types.Remove(pseudo);
+        }
+
+        private static void ReWritePseudoIsReadOnlyGeneric<T>(this T member)
+            where T : ICustomAttributeProvider
+        {
+            var memberCustomAttributes = member.CustomAttributes;
+            var pseudo = memberCustomAttributes.FirstOrDefault(x => x.AttributeType.Name == "PseudoIsReadOnlyAttribute");
+            if (!(pseudo is null))
+            {
+                memberCustomAttributes.Remove(pseudo);
+                memberCustomAttributes.Add(IsReadOnlyAttribute);
+            }
+        }
+
+        private static void ReWritePseudoIsReadOnly(ModuleDefinition module)
+        {
+            foreach (var type in module.GetTypes()
+                .Where(x => x.IsValueType && x.Interfaces.Any(y => y.InterfaceType.Name == "IRefEnumerable`2")))
+            {
+                ReWritePseudoIsReadOnly(type);
+            }
+            var pseudo = MainModule.GetType(NameSpace, "PseudoIsReadOnlyAttribute");
+            MainModule.Types.Remove(pseudo);
+        }
+
+        private static void ReWritePseudoIsReadOnly(TypeDefinition type)
+        {
+            type.ReWritePseudoIsReadOnlyGeneric();
+            foreach (var field in type.Fields)
+            {
+                var fieldCustomAttributes = field.CustomAttributes;
+                var pseudo = fieldCustomAttributes.FirstOrDefault(x => x.AttributeType.Name == "PseudoIsReadOnlyAttribute");
+                if (!(pseudo is null))
+                {
+                    fieldCustomAttributes.Remove(pseudo);
+                    field.IsInitOnly = true;
+                }
+            }
+            foreach (var method in type.Methods)
+            {
+                method.ReWritePseudoIsReadOnlyGeneric();
+                foreach (var parameter in method.Parameters)
+                {
+                    parameter.ReWritePseudoIsReadOnlyGeneric();
+                }
+            }
+            foreach (var nestedType in type.NestedTypes)
+                ReWritePseudoIsReadOnly(nestedType);
         }
 
         internal static void RewriteThrow(ModuleDefinition module)
         {
+            const string local = "LocalRefReturnAttribute";
             var enumeratorTypes = module.GetTypes()
                 .Where(x => x.IsPublic && x.IsValueType && x.HasNestedTypes)
                 .SelectMany(x => x.NestedTypes)
-                .Where(x => x.HasCustomAttributes && x.CustomAttributes.Any(y => y.AttributeType.Name == "LocalRefReturnAttribute"));
+                .Where(x => x.HasCustomAttributes && x.CustomAttributes.Any(y => y.AttributeType.Name == local));
             foreach (var enumeratorType in enumeratorTypes)
             {
                 ReWriteRefReturn(module, enumeratorType);
+                var remove = enumeratorType.CustomAttributes.FirstOrDefault(x => x.AttributeType.Name == local);
+                if (remove is null) continue;
+                enumeratorType.CustomAttributes.Remove(remove);
+            }
+            {
+                var remove = module.GetType(NameSpace, local);
+                module.Types.Remove(remove);
             }
         }
 

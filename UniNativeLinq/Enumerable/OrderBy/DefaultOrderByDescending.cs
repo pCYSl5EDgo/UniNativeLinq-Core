@@ -10,7 +10,7 @@ namespace UniNativeLinq
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Calc(ref T arg0, ref T arg1)
         {
-            return UnsafeUtility.MemCmp(Psuedo.AsPointer(ref arg1), Psuedo.AsPointer(ref arg0), sizeof(T));
+            return UnsafeUtility.MemCmp(Pseudo.AsPointer(ref arg1), Pseudo.AsPointer(ref arg0), sizeof(T));
         }
     }
 }

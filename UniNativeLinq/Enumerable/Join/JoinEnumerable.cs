@@ -147,7 +147,7 @@ namespace UniNativeLinq
                         innerIndex = 0;
                         ref var value = ref outerEnumerator.TryGetNext(out success);
                         if (!success)
-                            return ref Psuedo.AsRefNull<T>();
+                            return ref Pseudo.AsRefNull<T>();
                         outerKey = outerKeySelector.Calc(ref value);
                     }
                     for (; innerIndex < innerCount; innerIndex++)
@@ -242,7 +242,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

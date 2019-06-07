@@ -2,7 +2,7 @@
 
 namespace UniNativeLinq
 {
-    internal class PsuedoIsReadOnlyAttribute : Attribute
+    internal class PseudoIsReadOnlyAttribute : Attribute
     {
     }
 }

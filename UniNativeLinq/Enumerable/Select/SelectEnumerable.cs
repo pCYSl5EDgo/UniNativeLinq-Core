@@ -62,7 +62,7 @@ namespace UniNativeLinq
             public ref T TryGetNext(out bool success)
             {
                 ref var value = ref enumerator.TryGetNext(out success);
-                if (!success) return ref Psuedo.AsRefNull<T>();
+                if (!success) return ref Pseudo.AsRefNull<T>();
                 action.Execute(ref value, ref element);
                 throw new NotImplementedException();
             }
@@ -114,7 +114,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

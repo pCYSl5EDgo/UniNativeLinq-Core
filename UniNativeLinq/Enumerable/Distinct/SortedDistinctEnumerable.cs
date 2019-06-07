@@ -26,7 +26,7 @@ namespace UniNativeLinq
             alloc = allocator;
         }
 
-        [PsuedoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref enumerable, orderComparer, alloc);
+        [PseudoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref enumerable, orderComparer, alloc);
 
         public struct Enumerator : IRefEnumerator<T>
         {
@@ -38,7 +38,7 @@ namespace UniNativeLinq
             private TComparer comparer;
             private readonly Allocator allocator;
 
-            internal Enumerator([PsuedoIsReadOnly]ref TEnumerable enumerable, in TComparer comparer, Allocator allocator)
+            internal Enumerator([PseudoIsReadOnly]ref TEnumerable enumerable, in TComparer comparer, Allocator allocator)
             {
                 enumerator = enumerable.GetEnumerator();
                 this.allocator = allocator;
@@ -195,7 +195,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 

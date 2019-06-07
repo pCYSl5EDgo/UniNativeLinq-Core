@@ -48,7 +48,7 @@ namespace UniNativeLinq
 
             private const long INITIAL_CAPACITY = 16L;
 
-            internal Enumerator([PsuedoIsReadOnly]ref TEnumerable enumerable, TKeySelector keySelector, TElementSelector elementSelector, TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions option)
+            internal Enumerator([PseudoIsReadOnly]ref TEnumerable enumerable, TKeySelector keySelector, TElementSelector elementSelector, TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions option)
             {
                 this.option = option;
                 index = -1;
@@ -155,7 +155,7 @@ namespace UniNativeLinq
                 if (success)
                     return ref Groups[index];
                 index = Count;
-                return ref Psuedo.AsRefNull<Grouping<TKey, TElement>>();
+                return ref Pseudo.AsRefNull<Grouping<TKey, TElement>>();
             }
 
             public bool TryMoveNext(out Grouping<TKey, TElement> value)
@@ -174,8 +174,8 @@ namespace UniNativeLinq
             }
         }
 
-        [PsuedoIsReadOnly]public Enumerator GetEnumerator() => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, alloc, GroupByDisposeOption);
-        [PsuedoIsReadOnly]public Enumerator GetEnumerator(Allocator allocator, GroupByDisposeOptions option) => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, allocator, option);
+        [PseudoIsReadOnly]public Enumerator GetEnumerator() => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, alloc, GroupByDisposeOption);
+        [PseudoIsReadOnly]public Enumerator GetEnumerator(Allocator allocator, GroupByDisposeOptions option) => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, allocator, option);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -230,7 +230,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<Grouping<TKey, TElement>>();
             var answer = new Grouping<TKey, TElement>[count];
-            CopyTo(Psuedo.AsPointer(ref answer[0]));
+            CopyTo(Pseudo.AsPointer(ref answer[0]));
             return answer;
         }
 

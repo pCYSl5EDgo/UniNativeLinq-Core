@@ -25,13 +25,13 @@ namespace UniNativeLinq
 
         public ReverseEnumerable(NativeEnumerable<T> enumerable)
         {
-            Enumerable = Psuedo.As<NativeEnumerable<T>, TEnumerable>(ref enumerable);
+            Enumerable = Pseudo.As<NativeEnumerable<T>, TEnumerable>(ref enumerable);
             alloc = Allocator.None;
         }
 
         public ReverseEnumerable(ArrayEnumerable<T> enumerable)
         {
-            Enumerable = Psuedo.As<ArrayEnumerable<T>, TEnumerable>(ref enumerable);
+            Enumerable = Pseudo.As<ArrayEnumerable<T>, TEnumerable>(ref enumerable);
             alloc = Allocator.None;
         }
 
@@ -48,7 +48,7 @@ namespace UniNativeLinq
                 this.allocator = allocator;
             }
 
-            internal Enumerator([PsuedoIsReadOnly]ref NativeEnumerable<T> enumerable)
+            internal Enumerator([PseudoIsReadOnly]ref NativeEnumerable<T> enumerable)
             {
                 kind = ReverseEnumerableKind.NativeArray;
                 enumerator = enumerable.GetReverseEnumerator();
@@ -123,7 +123,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Psuedo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 
