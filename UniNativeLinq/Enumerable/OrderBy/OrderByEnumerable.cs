@@ -25,7 +25,7 @@ namespace UniNativeLinq
         private readonly TComparer orderComparer;
         private readonly Allocator alloc;
 
-        public OrderByEnumerable(in TEnumerable enumerable, TComparer comparer, Allocator allocator)
+        public OrderByEnumerable(in TEnumerable enumerable, in TComparer comparer, Allocator allocator)
         {
             this.enumerable = enumerable;
             orderComparer = comparer;
