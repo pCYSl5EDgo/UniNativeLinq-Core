@@ -8,31 +8,62 @@ namespace UniNativeLinq
         where T : unmanaged
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Calc(ref T arg0, ref T arg1)
-        {
-            if (typeof(T) == typeof(byte))
-                return Pseudo.As<T, byte>(ref arg0).CompareTo(Pseudo.As<T, byte>(ref arg1));
-            else if (typeof(T) == typeof(sbyte))
-                return Pseudo.As<T, sbyte>(ref arg0).CompareTo(Pseudo.As<T, sbyte>(ref arg1));
-            else if (typeof(T) == typeof(short))
-                return Pseudo.As<T, short>(ref arg0).CompareTo(Pseudo.As<T, short>(ref arg1));
-            else if (typeof(T) == typeof(ushort))
-                return Pseudo.As<T, ushort>(ref arg0).CompareTo(Pseudo.As<T, ushort>(ref arg1));
-            else if (typeof(T) == typeof(int))
-                return Pseudo.As<T, int>(ref arg0).CompareTo(Pseudo.As<T, int>(ref arg1));
-            else if (typeof(T) == typeof(uint))
-                return Pseudo.As<T, uint>(ref arg0).CompareTo(Pseudo.As<T, uint>(ref arg1));
-            else if (typeof(T) == typeof(long))
-                return Pseudo.As<T, long>(ref arg0).CompareTo(Pseudo.As<T, long>(ref arg1));
-            else if (typeof(T) == typeof(ulong))
-                return Pseudo.As<T, ulong>(ref arg0).CompareTo(Pseudo.As<T, ulong>(ref arg1));
-            else if (typeof(T) == typeof(float))
-                return Pseudo.As<T, float>(ref arg0).CompareTo(Pseudo.As<T, float>(ref arg1));
-            else if (typeof(T) == typeof(double))
-                return Pseudo.As<T, double>(ref arg0).CompareTo(Pseudo.As<T, double>(ref arg1));
-            else if (typeof(T) == typeof(decimal))
-                return Pseudo.As<T, decimal>(ref arg0).CompareTo(Pseudo.As<T, decimal>(ref arg1));
-            return UnsafeUtility.MemCmp(Pseudo.AsPointer(ref arg0), Pseudo.AsPointer(ref arg1), sizeof(T));
-        }
+        public int Calc(ref T arg0, ref T arg1) => UnsafeUtility.MemCmp(Pseudo.AsPointer(ref arg0), Pseudo.AsPointer(ref arg1), sizeof(T));
+    }
+
+    public readonly struct DefaultOrderByAscendingByte
+        : IRefFunc<byte, byte, int>
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Calc(ref byte arg0, ref byte arg1) => arg0 - arg1;
+    }
+
+    public readonly struct DefaultOrderByAscendingSByte
+        : IRefFunc<sbyte, sbyte, int>
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Calc(ref sbyte arg0, ref sbyte arg1) => arg0 - arg1;
+    }
+
+    public readonly struct DefaultOrderByAscendingInt16
+        : IRefFunc<short, short, int>
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Calc(ref short arg0, ref short arg1) => arg0 - arg1;
+    }
+
+    public readonly struct DefaultOrderByAscendingUInt16
+        : IRefFunc<ushort, ushort, int>
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Calc(ref ushort arg0, ref ushort arg1) => arg0 - arg1;
+    }
+
+    public readonly struct DefaultOrderByAscendingInt32
+        : IRefFunc<int, int, int>
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Calc(ref int arg0, ref int arg1) => arg0 - arg1;
+    }
+
+    public readonly struct DefaultOrderByAscendingUInt32
+        : IRefFunc<uint, uint, int>
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Calc(ref uint arg0, ref uint arg1) => arg0.CompareTo(arg1);
+    }
+
+    public readonly struct DefaultOrderByAscendingInt64
+        : IRefFunc<long, long, int>
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Calc(ref long arg0, ref long arg1) => arg0.CompareTo(arg1);
+    }
+
+    public readonly struct DefaultOrderByAscendingUInt64
+        : IRefFunc<ulong, ulong, int>
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Calc(ref ulong arg0, ref ulong arg1) => arg0.CompareTo(arg1);
     }
 }
