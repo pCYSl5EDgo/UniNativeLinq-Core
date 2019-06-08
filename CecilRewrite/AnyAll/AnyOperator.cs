@@ -3,6 +3,7 @@ using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+// ReSharper disable InconsistentNaming
 
 // ReSharper disable VariableHidesOuterVariable
 
@@ -32,35 +33,66 @@ namespace CecilRewrite
                 AggressiveInlining = true,
             };
             method.CustomAttributes.Add(ExtensionAttribute);
-            method.Parameters.Capacity = 1;
+
             var argumentsFromTypeToMethodParam = method.FromTypeToMethodParam(type.GenericParameters);
             var @this = type.MakeGenericInstanceType(argumentsFromTypeToMethodParam);
             var thisParameterDefinition = new ParameterDefinition("this", ParameterAttributes.In, @this.MakeByReferenceType());
             thisParameterDefinition.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(thisParameterDefinition);
-            var genericParameter = new GenericParameter("TPredicate0", method)
+
+            GenericParameter TPredicate0;
+            TPredicate0 = new GenericParameter(nameof(TPredicate0), method)
             {
                 HasNotNullableValueTypeConstraint = true,
                 HasDefaultConstructorConstraint = true,
                 IsNonVariant = true,
             };
-            genericParameter.Constraints.Add(MainModule.ImportReference(typeof(ValueType)));
-            genericParameter.Constraints.Add(MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericInstanceType(new[]
+            TPredicate0.Constraints.Add(MainModule.ImportReference(typeof(ValueType)));
+            TPredicate0.Constraints.Add(MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericInstanceType(new[]
             {
                 @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters),
                 MainModule.TypeSystem.Boolean
             }));
-            method.GenericParameters.Add(genericParameter);
-            var predicateParameterDefinition = new ParameterDefinition("predicate", ParameterAttributes.In, genericParameter.MakeByReferenceType());
+            method.GenericParameters.Add(TPredicate0);
+
+            var predicateParameterDefinition = new ParameterDefinition("predicate", ParameterAttributes.In, TPredicate0.MakeByReferenceType());
             predicateParameterDefinition.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(predicateParameterDefinition);
 
             var body = method.Body;
-            var parameterTypeTPredicate0Ref = (ByReferenceType)method.Parameters[1].ParameterType;
-            var enumerator = @this.GetEnumeratorTypeOfCollectionType().Replace(method.GenericParameters);
-            var element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters);
+            var variables = body.Variables;
+            var Enumerator = (GenericInstanceType)@this.GetEnumeratorTypeOfCollectionType().Replace(method.GenericParameters);
+            var Element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters);
 
             var processor = body.GetILProcessor();
+
+            variables.Add(new VariableDefinition(Enumerator));
+            variables.Add(new VariableDefinition(Element));
+
+            var il0007 = Instruction.Create(OpCodes.Ldloca_S, variables[0]);
+            var il002B = Instruction.Create(OpCodes.Ldloca_S, variables[0]);
+
+            processor.Do(OpCodes.Ldarg_0);
+            processor.GetEnumerator(@this);
+            processor.Do(OpCodes.Stloc_0);
+            processor.Append(il0007);
+            processor.LdLocaS(1);
+            processor.Call(Enumerator.FindMethod("TryMoveNext"));
+            processor.False(il002B);
+            processor.Do(OpCodes.Ldarg_1);
+            processor.LdLocaS(1);
+            processor.Constrained(TPredicate0);
+            processor.CallVirtual(MainModule.GetType(NameSpace, "IRefFunc`2").MakeGenericInstanceType(new[] { Element, MainModule.TypeSystem.Boolean }).FindMethod("Calc"));
+            processor.False(il0007);
+            processor.LdLocaS(0);
+            var Dispose = Enumerator.FindMethod("Dispose");
+            processor.Call(Dispose);
+            processor.Do(OpCodes.Ldc_I4_1);
+            processor.Ret();
+            processor.Append(il002B);
+            processor.Call(Dispose);
+            processor.Do(OpCodes.Ldc_I4_0);
+            processor.Ret();
 
             @static.Methods.Add(method);
         }

@@ -71,6 +71,7 @@
     <Compile Include="Contains\ContainsOperatorHelper.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="IsEmpty.cs" />
+    <Compile Include="OrderByDefaultAscendingHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MinMax\TryGetMax.cs" />

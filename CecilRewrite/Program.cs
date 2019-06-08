@@ -45,10 +45,10 @@ namespace CecilRewrite
             //TryGetMaxFuncHelper.Create(MainModule);
             //TryGetMinOperatorHelper.Create(MainModule);
             //TryGetMaxOperatorHelper.Create(MainModule);
-            //AnyOperatorHelper.Create(MainModule);
-            //AllOperatorHelper.Create(MainModule);
-            //AnyFuncHelper.Create(MainModule);
-            //AllFuncHelper.Create(MainModule);
+            AnyOperatorHelper.Create(MainModule);
+            AllOperatorHelper.Create(MainModule);
+            AnyFuncHelper.Create(MainModule);
+            AllFuncHelper.Create(MainModule);
             //IsEmptyHelper.Create(MainModule);
             //AggregateOperatorSmallHelper.Create(MainModule);
             //AggregateFunctionSmallHelper.Create(MainModule);
