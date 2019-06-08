@@ -20,6 +20,7 @@ namespace CecilRewrite
         internal static readonly CustomAttribute IsReadOnlyAttribute;
         internal static readonly ModuleDefinition UnityModule;
         internal static readonly AssemblyDefinition Assembly;
+        internal static readonly TypeReference Allocator;
 
         static Program()
         {
@@ -32,6 +33,7 @@ namespace CecilRewrite
             IsReadOnlyAttribute = negateMethodDefinition.Parameters.First().CustomAttributes.First();
             UnsafeModule = ExtensionAttribute.AttributeType.Module;
             UnityModule = nativeEnumerable.Methods.First(x => x.Parameters.First().ParameterType.IsValueType).Parameters.First().ParameterType.Module;
+            Allocator = MainModule.GetType(NameSpace, "NativeEnumerable`1").Methods.First(x => x.Name == "ToNativeArray").Parameters.First().ParameterType;
         }
 
         internal static void Main(string[] args)
@@ -45,10 +47,10 @@ namespace CecilRewrite
             //TryGetMaxFuncHelper.Create(MainModule);
             //TryGetMinOperatorHelper.Create(MainModule);
             //TryGetMaxOperatorHelper.Create(MainModule);
-            AnyOperatorHelper.Create(MainModule);
-            AllOperatorHelper.Create(MainModule);
-            AnyFuncHelper.Create(MainModule);
-            AllFuncHelper.Create(MainModule);
+            //AnyOperatorHelper.Create(MainModule);
+            //AllOperatorHelper.Create(MainModule);
+            //AnyFuncHelper.Create(MainModule);
+            //AllFuncHelper.Create(MainModule);
             //IsEmptyHelper.Create(MainModule);
             //AggregateOperatorSmallHelper.Create(MainModule);
             //AggregateFunctionSmallHelper.Create(MainModule);
@@ -62,6 +64,7 @@ namespace CecilRewrite
             //TryGetSingleHelper.Create(MainModule);
             //SumHelper.Create(MainModule);
             //AverageHelper.Create(MainModule);
+            OrderByOperatorHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 
@@ -77,18 +80,13 @@ namespace CecilRewrite
                     for (int i = instructions.Count; --i >= 0;)
                     {
                         var instruction = instructions[i];
-                        if (instruction.OpCode == OpCodes.Call && instruction.Operand is MethodReference methodReference)
+                        if (instruction.OpCode != OpCodes.Call || !(instruction.Operand is MethodReference methodReference) || methodReference.DeclaringType.Name != "Pseudo") continue;
+                        if (methodReference.Name == "AsRefNull")
                         {
-                            if (methodReference.DeclaringType.Name == "Pseudo")
-                            {
-                                if (methodReference.Name == "AsRefNull")
-                                {
-                                    processor.InsertBefore(instruction, Instruction.Create(OpCodes.Ldc_I4_0));
-                                    processor.InsertBefore(instruction, Instruction.Create(OpCodes.Conv_U));
-                                }
-                                processor.Remove(instruction);
-                            }
+                            processor.InsertBefore(instruction, Instruction.Create(OpCodes.Ldc_I4_0));
+                            processor.InsertBefore(instruction, Instruction.Create(OpCodes.Conv_U));
                         }
+                        processor.Remove(instruction);
                     }
                 }
             }

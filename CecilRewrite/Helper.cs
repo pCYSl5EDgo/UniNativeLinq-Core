@@ -233,6 +233,9 @@ namespace CecilRewrite
         public static void StObj(this ILProcessor processor, TypeReference type)
             => processor.Append(Instruction.Create(OpCodes.Stobj, type));
 
+        public static void NewObj(this ILProcessor processor, MethodReference constructor)
+            => processor.Append(Instruction.Create(OpCodes.Newobj, constructor));
+
         public static void Ret(this ILProcessor processor)
             => processor.Append(Instruction.Create(OpCodes.Ret));
 
