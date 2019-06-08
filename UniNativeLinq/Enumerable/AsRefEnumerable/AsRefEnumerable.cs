@@ -12,24 +12,6 @@ namespace UniNativeLinq
                 NativeEnumerable<T>,
                 NativeEnumerable<T>.Enumerator,
                 T,
-                TComparer0
-            >
-            OrderBy<T, TComparer0>
-            (in this NativeEnumerable<T> @this, in TComparer0 comparer, Allocator allocator = Allocator.Temp)
-            where T : unmanaged
-            where TComparer0 : struct, IRefFunc<T, T, int>
-            => new OrderByEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T,
-                TComparer0
-            >(@this, comparer, allocator);
-
-        public static
-            OrderByEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T,
                 OrderByFromIComparer<T>
             >
             OrderBy<T>

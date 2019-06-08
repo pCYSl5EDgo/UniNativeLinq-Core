@@ -6,10 +6,10 @@ namespace UniNativeLinq
 {
     public readonly unsafe struct DefaultOrderByDescending<T>
         : IRefFunc<T, T, int>
-        where T : unmanaged
+        where T : unmanaged, IComparable<T>
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Calc(ref T arg0, ref T arg1) => UnsafeUtility.MemCmp(Pseudo.AsPointer(ref arg1), Pseudo.AsPointer(ref arg0), sizeof(T));
+        public int Calc(ref T arg0, ref T arg1) => arg1.CompareTo(arg0);
     }
 
     public readonly struct DefaultOrderByDescendingByte
@@ -66,5 +66,19 @@ namespace UniNativeLinq
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Calc(ref ulong arg0, ref ulong arg1) => arg1.CompareTo(arg0);
+    }
+
+    public readonly struct DefaultOrderByDescendingSingle
+        : IRefFunc<float, float, int>
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Calc(ref float arg0, ref float arg1) => arg1.CompareTo(arg0);
+    }
+
+    public readonly struct DefaultOrderByDescendingDouble
+        : IRefFunc<double, double, int>
+    {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int Calc(ref double arg0, ref double arg1) => arg1.CompareTo(arg0);
     }
 }
