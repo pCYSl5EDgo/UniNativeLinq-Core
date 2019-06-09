@@ -51,8 +51,8 @@ namespace CecilRewrite
             foreach (var genericParameter in type.GenericParameters)
                 @this.GenericArguments.Add(genericParameter.Name == "T" ? number : addedParams[index++]);
 
-            var Element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters);
-            if (Element.Name != "T")
+            var Element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters, "T", number);
+            if (Element.Name != number.Name)
                 return;
 
             var @thisParameter = new ParameterDefinition("this", ParameterAttributes.In, @this.MakeByReferenceType())

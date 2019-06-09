@@ -105,50 +105,6 @@ namespace UniNativeLinq
             }
         }
 
-        public
-            MinMaxByEnumerable<
-                MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
-                Enumerator,
-                T,
-                TKey,
-                DelegateFuncToStructOperatorFunc<T, TKey>,
-                MinByPredicate<TKey, DefaultOrderByAscending<TKey>>,
-                DefaultEqualityComparer<TKey>
-            >
-            MinBy(Func<T, TKey> func)
-            => new MinMaxByEnumerable<
-                MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
-                Enumerator,
-                T,
-                TKey,
-                DelegateFuncToStructOperatorFunc<T, TKey>,
-                MinByPredicate<TKey, DefaultOrderByAscending<TKey>>,
-                DefaultEqualityComparer<TKey>
-            >
-            (this, func, default, default);
-
-        public
-            MinMaxByEnumerable<
-                MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
-                Enumerator,
-                T,
-                TKey,
-                DelegateFuncToStructOperatorFunc<T, TKey>,
-                MaxByPredicate<TKey, DefaultOrderByAscending<TKey>>,
-                DefaultEqualityComparer<TKey>
-            >
-            MaxBy(Func<T, TKey> func)
-            => new MinMaxByEnumerable<
-                MinMaxByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TKeyRenewPredicate, TKeyEqualityComparer>,
-                Enumerator,
-                T,
-                TKey,
-                DelegateFuncToStructOperatorFunc<T, TKey>,
-                MaxByPredicate<TKey, DefaultOrderByAscending<TKey>>,
-                DefaultEqualityComparer<TKey>
-            >
-            (this, func, default, default);
-
         public Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), keySelector, keyRenewPredicate, equalityComparer);
 
         #region Interface Implementation

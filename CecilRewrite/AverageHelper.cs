@@ -45,15 +45,14 @@ namespace CecilRewrite
             };
             method.CustomAttributes.Add(ExtensionAttribute);
             var @this = new GenericInstanceType(type);
-            var typeGenericParameters = type.GenericParameters;
-            var addedParams = method.FromTypeToMethodParam(typeGenericParameters, "T", number);
+            var addedParams = method.FromTypeToMethodParam(type.GenericParameters, "T", number);
 
             var index = 0;
             foreach (var genericParameter in type.GenericParameters)
                 @this.GenericArguments.Add(genericParameter.Name == "T" ? number : addedParams[index++]);
 
-            var Element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters);
-            if (Element.Name != "T")
+            var Element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters, "T", number);
+            if (Element.Name != number.Name)
                 return;
 
             var @thisParameter = new ParameterDefinition("this", ParameterAttributes.In, @this.MakeByReferenceType())

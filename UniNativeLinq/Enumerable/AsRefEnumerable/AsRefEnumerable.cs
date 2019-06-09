@@ -24,41 +24,6 @@ namespace UniNativeLinq
                 OrderByFromIComparer<T>
             >(@this, new OrderByFromIComparer<T>(comparer), allocator);
 
-
-        public static
-            OrderByEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T,
-                DefaultOrderByAscending<T>
-            >
-            OrderBy<T>
-            (in this NativeEnumerable<T> @this, Allocator allocator = Allocator.Temp)
-            where T : unmanaged
-            => new OrderByEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T,
-                DefaultOrderByAscending<T>
-            >(@this, default, allocator);
-
-        public static
-            OrderByEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T,
-                DefaultOrderByDescending<T>
-            >
-            OrderByDescending<T>
-            (in this NativeEnumerable<T> @this, Allocator allocator = Allocator.Temp)
-            where T : unmanaged
-            => new OrderByEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T,
-                DefaultOrderByDescending<T>
-            >(@this, default, allocator);
-
         public static NativeEnumerable<T> AsRefEnumerable<T>(this NativeArray<T> array)
             where T : unmanaged
             => new NativeEnumerable<T>(array);
