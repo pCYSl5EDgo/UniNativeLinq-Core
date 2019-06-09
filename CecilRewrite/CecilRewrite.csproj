@@ -82,6 +82,7 @@
     <Compile Include="MinMax\TryGetMin.cs" />
     <Compile Include="MinMax\TryGetMinFunc.cs" />
     <Compile Include="MinMax\TryGetMinOperator.cs" />
+    <Compile Include="ReverseHelper.cs" />
     <Compile Include="SumHelper.cs" />
     <Compile Include="TryGet\TryGetSingleHelper.cs" />
     <Compile Include="TryGet\TryGetElementAtHelper.cs" />
