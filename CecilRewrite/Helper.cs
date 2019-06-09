@@ -80,7 +80,8 @@ namespace CecilRewrite
 
         public static List<GenericParameter> FromTypeToMethodParam(this MethodDefinition method, Collection<GenericParameter> typeGenericParameters)
         {
-            var initialLength = method.GenericParameters.Count;
+            var methodGenericParameters = method.GenericParameters;
+            var initialLength = methodGenericParameters.Count;
             var answer = new List<GenericParameter>(typeGenericParameters.Count);
             foreach (var typeGenericParameter in typeGenericParameters)
             {
@@ -93,12 +94,12 @@ namespace CecilRewrite
                 };
                 foreach (var customAttribute in typeGenericParameter.CustomAttributes)
                     methodGenericParameter.CustomAttributes.Add(customAttribute);
-                method.GenericParameters.Add(methodGenericParameter);
+                methodGenericParameters.Add(methodGenericParameter);
                 answer.Add(methodGenericParameter);
             }
             for (int j = 0; j < answer.Count; j++)
             {
-                var methodGenericParameter = method.GenericParameters[j + initialLength];
+                var methodGenericParameter = methodGenericParameters[j + initialLength];
                 foreach (var constraint in typeGenericParameters[j].Constraints)
                     methodGenericParameter.Constraints.Add(constraint.Replace(answer));
             }

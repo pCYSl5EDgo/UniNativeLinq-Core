@@ -7,23 +7,6 @@ namespace UniNativeLinq
 {
     public static class NativeEnumerable
     {
-        public static
-            OrderByEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T,
-                OrderByFromIComparer<T>
-            >
-            OrderBy<T>
-            (in this NativeEnumerable<T> @this, IComparer<T> comparer, Allocator allocator = Allocator.Temp)
-            where T : unmanaged
-            => new OrderByEnumerable<
-                NativeEnumerable<T>,
-                NativeEnumerable<T>.Enumerator,
-                T,
-                OrderByFromIComparer<T>
-            >(@this, new OrderByFromIComparer<T>(comparer), allocator);
-
         public static NativeEnumerable<T> AsRefEnumerable<T>(this NativeArray<T> array)
             where T : unmanaged
             => new NativeEnumerable<T>(array);

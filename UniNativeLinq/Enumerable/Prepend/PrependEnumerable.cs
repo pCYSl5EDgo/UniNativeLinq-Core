@@ -16,7 +16,7 @@ namespace UniNativeLinq
         private readonly TEnumerable enumerable;
         private readonly T prepend;
 
-        public PrependEnumerable(TEnumerable enumerable, in T prepend)
+        public PrependEnumerable(in TEnumerable enumerable, in T prepend)
         {
             this.enumerable = enumerable;
             this.prepend = prepend;
@@ -38,7 +38,7 @@ namespace UniNativeLinq
                 isPrependNow = true;
             }
 
-            public ref T Current
+            public readonly ref T Current
             {
                 get
                 {
@@ -48,8 +48,8 @@ namespace UniNativeLinq
                 }
             }
 
-            T IEnumerator<T>.Current => Current;
-            object IEnumerator.Current => Current;
+            readonly T IEnumerator<T>.Current => Current;
+            readonly object IEnumerator.Current => Current;
 
             public void Dispose()
             {

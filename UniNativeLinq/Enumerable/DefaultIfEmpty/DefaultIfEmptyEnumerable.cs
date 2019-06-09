@@ -6,17 +6,17 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
-    public unsafe struct
+    public readonly unsafe struct
         DefaultIfEmptyEnumerable<TEnumerable, TEnumerator, T>
         : IRefEnumerable<DefaultIfEmptyEnumerable<TEnumerable, TEnumerator, T>.Enumerator, T>
         where T : unmanaged
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
         where TEnumerator : struct, IRefEnumerator<T>
     {
-        private TEnumerable enumerable;
+        private readonly TEnumerable enumerable;
         private readonly T element;
 
-        public DefaultIfEmptyEnumerable(in TEnumerable enumerable, in T element, Allocator alloc)
+        public DefaultIfEmptyEnumerable(in TEnumerable enumerable, in T element)
         {
             this.enumerable = enumerable;
             this.element = element;
@@ -40,7 +40,7 @@ namespace UniNativeLinq
                 isDefault = false;
             }
 
-            public ref T Current
+            public readonly ref T Current
             {
                 get
                 {
@@ -50,8 +50,8 @@ namespace UniNativeLinq
                 }
             }
 
-            T IEnumerator<T>.Current => Current;
-            object IEnumerator.Current => Current;
+            readonly T IEnumerator<T>.Current => Current;
+            readonly object IEnumerator.Current => Current;
 
             public void Dispose()
             {
