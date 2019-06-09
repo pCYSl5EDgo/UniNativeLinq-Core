@@ -67,7 +67,8 @@ namespace CecilRewrite
             //OrderByOperatorHelper.Create(MainModule);
             //OrderByDefaultHelper.Create(MainModule);
             //AppendPrependDefaultIfEmptyHelper.Create(MainModule);
-            ReverseHelper.Create(MainModule);
+            //ReverseHelper.Create(MainModule);
+            SkipTakeLastHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 

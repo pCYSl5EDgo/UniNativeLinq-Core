@@ -54,7 +54,7 @@ namespace CecilRewrite
             thisParam.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(thisParam);
 
-            method.Parameters.Add(new ParameterDefinition("allocator", ParameterAttributes.HasDefault, Allocator)
+            method.Parameters.Add(new ParameterDefinition("allocator", ParameterAttributes.HasDefault | ParameterAttributes.Optional, Allocator)
             {
                 Constant = 2,
             });
