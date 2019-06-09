@@ -7,6 +7,7 @@ using Unity.Collections;
 namespace UniNativeLinq
 {
     [SlowCount]
+    [PseudoIsReadOnly]
     public unsafe struct
         SkipWhileEnumerable<TEnumerable, TEnumerator, T, TPredicate>
         : IRefEnumerable<SkipWhileEnumerable<TEnumerable, TEnumerator, T, TPredicate>.Enumerator, T>
@@ -15,8 +16,8 @@ namespace UniNativeLinq
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
         where TPredicate : struct, IRefFunc<T, bool>
     {
-        private TEnumerable enumerable;
-        private TPredicate predicate;
+        [PseudoIsReadOnly] private TEnumerable enumerable;
+        [PseudoIsReadOnly] private TPredicate predicate;
 
         public SkipWhileEnumerable(in TEnumerable enumerable, in TPredicate predicate)
         {
@@ -46,7 +47,7 @@ namespace UniNativeLinq
 
             public bool MoveNext()
             {
-                if(isFirstNotRead)
+                if (isFirstNotRead)
                 {
                     isFirstNotRead = false;
                     return true;
@@ -54,7 +55,7 @@ namespace UniNativeLinq
                 return enumerator.MoveNext();
             }
 
-            public void Reset() 
+            public void Reset()
             {
                 isFirstNotRead = true;
                 enumerator.Reset();
@@ -62,7 +63,7 @@ namespace UniNativeLinq
 
             public ref T TryGetNext(out bool success)
             {
-                if(isFirstNotRead)
+                if (isFirstNotRead)
                 {
                     isFirstNotRead = false;
                     success = true;
@@ -73,7 +74,7 @@ namespace UniNativeLinq
 
             public bool TryMoveNext(out T value)
             {
-                if(isFirstNotRead)
+                if (isFirstNotRead)
                 {
                     isFirstNotRead = false;
                     value = enumerator.Current;
@@ -142,10 +143,9 @@ namespace UniNativeLinq
         public readonly void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
-            bool success;
             while (true)
             {
-                ref var value = ref enumerator.TryGetNext(out success);
+                ref var value = ref enumerator.TryGetNext(out var success);
                 if (!success) break;
                 *dest++ = value;
             }

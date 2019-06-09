@@ -25,7 +25,7 @@ namespace UniNativeLinq
 
         [PseudoIsReadOnly] private TSetOperation setOperation;
 
-        public SetOperationEnumerable(in TFirstEnumerable firstEnumerable, in TSecondEnumerable secondEnumerable, TSetOperation setOperation, Allocator alloc)
+        public SetOperationEnumerable(in TFirstEnumerable firstEnumerable, in TSecondEnumerable secondEnumerable, in TSetOperation setOperation, Allocator alloc)
         {
             this.firstEnumerable = firstEnumerable;
             this.secondEnumerable = secondEnumerable;

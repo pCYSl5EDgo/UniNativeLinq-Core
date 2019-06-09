@@ -70,6 +70,8 @@
     <Compile Include="Contains\ContainsDefaultEqualityComparerHelper.cs" />
     <Compile Include="Contains\ContainsFuncHelper.cs" />
     <Compile Include="Contains\ContainsOperatorHelper.cs" />
+    <Compile Include="DistinctDefaultHelper.cs" />
+    <Compile Include="DistinctOperatorHelper.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="IsEmpty.cs" />
     <Compile Include="OrderBy\OrderByDefaultHelper.cs" />

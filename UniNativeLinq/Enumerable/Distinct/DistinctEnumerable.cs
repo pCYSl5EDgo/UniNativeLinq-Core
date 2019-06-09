@@ -22,7 +22,7 @@ namespace UniNativeLinq
         private readonly TGetHashCodeFunc getHashCodeFunc;
         private readonly Allocator alloc;
 
-        public DistinctEnumerable(in TEnumerable enumerable, TEqualityComparer equalityComparer, TGetHashCodeFunc getHashCodeFunc, Allocator allocator)
+        public DistinctEnumerable(in TEnumerable enumerable, in TEqualityComparer equalityComparer, in TGetHashCodeFunc getHashCodeFunc, Allocator allocator)
         {
             this.enumerable = enumerable;
             this.equalityComparer = equalityComparer;
