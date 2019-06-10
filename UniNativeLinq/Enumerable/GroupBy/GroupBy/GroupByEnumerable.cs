@@ -9,25 +9,25 @@ namespace UniNativeLinq
 {
     [SlowCount]
     public unsafe struct
-        GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>
-        : IRefEnumerable<GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeySelector, TElement, TElementSelector, TEqualityComparer>.Enumerator, Grouping<TKey, TElement>>
+        GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeyFunc, TElement, TElementFunc, TEqualityComparer>
+        : IRefEnumerable<GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeyFunc, TElement, TElementFunc, TEqualityComparer>.Enumerator, Grouping<TKey, TElement>>
         where T : unmanaged
         where TKey : unmanaged
         where TElement : unmanaged
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
-        where TKeySelector : struct, IRefFunc<T, TKey>
-        where TElementSelector : struct, IRefFunc<T, TElement>
+        where TKeyFunc : struct, IRefAction<T, TKey>
+        where TElementFunc : struct, IRefAction<T, TElement>
         where TEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
     {
         private TEnumerable enumerable;
-        private readonly TKeySelector keySelector;
-        private readonly TElementSelector elementSelector;
+        private readonly TKeyFunc keySelector;
+        private readonly TElementFunc elementSelector;
         private readonly TEqualityComparer equalityComparer;
         private readonly Allocator alloc;
         public readonly GroupByDisposeOptions GroupByDisposeOption;
 
-        public GroupByEnumerable(in TEnumerable enumerable, in TKeySelector keySelector, in TElementSelector elementSelector, in TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions groupByDisposeOption)
+        public GroupByEnumerable(in TEnumerable enumerable, in TKeyFunc keySelector, in TElementFunc elementSelector, in TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions groupByDisposeOption)
         {
             this.enumerable = enumerable;
             this.keySelector = keySelector;
@@ -48,7 +48,7 @@ namespace UniNativeLinq
 
             private const long INITIAL_CAPACITY = 16L;
 
-            internal Enumerator([PseudoIsReadOnly]ref TEnumerable enumerable, TKeySelector keySelector, TElementSelector elementSelector, TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions option)
+            internal Enumerator([PseudoIsReadOnly]ref TEnumerable enumerable, TKeyFunc keySelector, TElementFunc elementSelector, TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions option)
             {
                 this.option = option;
                 index = -1;
@@ -68,13 +68,13 @@ namespace UniNativeLinq
                 enumerator.Dispose();
             }
 
-            private void EnumerateAndSort(ref long capacity, ref TEnumerator enumerator, ref long* capacities, ref TKeySelector keySelector, ref TElementSelector elementSelector, ref TEqualityComparer equalityComparer)
+            private void EnumerateAndSort(ref long capacity, ref TEnumerator enumerator, ref long* capacities, ref TKeyFunc keySelector, ref TElementFunc elementSelector, ref TEqualityComparer equalityComparer)
             {
-                TKey key;
+                TKey key = default;
                 while (enumerator.MoveNext())
                 {
                     ref var current = ref enumerator.Current;
-                    key = keySelector.Calc(ref current);
+                    keySelector.Execute(ref current, ref key);
                     long insertIndex = LinearSearchInsertIndex(ref key, ref equalityComparer);
                     if (capacity == insertIndex)
                         ReAllocGroups(ref capacity, ref capacities, in key);
@@ -86,14 +86,14 @@ namespace UniNativeLinq
                 }
             }
 
-            private void InsertTo(ref Grouping<TKey, TElement> group, ref long capa, ref T current, ref TElementSelector elementSelector)
+            private void InsertTo(ref Grouping<TKey, TElement> group, ref long capa, ref T current, ref TElementFunc elementSelector)
             {
                 if (capa == group.Length)
                 {
                     UnsafeUtilityEx.ReAlloc(ref group.Elements, capa, capa << 1, allocator);
                     capa <<= 1;
                 }
-                group.Elements[group.Length++] = elementSelector.Calc(ref current);
+                elementSelector.Execute(ref current, ref group.Elements[group.Length++]);
             }
 
             private void AllocGroup(in TKey key, ref Grouping<TKey, TElement> group, ref long capacity)
@@ -138,9 +138,6 @@ namespace UniNativeLinq
                         if (Groups != null && UnsafeUtility.IsValidAllocator(allocator))
                             UnsafeUtility.Free(Groups, allocator);
                         break;
-                    case GroupByDisposeOptions.None:
-                    default:
-                        break;
                 }
                 this = default;
             }
@@ -174,8 +171,8 @@ namespace UniNativeLinq
             }
         }
 
-        [PseudoIsReadOnly]public Enumerator GetEnumerator() => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, alloc, GroupByDisposeOption);
-        [PseudoIsReadOnly]public Enumerator GetEnumerator(Allocator allocator, GroupByDisposeOptions option) => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, allocator, option);
+        [PseudoIsReadOnly] public Enumerator GetEnumerator() => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, alloc, GroupByDisposeOption);
+        [PseudoIsReadOnly] public Enumerator GetEnumerator(Allocator allocator, GroupByDisposeOptions option) => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, allocator, option);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

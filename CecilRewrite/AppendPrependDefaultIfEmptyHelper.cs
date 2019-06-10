@@ -66,11 +66,11 @@ namespace CecilRewrite
             method.ReturnType = @return;
 
             var thisParam = new ParameterDefinition("@this", ParameterAttributes.In, @this.MakeByReferenceType());
-            thisParam.CustomAttributes.Add(IsReadOnlyAttribute);
+            thisParam.CustomAttributes.Add(ReadOnlyAttribute);
             method.Parameters.Add(thisParam);
 
             var valueParam = new ParameterDefinition("value", ParameterAttributes.In, Element.MakeByReferenceType());
-            valueParam.CustomAttributes.Add(IsReadOnlyAttribute);
+            valueParam.CustomAttributes.Add(ReadOnlyAttribute);
             method.Parameters.Add(valueParam);
 
             var processor = method.Body.GetILProcessor();

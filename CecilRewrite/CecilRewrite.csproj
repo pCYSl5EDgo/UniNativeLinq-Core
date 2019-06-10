@@ -66,12 +66,13 @@
     <Compile Include="AnyAll\AnyOperator.cs" />
     <Compile Include="AnyAll\AnyFunc.cs" />
     <Compile Include="AppendPrependDefaultIfEmptyHelper.cs" />
-    <Compile Include="AverageHelper.cs" />
+    <Compile Include="GroupByHelper.cs" />
+    <Compile Include="SumAverage\AverageHelper.cs" />
     <Compile Include="Contains\ContainsDefaultEqualityComparerHelper.cs" />
     <Compile Include="Contains\ContainsFuncHelper.cs" />
     <Compile Include="Contains\ContainsOperatorHelper.cs" />
-    <Compile Include="DistinctDefaultHelper.cs" />
-    <Compile Include="DistinctOperatorHelper.cs" />
+    <Compile Include="Distinct\DistinctDefaultHelper.cs" />
+    <Compile Include="Distinct\DistinctOperatorHelper.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="IsEmpty.cs" />
     <Compile Include="OrderBy\OrderByDefaultHelper.cs" />
@@ -86,7 +87,7 @@
     <Compile Include="MinMax\TryGetMinOperator.cs" />
     <Compile Include="ReverseHelper.cs" />
     <Compile Include="SkipTakeLastHelper.cs" />
-    <Compile Include="SumHelper.cs" />
+    <Compile Include="SumAverage\SumHelper.cs" />
     <Compile Include="TryGet\TryGetSingleHelper.cs" />
     <Compile Include="TryGet\TryGetElementAtHelper.cs" />
     <Compile Include="TryGet\TryGetFirstHelper.cs" />
@@ -102,5 +103,6 @@
       <Name>UniNativeLinq</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
