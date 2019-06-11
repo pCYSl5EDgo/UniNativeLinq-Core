@@ -17,14 +17,6 @@ namespace CecilRewrite
             return instance;
         }
 
-        public static GenericInstanceType ImportGenericType(this Type type, ModuleDefinition module, IEnumerable<TypeReference> arguments)
-        {
-            var instance = new GenericInstanceType(module.ImportReference(type));
-            foreach (var argument in arguments)
-                instance.GenericArguments.Add(argument);
-            return instance;
-        }
-
         public static MethodReference MakeHostInstanceGeneric(this MethodReference self, IEnumerable<TypeReference> arguments)
         {
             var reference = new MethodReference(self.Name, self.ReturnType, self.DeclaringType.MakeGenericInstanceType(arguments))
@@ -47,7 +39,8 @@ namespace CecilRewrite
         {
             var typeDefinition = type.Resolve();
             var methodDefinition = typeDefinition.Methods.Single(x => x.Name == name);
-            return methodDefinition.MakeHostInstanceGeneric(type.GenericArguments);
+            var imported = type.Module.ImportReference(methodDefinition);
+            return imported.MakeHostInstanceGeneric(type.GenericArguments);
         }
 
         public static FieldReference FindField(this GenericInstanceType type, string name)
@@ -169,12 +162,6 @@ namespace CecilRewrite
                 newConstraint.GenericArguments.Add(argument.Replace(methodGenericParameters, replace));
             return newConstraint;
         }
-
-        public static MethodReference FindMethodImportGenericType(this Type type, ModuleDefinition importModule, string methodName, Func<MethodDefinition, bool> predicate, IEnumerable<TypeReference> genericParameters)
-            => importModule.ImportReference(type).MakeGenericInstanceType(genericParameters).FindMethodAndImport(methodName, importModule, predicate);
-
-        public static MethodReference FindMethodImportGenericType(this Type type, ModuleDefinition importModule, string methodName, IEnumerable<TypeReference> genericParameters)
-            => importModule.ImportReference(type).MakeGenericInstanceType(genericParameters).FindMethodAndImport(methodName, importModule);
 
         public static TypeReference GetElementTypeOfCollectionType(this TypeReference @this)
         {

@@ -43,7 +43,7 @@ namespace CecilRewrite
             elementParameter.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(elementParameter);
 
-            var Func3 = typeof(Func<,,>).ImportGenericType(MainModule, new[] { Element, Element, Boolean });
+            var Func3 = MainModule.ImportReference(SystemModule.GetType("System", "Func`3")).MakeGenericInstanceType(new[] { Element, Element, Boolean });
             method.Parameters.Add(new ParameterDefinition("comparer", ParameterAttributes.None, Func3));
 
             var body = method.Body;
@@ -70,7 +70,7 @@ namespace CecilRewrite
             processor.LdObj(Element);
             processor.Do(OpCodes.Ldloc_1);
             processor.LdObj(Element);
-            processor.CallVirtual(typeof(Func<,,>).FindMethodImportGenericType(MainModule, "Invoke", new[] { Element, Element, Boolean }));
+            processor.CallVirtual(Func3.FindMethod("Invoke"));
             processor.False(il0007);
             processor.LdLocaS(0);
             var Dispose = Enumerator.FindMethod("Dispose", Helper.NoParameter);

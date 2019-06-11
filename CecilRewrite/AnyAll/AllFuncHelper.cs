@@ -33,32 +33,22 @@ namespace CecilRewrite
             method.Parameters.Capacity = 1;
             var argumentsFromTypeToMethodParam = method.FromTypeToMethodParam(type.GenericParameters);
             var @this = type.MakeGenericInstanceType(argumentsFromTypeToMethodParam);
-            FillParameter(@this, method);
-            FillBody(@this, method);
-            @static.Methods.Add(method);
-        }
 
-        private static void FillParameter(GenericInstanceType @this, MethodDefinition method)
-        {
             var thisParameterDefinition = new ParameterDefinition("this", ParameterAttributes.In, @this.MakeByReferenceType());
             thisParameterDefinition.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(thisParameterDefinition);
-            var funcReference = MainModule.ImportReference(typeof(Func<,>)).MakeGenericInstanceType(new[]
+            var funcReference = MainModule.ImportReference(SystemModule.GetType("System", "Func`2")).MakeGenericInstanceType(new[]
             {
                 @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters),
                 MainModule.TypeSystem.Boolean
             });
             var predicateParameterDefinition = new ParameterDefinition("predicate", ParameterAttributes.None, funcReference);
             method.Parameters.Add(predicateParameterDefinition);
-        }
 
-        private static void FillBody(GenericInstanceType @this, MethodDefinition method)
-        {
             var body = method.Body;
 
             var typeReferenceEnumerator = (GenericInstanceType)@this.GetEnumeratorTypeOfCollectionType().Replace(method.GenericParameters);
             var typeReferenceElement = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters);
-            var typeReferencePredicate = method.Parameters[1].ParameterType;
 
             body.Variables.Add(new VariableDefinition(typeReferenceEnumerator));
             body.Variables.Add(new VariableDefinition(typeReferenceElement.MakeByReferenceType()));
@@ -86,8 +76,8 @@ namespace CecilRewrite
             processor.Do(OpCodes.Ret);
             processor.Append(il001D);
             processor.Do(OpCodes.Ldloc_1);
-            var methodReferenceFuncInvoke = typeof(Func<,>).FindMethodImportGenericType(MainModule, "Invoke", new[] { typeReferenceElement, MainModule.TypeSystem.Boolean });
-            processor.Append(Instruction.Create(OpCodes.Ldobj, typeReferenceElement));
+            var methodReferenceFuncInvoke = funcReference.FindMethod("Invoke");
+            processor.LdObj(typeReferenceElement);
             processor.CallVirtual(methodReferenceFuncInvoke);
             processor.True(il0034);
             processor.LdLocaS(0);
@@ -113,6 +103,8 @@ namespace CecilRewrite
             processor.Call(Dispose);
             processor.Do(OpCodes.Ldc_I4_0);
             processor.Do(OpCodes.Ret);
+
+            @static.Methods.Add(method);
         }
     }
 }

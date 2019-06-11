@@ -45,7 +45,7 @@ namespace CecilRewrite
             var thisParameterDefinition = new ParameterDefinition("this", ParameterAttributes.In, @this.MakeByReferenceType());
             thisParameterDefinition.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(thisParameterDefinition);
-            var funcReference = MainModule.ImportReference(typeof(Func<,>)).MakeGenericInstanceType(new[]
+            var funcReference = MainModule.ImportReference(SystemModule.GetType("System", "Func`2")).MakeGenericInstanceType(new[]
             {
                 @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters),
                 MainModule.TypeSystem.Boolean
@@ -88,7 +88,12 @@ namespace CecilRewrite
             processor.Append(il001D);
             processor.Do(OpCodes.Ldloc_1);
             processor.Append(Instruction.Create(OpCodes.Ldobj, typeReferenceElement));
-            var methodReferenceFuncInvoke = typeof(Func<,>).FindMethodImportGenericType(MainModule, "Invoke", new[] { typeReferenceElement, MainModule.TypeSystem.Boolean });
+            var funcReference = MainModule.ImportReference(SystemModule.GetType("System", "Func`2")).MakeGenericInstanceType(new[]
+            {
+                @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters),
+                MainModule.TypeSystem.Boolean
+            });
+            var methodReferenceFuncInvoke = funcReference.FindMethod("Invoke");
             processor.Append(Instruction.Create(OpCodes.Callvirt, methodReferenceFuncInvoke));
             processor.Append(Instruction.Create(OpCodes.Brfalse_S, il0007));
             processor.LdLocaS(0);

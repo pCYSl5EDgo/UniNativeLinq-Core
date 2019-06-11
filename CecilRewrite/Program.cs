@@ -8,7 +8,7 @@ using Mono.Cecil.Rocks;
 
 namespace CecilRewrite
 {
-    static class Program
+    public static class Program
     {
         internal const string NameSpace = "UniNativeLinq";
 
@@ -17,40 +17,42 @@ namespace CecilRewrite
         internal static readonly ModuleDefinition MainModule;
         internal static readonly ModuleDefinition UnsafeModule;
         internal static readonly CustomAttribute ExtensionAttribute;
-        internal static readonly CustomAttribute ReadOnlyAttribute;
+        internal static readonly CustomAttribute IsReadOnlyAttribute;
         internal static readonly CustomAttribute UnManagedAttribute;
         internal static readonly ModuleDefinition UnityModule;
+        internal static readonly ModuleDefinition SystemModule;
         internal static readonly AssemblyDefinition Assembly;
         internal static readonly TypeReference Allocator;
 
         static Program()
         {
-            var location = @"C:\Users\conve\source\repos\pcysl5edgo\CecilRewrite\bin\Release\UniNativeLinq.dll";
+            var location = @"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\netstandard2.0\UniNativeLinq.dll";
             Assembly = AssemblyDefinition.ReadAssembly(location);
             MainModule = Assembly.MainModule;
             var nativeEnumerable = MainModule.GetType("UniNativeLinq.NativeEnumerable");
             ExtensionAttribute = nativeEnumerable.CustomAttributes.Single();
             var negateMethodDefinition = MainModule.GetType("UniNativeLinq.NegatePredicate`2").GetConstructors().First();
-            ReadOnlyAttribute = negateMethodDefinition.Parameters.First().CustomAttributes.First();
+            IsReadOnlyAttribute = negateMethodDefinition.Parameters.First().CustomAttributes.First();
             UnsafeModule = ExtensionAttribute.AttributeType.Module;
             UnityModule = nativeEnumerable.Methods.First(x => x.Parameters.First().ParameterType.IsValueType).Parameters.First().ParameterType.Module;
             var nativeEnumerable1 = MainModule.GetType(NameSpace, "NativeEnumerable`1");
             Allocator = nativeEnumerable1.Methods.First(x => x.Name == "ToNativeArray").Parameters.First().ParameterType;
             var t = nativeEnumerable1.GenericParameters.First();
             UnManagedAttribute = t.CustomAttributes[0];
+            SystemModule = ModuleDefinition.ReadModule(@"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.3\build\netstandard2.0\ref\netstandard.dll");
         }
 
-        internal static void Main(string[] args)
+        public static void Main(string[] args)
         {
             RewriteThrow(MainModule);
             ReWritePseudoIsReadOnly(MainModule);
             ReWritePseudoUtility(MainModule);
-            //TryGetMinHelper.Create(MainModule);
-            //TryGetMaxHelper.Create(MainModule);
-            //TryGetMinFuncHelper.Create(MainModule);
-            //TryGetMaxFuncHelper.Create(MainModule);
-            //TryGetMinOperatorHelper.Create(MainModule);
-            //TryGetMaxOperatorHelper.Create(MainModule);
+            TryGetMinHelper.Create(MainModule);
+            TryGetMaxHelper.Create(MainModule);
+            TryGetMinFuncHelper.Create(MainModule);
+            TryGetMaxFuncHelper.Create(MainModule);
+            TryGetMinOperatorHelper.Create(MainModule);
+            TryGetMaxOperatorHelper.Create(MainModule);
             //AnyOperatorHelper.Create(MainModule);
             //AllOperatorHelper.Create(MainModule);
             //AnyFuncHelper.Create(MainModule);
@@ -75,7 +77,9 @@ namespace CecilRewrite
             //SkipTakeLastHelper.Create(MainModule);
             //DistinctDefaultHelper.Create(MainModule);
             //DistinctOperatorHelper.Create(MainModule);
-            GroupByHelper.Create(MainModule);
+            //GroupByHelper.Create(MainModule);
+            //SkipTakeWhileWhereOperatorHelper.Create(MainModule);
+            SkipTakeWhileFuncWhereHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 
@@ -113,7 +117,7 @@ namespace CecilRewrite
             if (!(pseudo is null))
             {
                 memberCustomAttributes.Remove(pseudo);
-                memberCustomAttributes.Add(ReadOnlyAttribute);
+                memberCustomAttributes.Add(IsReadOnlyAttribute);
             }
         }
 

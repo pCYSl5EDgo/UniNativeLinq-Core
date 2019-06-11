@@ -71,7 +71,9 @@ namespace CecilRewrite
             method.Parameters.Add(@thisParameter);
             var elementTypeOfCollectionType = @this.GetElementTypeOfCollectionType();
             var typeReference = elementTypeOfCollectionType.Replace(method.GenericParameters);
-            var funcType = typeof(Func<,>).ImportGenericType(MainModule, new[] {typeReference, fillTypeReference});
+            var z = SystemModule.GetType("System", "Func`2");
+            var t = z.MakeGenericInstanceType(new[] { typeReference, fillTypeReference });
+            var funcType = MainModule.ImportReference(z).MakeGenericInstanceType(new[] { typeReference, fillTypeReference });
             method.Parameters.Add(new ParameterDefinition("func", ParameterAttributes.None, funcType));
             method.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.Out, fillTypeReference.MakeByReferenceType())
             {
@@ -114,7 +116,8 @@ namespace CecilRewrite
             il.Append(Instruction.Create(OpCodes.Ldarg_1));
             il.Append(Instruction.Create(OpCodes.Ldloc_1));
             il.Append(Instruction.Create(OpCodes.Ldobj, typeReferenceElement));
-            var methodReferenceFuncInvoke = typeof(Func<,>).FindMethodImportGenericType(MainModule, "Invoke", new[] { typeReferenceElement, fillTypeReference });
+            var Func2 = SystemModule.GetType("System", "Func`2");
+            var methodReferenceFuncInvoke = MainModule.ImportReference(Func2).MakeGenericInstanceType(new[] { typeReferenceElement, fillTypeReference }).FindMethod("Invoke");
             il.Append(Instruction.Create(OpCodes.Callvirt, methodReferenceFuncInvoke));
             il.Append(Instruction.Create(OpCodes.Stind_I1));
             var il002E = Instruction.Create(OpCodes.Ldloca_S, body.Variables[0]);

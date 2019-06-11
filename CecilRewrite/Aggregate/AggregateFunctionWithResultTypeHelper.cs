@@ -54,8 +54,8 @@ namespace CecilRewrite
             var Enumerator = (GenericInstanceType)@this.GetEnumeratorTypeOfCollectionType().Replace(method.GenericParameters);
             var Element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters);
 
-            var TFunc0 = typeof(Func<,,>).ImportGenericType(MainModule, new[] { TAccumulate0, Element, TAccumulate0 });
-            var TResultFunc0 = typeof(Func<,>).ImportGenericType(MainModule, new[] { TAccumulate0, TResult0 });
+            var TFunc0 = MainModule.ImportReference(SystemModule.GetType("System", "Func`3")).MakeGenericInstanceType(TAccumulate0, Element, TAccumulate0);
+            var TResultFunc0 = MainModule.ImportReference(SystemModule.GetType("System", "Func`2")).MakeGenericInstanceType(TAccumulate0, TResult0);
             method.Parameters.Add(new ParameterDefinition("func", ParameterAttributes.None, TFunc0));
             method.Parameters.Add(new ParameterDefinition("resultFunc", ParameterAttributes.None, TResultFunc0));
 
@@ -84,7 +84,7 @@ namespace CecilRewrite
             processor.LdObj(TAccumulate0);
             processor.Do(OpCodes.Ldloc_1);
             processor.LdObj(Element);
-            processor.CallVirtual(typeof(Func<,,>).FindMethodImportGenericType(MainModule, "Invoke", new[] { TAccumulate0, Element, TAccumulate0 }));
+            processor.CallVirtual(TFunc0.FindMethod("Invoke"));
             processor.Append(Instruction.Create(OpCodes.Stobj, TAccumulate0));
             processor.Jump(il0007);
             processor.Append(il0025);
@@ -92,7 +92,7 @@ namespace CecilRewrite
             processor.Do(OpCodes.Ldarg_3);
             processor.Do(OpCodes.Ldarg_1);
             processor.LdObj(TAccumulate0);
-            processor.CallVirtual(typeof(Func<,>).FindMethodImportGenericType(MainModule, "Invoke", new[] { TAccumulate0, TResult0 }));
+            processor.CallVirtual(TResultFunc0.FindMethod("Invoke"));
             processor.Ret();
 
             @static.Methods.Add(method);

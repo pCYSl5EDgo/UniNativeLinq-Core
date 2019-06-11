@@ -74,7 +74,8 @@ namespace CecilRewrite
             processor.Do(OpCodes.Ldloc_1);
             processor.LdObj(Element);
             processor.Constrained(Element);
-            processor.CallVirtual(typeof(IEquatable<>).FindMethodImportGenericType(MainModule, "Equals", new[] { Element }));
+            var IEquatable = MainModule.ImportReference(SystemModule.GetType("System", "IEquatable`1")).MakeGenericInstanceType(Element);
+            processor.CallVirtual(IEquatable.FindMethod("Equals"));
             processor.False(il0007);
             processor.LdLocaS(0);
             var Dispose = Enumerator.FindMethod("Dispose", Helper.NoParameter);

@@ -18,7 +18,7 @@ namespace UniNativeLinq
         private readonly TPrevEnumerable enumerable;
         private readonly TPredicate predicts;
 
-        public WhereEnumerable(in TPrevEnumerable enumerable, TPredicate predicts)
+        public WhereEnumerable(in TPrevEnumerable enumerable, in TPredicate predicts)
         {
             this.enumerable = enumerable;
             this.predicts = predicts;

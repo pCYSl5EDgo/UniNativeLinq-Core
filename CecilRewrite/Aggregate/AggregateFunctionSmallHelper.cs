@@ -46,7 +46,7 @@ namespace CecilRewrite
             seed = new ParameterDefinition(nameof(seed), ParameterAttributes.None, TAccumulate0.MakeByReferenceType());
             method.Parameters.Add(seed);
 
-            var funcReference = typeof(Func<,,>).ImportGenericType(MainModule, new[]
+            var funcReference = MainModule.ImportReference(SystemModule.GetType("System", "Func`3")).MakeGenericInstanceType(new[]
             {
                 TAccumulate0,
                 @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters),
@@ -88,7 +88,8 @@ namespace CecilRewrite
             processor.Append(Instruction.Create(OpCodes.Ldobj, accumulate0));
             processor.Do(OpCodes.Ldloc_1);
             processor.Append(Instruction.Create(OpCodes.Ldobj, ElementType));
-            processor.CallVirtual(typeof(Func<,,>).FindMethodImportGenericType(MainModule, "Invoke", new[] { accumulate0, ElementType, accumulate0 }));
+            var Func3 = MainModule.ImportReference(SystemModule.GetType("System", "Func`3")).MakeGenericInstanceType(accumulate0, ElementType, accumulate0);
+            processor.CallVirtual(Func3.FindMethod("Invoke"));
             processor.Append(Instruction.Create(OpCodes.Stobj, accumulate0));
             processor.Jump(il0007);
             processor.Append(il002E);
