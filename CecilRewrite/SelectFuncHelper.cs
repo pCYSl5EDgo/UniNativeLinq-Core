@@ -45,7 +45,11 @@ namespace CecilRewrite
             T.CustomAttributes.Add(UnManagedAttribute);
             method.GenericParameters.Add(T);
 
-            var TAction = MainModule.GetType(NameSpace, "");
+            var TAction = MainModule.GetType(NameSpace, "DelegateFuncToStructOperatorAction`2").MakeGenericInstanceType(new[]
+            {
+                Element,
+                T,
+            });
 
             var @return = MainModule.GetType(NameSpace, "SelectEnumerable`5").MakeGenericInstanceType(new[]
             {
@@ -61,13 +65,23 @@ namespace CecilRewrite
             thisParam.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(thisParam);
 
-            var funcParam = new ParameterDefinition("func", ParameterAttributes.In, TAction.MakeByReferenceType());
-            funcParam.CustomAttributes.Add(IsReadOnlyAttribute);
+            var Func = MainModule.ImportReference(SystemModule.GetType("System", "Func`2")).MakeGenericInstanceType(new[]
+            {
+                Element,
+                T,
+            });
+
+            var funcParam = new ParameterDefinition("func", ParameterAttributes.None, Func);
             method.Parameters.Add(funcParam);
+
+            method.Body.Variables.Add(new VariableDefinition(TAction));
 
             var processor = method.Body.GetILProcessor();
             processor.Do(OpCodes.Ldarg_0);
+            processor.LdLocaS(0);
             processor.Do(OpCodes.Ldarg_1);
+            processor.NewObj(TAction.FindMethod(".ctor"));
+            processor.Append(Instruction.Create(OpCodes.Stloc_0));
             processor.NewObj(@return.FindMethod(".ctor"));
             processor.Ret();
 

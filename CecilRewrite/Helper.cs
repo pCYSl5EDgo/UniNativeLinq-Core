@@ -194,6 +194,9 @@ namespace CecilRewrite
         public static void LdLocaS(this ILProcessor processor, int index)
             => processor.Append(Instruction.Create(OpCodes.Ldloca_S, processor.Body.Variables[index]));
 
+        public static void Dup(this ILProcessor processor)
+            => processor.Append(Instruction.Create(OpCodes.Dup));
+
         public static void Call(this ILProcessor processor, MethodReference method)
             => processor.Append(Instruction.Create(OpCodes.Call, method));
 
