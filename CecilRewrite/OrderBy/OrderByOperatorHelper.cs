@@ -56,6 +56,7 @@ namespace CecilRewrite
                 Element,
                 TPredicate0,
             });
+            method.ReturnType = @return;
 
             var thisParameterDefinition = new ParameterDefinition("this", ParameterAttributes.In, @this.MakeByReferenceType());
             thisParameterDefinition.CustomAttributes.Add(IsReadOnlyAttribute);
@@ -67,8 +68,6 @@ namespace CecilRewrite
 
             var allocatorParameterDefinition = new ParameterDefinition("allocator", ParameterAttributes.Optional, Allocator) { Constant = 2 };
             method.Parameters.Add(allocatorParameterDefinition);
-
-            method.ReturnType = @return;
 
             var processor = method.Body.GetILProcessor();
             processor.Do(OpCodes.Ldarg_0);

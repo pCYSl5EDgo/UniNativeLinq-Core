@@ -71,14 +71,14 @@ namespace CecilRewrite
             return nestedType;
         }
 
-        public static List<GenericParameter> FromTypeToMethodParam(this MethodDefinition method, Collection<GenericParameter> typeGenericParameters)
+        public static List<GenericParameter> FromTypeToMethodParam(this MethodDefinition method, Collection<GenericParameter> typeGenericParameters, string suffix = "")
         {
             var methodGenericParameters = method.GenericParameters;
             var initialLength = methodGenericParameters.Count;
             var answer = new List<GenericParameter>(typeGenericParameters.Count);
             foreach (var typeGenericParameter in typeGenericParameters)
             {
-                var methodGenericParameter = new GenericParameter(typeGenericParameter.Name, method)
+                var methodGenericParameter = new GenericParameter(string.IsNullOrEmpty(suffix) ? typeGenericParameter.Name : typeGenericParameter.Name + suffix, method)
                 {
                     HasNotNullableValueTypeConstraint = typeGenericParameter.HasNotNullableValueTypeConstraint,
                     HasDefaultConstructorConstraint = typeGenericParameter.HasDefaultConstructorConstraint,
@@ -90,11 +90,11 @@ namespace CecilRewrite
                 methodGenericParameters.Add(methodGenericParameter);
                 answer.Add(methodGenericParameter);
             }
-            for (int j = 0; j < answer.Count; j++)
+            for (var j = 0; j < answer.Count; j++)
             {
                 var methodGenericParameter = methodGenericParameters[j + initialLength];
                 foreach (var constraint in typeGenericParameters[j].Constraints)
-                    methodGenericParameter.Constraints.Add(constraint.Replace(answer));
+                    methodGenericParameter.Constraints.Add(constraint.Replace(answer, suffix));
             }
             return answer;
         }
@@ -143,13 +143,13 @@ namespace CecilRewrite
         internal static TypeReference Replace(this TypeReference constraint, IEnumerable<GenericParameter> methodGenericParameters, string specialName, TypeReference specialType)
             => Replace(constraint, methodGenericParameters, y => y.Name == specialName ? specialType : y.IsGenericParameter ? methodGenericParameters.SingleOrDefault(x => x.Name == y.Name) ?? y : y);
 
-        internal static TypeReference Replace(this TypeReference constraint, IEnumerable<GenericParameter> methodGenericParameters)
+        internal static TypeReference Replace(this TypeReference constraint, IEnumerable<GenericParameter> methodGenericParameters, string suffix = "")
         {
             if (!(constraint is GenericInstanceType genericConstraint))
-                return constraint.IsGenericParameter ? methodGenericParameters.SingleOrDefault(x => x.Name == constraint.Name) ?? constraint : constraint;
+                return constraint.IsGenericParameter ? methodGenericParameters.SingleOrDefault(x => x.Name == constraint.Name + suffix) ?? constraint : constraint;
             var newConstraint = (GenericInstanceType)constraint.Module.ImportReference(new GenericInstanceType(constraint.Resolve()));
             foreach (var argument in genericConstraint.GenericArguments)
-                newConstraint.GenericArguments.Add(argument.Replace(methodGenericParameters));
+                newConstraint.GenericArguments.Add(argument.Replace(methodGenericParameters, suffix));
             return newConstraint;
         }
 

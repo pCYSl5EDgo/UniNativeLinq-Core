@@ -31,7 +31,7 @@ namespace UniNativeLinq
             private TPrevEnumerator enumerator;
             private TPredicate predicts;
 
-            internal Enumerator(in TPrevEnumerator enumerator, TPredicate predicts)
+            internal Enumerator(in TPrevEnumerator enumerator, in TPredicate predicts)
             {
                 this.enumerator = enumerator;
                 this.predicts = predicts;
