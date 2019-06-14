@@ -84,6 +84,8 @@ namespace CecilRewrite
             //DistinctDefaultHelper.Create(MainModule);
             //DistinctOperatorHelper.Create(MainModule);
             //GroupByHelper.Create(MainModule);
+            //SelectIndexFuncHelper.Create(MainModule);
+            //SelectIndexOperatorHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 
