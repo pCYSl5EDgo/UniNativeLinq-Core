@@ -78,7 +78,7 @@ namespace UniNativeLinq
         public struct Enumerator : IRefEnumerator<T>
         {
             internal readonly T* Ptr;
-            private readonly long length;
+            internal readonly long Length;
             private long index;
 
             public ref T Current => ref Ptr[index];
@@ -89,27 +89,27 @@ namespace UniNativeLinq
             {
                 index = -1;
                 Ptr = parent.Ptr;
-                length = parent.Length;
+                Length = parent.Length;
             }
 
             public void Dispose() => this = default;
 
-            public bool MoveNext() => ++index < length;
+            public bool MoveNext() => ++index < Length;
 
             public void Reset() => index = -1;
 
             public ref T TryGetNext(out bool success)
             {
-                success = ++index < length;
+                success = ++index < Length;
                 if (success)
                     return ref Ptr[index];
-                index = length;
+                index = Length;
                 return ref Pseudo.AsRefNull<T>();
             }
 
             public bool TryMoveNext(out T value)
             {
-                if (++index < length)
+                if (++index < Length)
                 {
                     value = Ptr[index];
                     return true;
@@ -117,7 +117,7 @@ namespace UniNativeLinq
                 else
                 {
                     value = default;
-                    index = length;
+                    index = Length;
                     return false;
                 }
             }

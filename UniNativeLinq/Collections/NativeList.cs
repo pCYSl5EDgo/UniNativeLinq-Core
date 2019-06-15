@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using Unity.Collections;
@@ -8,13 +9,14 @@ namespace UniNativeLinq
 {
     internal unsafe struct
         NativeList<T>
-        : IRefEnumerable<NativeList<T>.Enumerator, T>
+        : IRefEnumerable<NativeList<T>.Enumerator, T>, IDisposable
         where T : unmanaged
     {
         private T* Ptr;
         private long Capacity;
         private long Length;
         private readonly Allocator Allocator;
+        private IDisposable disposableImplementation;
 
         public NativeList(Allocator allocator)
         {
@@ -35,9 +37,9 @@ namespace UniNativeLinq
         {
             if (Length == Capacity)
             {
-                var newCapa = Capacity + (Capacity >> 1);
-                UnsafeUtilityEx.ReAlloc(ref Ptr, Capacity, newCapa, Allocator);
-                Capacity = newCapa;
+                var newCapacity = Capacity + (Capacity >> 1);
+                UnsafeUtilityEx.ReAlloc(ref Ptr, Capacity, newCapacity, Allocator);
+                Capacity = newCapacity;
             }
             Ptr[Length++] = value;
         }
@@ -109,7 +111,7 @@ namespace UniNativeLinq
                     success = false;
                 else
                     success = ++index < count;
-                if(success)
+                if (success)
                     return ref ptr[index];
                 return ref Pseudo.AsRefNull<T>();
             }
@@ -128,6 +130,13 @@ namespace UniNativeLinq
                 }
                 return success;
             }
+        }
+
+        public void Dispose()
+        {
+            if (Ptr == null || !UnsafeUtility.IsValidAllocator(Allocator)) return;
+            UnsafeUtility.Free(Ptr, Allocator);
+            this = default;
         }
     }
 }
