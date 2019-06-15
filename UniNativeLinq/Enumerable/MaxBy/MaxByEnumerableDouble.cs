@@ -76,7 +76,7 @@ namespace UniNativeLinq
             public ref T TryGetNext(out bool success) => ref NativeEnumerator.TryGetNext(out success);
             public bool TryMoveNext(out T value) => NativeEnumerator.TryMoveNext(out value);
 
-            readonly ref T IRefEnumerator<T>.Current => ref NativeEnumerator.Current;
+            public readonly ref T Current => ref NativeEnumerator.Current;
             readonly T IEnumerator<T>.Current => NativeEnumerator.Current;
             readonly object IEnumerator.Current => ((IEnumerator)NativeEnumerator).Current;
 

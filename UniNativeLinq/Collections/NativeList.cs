@@ -16,7 +16,6 @@ namespace UniNativeLinq
         private long Capacity;
         private long Length;
         private readonly Allocator Allocator;
-        private IDisposable disposableImplementation;
 
         public NativeList(Allocator allocator)
         {
