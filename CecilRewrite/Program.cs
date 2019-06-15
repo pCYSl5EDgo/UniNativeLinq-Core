@@ -88,7 +88,8 @@ namespace CecilRewrite
             //SelectIndexOperatorHelper.Create(MainModule);
             //WhereIndexOperatorHelper.Create(MainModule);
             //WhereIndexFunctionHelper.Create(MainModule);
-            MinMaxOperatorHelper.Create(MainModule);
+            //MinMaxOperatorHelper.Create(MainModule);
+            //MinMaxFuncHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 
