@@ -7,8 +7,8 @@ using Unity.Collections;
 namespace UniNativeLinq
 {
     public readonly unsafe struct
-        ZipEnumerable<TFirstEnumerable, TFirstEnumerator, TFirst, TSecondEnumerable, TSecondEnumerator, TSecond, T, TAction>
-        : IRefEnumerable<ZipEnumerable<TFirstEnumerable, TFirstEnumerator, TFirst, TSecondEnumerable, TSecondEnumerator, TSecond, T, TAction>.Enumerator, T>
+        ExceptionalZipEnumerable<TFirstEnumerable, TFirstEnumerator, TFirst, TSecondEnumerable, TSecondEnumerator, TSecond, T, TAction>
+        : IRefEnumerable<ExceptionalZipEnumerable<TFirstEnumerable, TFirstEnumerator, TFirst, TSecondEnumerable, TSecondEnumerator, TSecond, T, TAction>.Enumerator, T>
         where TFirst : unmanaged
         where TSecond : unmanaged
         where T : unmanaged
@@ -21,16 +21,12 @@ namespace UniNativeLinq
         private readonly TFirstEnumerable firstCollection;
         private readonly TSecondEnumerable secondCollection;
         private readonly TAction acts;
-        private readonly TFirst firstDefault;
-        private readonly TSecond secondDefault;
 
-        public ZipEnumerable(in TFirstEnumerable firstCollection, in TSecondEnumerable secondCollection, in TAction acts, in TFirst firstDefault, in TSecond secondDefault)
+        public ExceptionalZipEnumerable(in TFirstEnumerable firstCollection, in TSecondEnumerable secondCollection, in TAction acts)
         {
             this.firstCollection = firstCollection;
             this.secondCollection = secondCollection;
             this.acts = acts;
-            this.firstDefault = firstDefault;
-            this.secondDefault = secondDefault;
         }
 
         [LocalRefReturn]
@@ -40,102 +36,66 @@ namespace UniNativeLinq
             private TSecondEnumerator secondEnumerator;
             private T element;
             private TAction action;
-            private TFirst firstDefaultValue;
-            private TSecond secondDefaultValue;
-            private bool isFirstAlive, isSecondAlive;
 
-            internal Enumerator(in TFirstEnumerator firstEnumerator, in TSecondEnumerator secondEnumerator, in TAction action, TFirst firstDefaultValue, TSecond secondDefaultValue)
+            internal Enumerator(in TFirstEnumerator firstEnumerator, in TSecondEnumerator secondEnumerator, in TAction action)
             {
                 this.firstEnumerator = firstEnumerator;
                 this.secondEnumerator = secondEnumerator;
                 element = default;
                 this.action = action;
-                this.firstDefaultValue = firstDefaultValue;
-                this.secondDefaultValue = secondDefaultValue;
-                isFirstAlive = isSecondAlive = true;
             }
 
             public ref T TryGetNext(out bool success)
             {
-                if (isFirstAlive && !firstEnumerator.MoveNext())
-                    isFirstAlive = false;
-                if (isSecondAlive && !secondEnumerator.MoveNext())
-                    isSecondAlive = false;
-                if (isFirstAlive)
+                ref var first = ref firstEnumerator.TryGetNext(out success);
+                if (success)
                 {
-                    success = true;
-                    if (isSecondAlive)
-                        action.Execute(ref firstEnumerator.Current, ref secondEnumerator.Current, ref element);
-                    else
-                        action.Execute(ref firstEnumerator.Current, ref secondDefaultValue, ref element);
+                    ref var second = ref secondEnumerator.TryGetNext(out success);
+                    if (!success)
+                        throw new InvalidOperationException("Second is shorter than first.");
+                    action.Execute(ref first, ref second, ref element);
                 }
                 else
                 {
-                    if (isSecondAlive)
-                    {
-                        action.Execute(ref firstDefaultValue, ref secondEnumerator.Current, ref element);
-                        success = true;
-                    }
-                    else
-                    {
-                        success = false;
-                    }
+                    if (secondEnumerator.MoveNext())
+                        throw new InvalidOperationException("First is shorter than second");
+                    success = false;
                 }
                 throw new NotImplementedException();
             }
 
             public bool TryMoveNext(out T value)
             {
-                if (isFirstAlive && !firstEnumerator.MoveNext())
-                    isFirstAlive = false;
-                if (isSecondAlive && !secondEnumerator.MoveNext())
-                    isSecondAlive = false;
-                if (isFirstAlive)
+                ref var first = ref firstEnumerator.TryGetNext(out var success0);
+                ref var second = ref secondEnumerator.TryGetNext(out var success1);
+                if (success0)
                 {
-                    if (isSecondAlive)
-                        action.Execute(ref firstEnumerator.Current, ref secondEnumerator.Current, ref element);
-                    else
-                        action.Execute(ref firstEnumerator.Current, ref secondDefaultValue, ref element);
+                    if (!success1)
+                        throw new InvalidOperationException("Second is shorter than first.");
+                    action.Execute(ref first, ref second, ref element);
                     value = element;
                     return true;
                 }
-                else
-                {
-                    if (isSecondAlive)
-                    {
-                        action.Execute(ref firstDefaultValue, ref secondEnumerator.Current, ref element);
-                        value = element;
-                        return true;
-                    }
-                    else
-                    {
-                        value = element;
-                        return false;
-                    }
-                }
+                if (success1)
+                    throw new InvalidOperationException("First is shorter than second");
+                value = default;
+                return false;
             }
 
             public bool MoveNext()
             {
-                if (isFirstAlive && !firstEnumerator.MoveNext())
-                    isFirstAlive = false;
-                if (isSecondAlive && !secondEnumerator.MoveNext())
-                    isSecondAlive = false;
-                if (isFirstAlive)
+                ref var first = ref firstEnumerator.TryGetNext(out var success0);
+                ref var second = ref secondEnumerator.TryGetNext(out var success1);
+                if (success0)
                 {
-                    if (isSecondAlive)
-                        action.Execute(ref firstEnumerator.Current, ref secondEnumerator.Current, ref element);
-                    else
-                        action.Execute(ref firstEnumerator.Current, ref secondDefaultValue, ref element);
+                    if (!success1)
+                        throw new InvalidOperationException("Second is shorter than first.");
+                    action.Execute(ref first, ref second, ref element);
+                    return true;
                 }
-                else
-                {
-                    if (isSecondAlive)
-                        action.Execute(ref firstDefaultValue, ref secondEnumerator.Current, ref element);
-                    else
-                        return false;
-                }
-                return true;
+                if (success1)
+                    throw new InvalidOperationException("First is shorter than second");
+                return false;
             }
 
             public void Reset() => throw new InvalidOperationException();
@@ -143,11 +103,16 @@ namespace UniNativeLinq
             readonly T IEnumerator<T>.Current => Current;
             readonly object IEnumerator.Current => Current;
 
-            public void Dispose() => this = default;
+            public void Dispose()
+            {
+                firstEnumerator.Dispose();
+                secondEnumerator.Dispose();
+                this = default;
+            }
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(firstCollection.GetEnumerator(), secondCollection.GetEnumerator(), acts, firstDefault, secondDefault);
-        
+
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
@@ -220,7 +185,7 @@ namespace UniNativeLinq
             var count = Count();
             if (count == 0) return default;
             var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
-            CopyTo(UnsafeUtilityEx.GetPointer(answer));
+            CopyTo(answer.GetPointer());
             return answer;
         }
         #endregion
