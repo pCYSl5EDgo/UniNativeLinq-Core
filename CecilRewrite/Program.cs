@@ -15,19 +15,18 @@ namespace CecilRewrite
         internal const TypeAttributes StaticExtensionClassTypeAttributes = TypeAttributes.AnsiClass | TypeAttributes.AutoLayout | TypeAttributes.BeforeFieldInit | TypeAttributes.Sealed | TypeAttributes.Public | TypeAttributes.Abstract;
         internal const MethodAttributes StaticMethodAttributes = MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig;
         internal static readonly ModuleDefinition MainModule;
-        internal static readonly ModuleDefinition UnsafeModule;
         internal static readonly CustomAttribute ExtensionAttribute;
         internal static readonly CustomAttribute IsReadOnlyAttribute;
         internal static readonly CustomAttribute UnManagedAttribute;
         internal static readonly ModuleDefinition SystemModule;
         internal static readonly AssemblyDefinition Assembly;
         internal static readonly TypeReference Allocator;
+        internal static readonly TypeReference NativeArray;
 
         static Program()
         {
             const string folderPath = @"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\netstandard2.0\";
             const string UniNativeLinqDll = folderPath + @"UniNativeLinq.dll";
-            const string UnityCoreDll = folderPath + @"UnityEngine.CoreModule.dll";
             var resolver = new DefaultAssemblyResolver();
             resolver.AddSearchDirectory(folderPath);
             Assembly = AssemblyDefinition.ReadAssembly(UniNativeLinqDll, new ReaderParameters(readingMode: ReadingMode.Deferred) { AssemblyResolver = resolver });
@@ -36,9 +35,11 @@ namespace CecilRewrite
             ExtensionAttribute = nativeEnumerable.CustomAttributes.Single();
             var negateMethodDefinition = MainModule.GetType("UniNativeLinq.NegatePredicate`2").GetConstructors().First();
             IsReadOnlyAttribute = negateMethodDefinition.Parameters.First().CustomAttributes.First();
-            UnsafeModule = ExtensionAttribute.AttributeType.Module;
             var nativeEnumerable1 = MainModule.GetType(NameSpace, "NativeEnumerable`1");
-            Allocator = nativeEnumerable1.Methods.First(x => x.Name == "ToNativeArray").Parameters.First().ParameterType;
+            MethodDefinition ToNativeArray;
+            ToNativeArray = nativeEnumerable1.Methods.First(x => x.Name == nameof(ToNativeArray));
+            NativeArray = MainModule.ImportReference(ToNativeArray.ReturnType.Resolve());
+            Allocator = ToNativeArray.Parameters.First().ParameterType;
             var t = nativeEnumerable1.GenericParameters.First();
             UnManagedAttribute = t.CustomAttributes[0];
             SystemModule = ModuleDefinition.ReadModule(@"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.3\build\netstandard2.0\ref\netstandard.dll");
@@ -90,6 +91,8 @@ namespace CecilRewrite
             //WhereIndexFunctionHelper.Create(MainModule);
             //MinMaxOperatorHelper.Create(MainModule);
             //MinMaxFuncHelper.Create(MainModule);
+            SelectManyOperatorHelper.Create(MainModule);
+            //SelectManyFuncHelper.Create(MainModule);
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 

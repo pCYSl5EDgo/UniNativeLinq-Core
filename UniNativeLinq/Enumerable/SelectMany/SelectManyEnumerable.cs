@@ -8,8 +8,8 @@ namespace UniNativeLinq
 {
     [SlowCount]
     public readonly unsafe struct
-        SelectManyEnumerable<TEnumerable, TEnumerator, TPrev, T, TAnotherEnumerable, TAnotherEnumerator, TAction>
-        : IRefEnumerable<SelectManyEnumerable<TEnumerable, TEnumerator, TPrev, T, TAnotherEnumerable, TAnotherEnumerator, TAction>.Enumerator, T>
+        SelectManyEnumerable<TEnumerable, TEnumerator, TPrev, TAnotherEnumerable, TAnotherEnumerator, T, TAction>
+        : IRefEnumerable<SelectManyEnumerable<TEnumerable, TEnumerator, TPrev, TAnotherEnumerable, TAnotherEnumerator, T, TAction>.Enumerator, T>
         where TPrev : unmanaged
         where TEnumerator : struct, IRefEnumerator<TPrev>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, TPrev>
@@ -35,7 +35,7 @@ namespace UniNativeLinq
             private TAction action;
             private bool isNotFirst;
 
-            internal Enumerator(in TEnumerator enumerator, TAction action)
+            internal Enumerator(in TEnumerator enumerator, in TAction action)
             {
                 this.enumerator = enumerator;
                 resultEnumerable = default;
@@ -167,7 +167,7 @@ namespace UniNativeLinq
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), acts);
-        
+
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();

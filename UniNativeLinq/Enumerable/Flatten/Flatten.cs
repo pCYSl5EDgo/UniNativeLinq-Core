@@ -7,9 +7,9 @@
                 TEnumerableEnumerable,
                 TEnumerableEnumerator,
                 TEnumerable,
-                T,
                 TEnumerable,
                 TEnumerator,
+                T,
                 AsIs<TEnumerable>
             >
             Flatten<
@@ -28,9 +28,9 @@
                 TEnumerableEnumerable,
                 TEnumerableEnumerator,
                 TEnumerable,
-                T,
                 TEnumerable,
                 TEnumerator,
+                T,
                 AsIs<TEnumerable>
             >(enumerable, default);
     }
