@@ -32,9 +32,8 @@ namespace CecilRewrite
                 AggressiveInlining = true,
             };
             method.CustomAttributes.Add(ExtensionAttribute);
-            method.Parameters.Capacity = 1;
-            var argumentsFromTypeToMethodParam = method.FromTypeToMethodParam(type.GenericParameters);
-            var @this = type.MakeGenericInstanceType(argumentsFromTypeToMethodParam);
+            var added = method.FromTypeToMethodParam(type.GenericParameters);
+            var @this = type.MakeGenericInstanceType(added);
             FillParameter(@this, method);
             FillBody(@this, method);
             @static.Methods.Add(method);

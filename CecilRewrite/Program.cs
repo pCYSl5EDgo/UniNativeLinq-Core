@@ -50,6 +50,7 @@ namespace CecilRewrite
             RewriteThrow(MainModule);
             ReWritePseudoIsReadOnly(MainModule);
             ReWritePseudoUtility(MainModule);
+            
             //TryGetMinHelper.Create(MainModule);
             //TryGetMaxHelper.Create(MainModule);
             //TryGetMinFuncHelper.Create(MainModule);
@@ -93,6 +94,7 @@ namespace CecilRewrite
             //MinMaxFuncHelper.Create(MainModule);
             //SelectManyOperatorHelper.Create(MainModule);
             //SelectManyFuncHelper.Create(MainModule);
+            //RepeatHelper.Create(MainModule);
 
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
