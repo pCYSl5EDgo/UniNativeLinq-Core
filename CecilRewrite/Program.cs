@@ -91,8 +91,9 @@ namespace CecilRewrite
             //WhereIndexFunctionHelper.Create(MainModule);
             //MinMaxOperatorHelper.Create(MainModule);
             //MinMaxFuncHelper.Create(MainModule);
-            SelectManyOperatorHelper.Create(MainModule);
+            //SelectManyOperatorHelper.Create(MainModule);
             //SelectManyFuncHelper.Create(MainModule);
+
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 
