@@ -45,13 +45,13 @@ namespace CecilRewrite
             };
             method.CustomAttributes.Add(ExtensionAttribute);
             var @this = new GenericInstanceType(type);
-            var addedParams = method.FromTypeToMethodParam(type.GenericParameters, "T", number);
+            var added = method.FromTypeToMethodParam(type.GenericParameters, "T", number);
 
             var index = 0;
             foreach (var genericParameter in type.GenericParameters)
-                @this.GenericArguments.Add(genericParameter.Name == "T" ? number : addedParams[index++]);
+                @this.GenericArguments.Add(genericParameter.Name == "T" ? number : added[index++]);
 
-            var Element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters, "T", number);
+            var Element = @this.GetElementTypeOfCollectionType().Replace(added, "T", number);
             if (Element.Name != number.Name)
                 return;
 
@@ -62,7 +62,7 @@ namespace CecilRewrite
             @thisParameter.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(@thisParameter);
 
-            var Enumerator = (GenericInstanceType)@this.GetEnumeratorTypeOfCollectionType().Replace(method.GenericParameters, "T", number);
+            var Enumerator = (GenericInstanceType)@this.GetEnumeratorTypeOfCollectionType().Replace(added, "T", number);
 
             var body = method.Body;
             var variables = body.Variables;

@@ -22,6 +22,7 @@ namespace CecilRewrite
         internal static readonly AssemblyDefinition Assembly;
         internal static readonly TypeReference Allocator;
         internal static readonly TypeReference NativeArray;
+        internal static readonly TypeDefinition[] Enumerables;
 
         static Program()
         {
@@ -43,6 +44,7 @@ namespace CecilRewrite
             var t = nativeEnumerable1.GenericParameters.First();
             UnManagedAttribute = t.CustomAttributes[0];
             SystemModule = ModuleDefinition.ReadModule(@"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.3\build\netstandard2.0\ref\netstandard.dll");
+            Enumerables = MainModule.Types.Where(x => x.IsValueType && x.IsPublic && x.HasInterfaces && x.Interfaces.Any(y => y.InterfaceType.Name == "IRefEnumerable`2")).ToArray();
         }
 
         public static void Main(string[] args)
@@ -50,7 +52,7 @@ namespace CecilRewrite
             RewriteThrow(MainModule);
             ReWritePseudoIsReadOnly(MainModule);
             ReWritePseudoUtility(MainModule);
-            
+
             //TryGetMinHelper.Create(MainModule);
             //TryGetMaxHelper.Create(MainModule);
             //TryGetMinFuncHelper.Create(MainModule);
@@ -95,7 +97,8 @@ namespace CecilRewrite
             //SelectManyOperatorHelper.Create(MainModule);
             //SelectManyFuncHelper.Create(MainModule);
             //RepeatHelper.Create(MainModule);
-            WithIndexHelper.Create(MainModule);
+            //WithIndexHelper.Create(MainModule);
+            //ConcatHelper.Create(MainModule);
 
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }

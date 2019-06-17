@@ -68,19 +68,19 @@ namespace CecilRewrite
         {
             var MainModule = PreCommon(@static, order, out var method);
 
-            var addedParams = method.FromTypeToMethodParam(type.GenericParameters, "T", number);
+            var added = method.FromTypeToMethodParam(type.GenericParameters, "T", number);
             var @this = new GenericInstanceType(type);
             var index = 0;
             foreach (var genericParameter in type.GenericParameters)
-                @this.GenericArguments.Add(genericParameter.Name == "T" ? number : addedParams[index++]);
+                @this.GenericArguments.Add(genericParameter.Name == "T" ? number : added[index++]);
 
-            var Element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters, "T", number);
+            var Element = @this.GetElementTypeOfCollectionType().Replace(added, "T", number);
             if (Element.Name != number.Name)
                 return;
 
             var Predicate = MainModule.GetType(NameSpace, "DefaultOrderBy" + order + number.Name);
 
-            var Enumerator = type.GetEnumeratorTypeOfCollectionType().Replace(method.GenericParameters, "T", number);
+            var Enumerator = type.GetEnumeratorTypeOfCollectionType().Replace(added, "T", number);
 
             Common(@static, MainModule, @this, Enumerator, Element, Predicate, method);
         }
