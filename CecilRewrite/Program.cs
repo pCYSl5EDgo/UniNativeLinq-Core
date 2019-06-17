@@ -95,6 +95,7 @@ namespace CecilRewrite
             //SelectManyOperatorHelper.Create(MainModule);
             //SelectManyFuncHelper.Create(MainModule);
             //RepeatHelper.Create(MainModule);
+            WithIndexHelper.Create(MainModule);
 
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
