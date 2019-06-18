@@ -9,35 +9,47 @@ namespace CecilRewrite
 {
     using static Program;
 
-    static class ConcatHelper
+    static class IntersectExceptFuncHelper
     {
         internal static void Create(ModuleDefinition module)
         {
-            var @static = new TypeDefinition(NameSpace,
-                nameof(ConcatHelper),
+            TypeDefinition IntersectFuncHelper = new TypeDefinition(NameSpace,
+                nameof(IntersectFuncHelper),
                 StaticExtensionClassTypeAttributes, module.TypeSystem.Object);
-            @static.CustomAttributes.Add(ExtensionAttribute);
-            module.Types.Add(@static);
+            IntersectFuncHelper.CustomAttributes.Add(ExtensionAttribute);
+            module.Types.Add(IntersectFuncHelper);
+
+            TypeDefinition ExceptFuncHelper = new TypeDefinition(NameSpace,
+                nameof(ExceptFuncHelper),
+                StaticExtensionClassTypeAttributes, module.TypeSystem.Object);
+            ExceptFuncHelper.CustomAttributes.Add(ExtensionAttribute);
+            module.Types.Add(ExceptFuncHelper);
+
+            var Intersect = module.GetType("UniNativeLinq", "IntersectOperation`6");
+            var Except = module.GetType("UniNativeLinq", "ExceptOperation`6");
             foreach (var type0 in Enumerables)
             {
                 foreach (var type1 in Enumerables)
-                    Concat(@static, type0, type1);
+                {
+                    Make(IntersectFuncHelper, type0, type1, nameof(Intersect), Intersect);
+                    Make(ExceptFuncHelper, type0, type1, nameof(Except), Except);
+                }
             }
         }
 
-        private static void Concat(TypeDefinition @static, TypeDefinition type0, TypeDefinition type1)
+        private static void Make(TypeDefinition @static, TypeDefinition type0, TypeDefinition type1, string name, TypeDefinition operation)
         {
             var MainModule = @static.Module;
-            var method = new MethodDefinition(nameof(Concat), StaticMethodAttributes, MainModule.TypeSystem.Boolean)
+            var method = new MethodDefinition(name, StaticMethodAttributes, MainModule.TypeSystem.Boolean)
             {
                 DeclaringType = @static,
                 AggressiveInlining = true,
             };
             method.CustomAttributes.Add(ExtensionAttribute);
 
-            GenericParameter T;
-            T = new GenericParameter(nameof(T), method) { HasNotNullableValueTypeConstraint = true };
+            GenericParameter T = new GenericParameter(nameof(T), method) { HasNotNullableValueTypeConstraint = true };
             T.CustomAttributes.Add(UnManagedAttribute);
+            T.Constraints.Add(MainModule.ImportReference(SystemModule.GetType("System", "IComparable`1")).MakeGenericInstanceType(T));
 
             const string suffix0 = "0";
 
@@ -68,13 +80,37 @@ namespace CecilRewrite
 
             method.GenericParameters.Add(T);
 
-            var @return = MainModule.GetType("UniNativeLinq", "ConcatEnumerable`5").MakeGenericInstanceType(new[]
+            var Func = MainModule.ImportReference(SystemModule.GetType("System", "Func`3")).MakeGenericInstanceType(new[]
+            {
+                Element0,
+                Element0,
+                MainModule.TypeSystem.Int32,
+            });
+            var TComparer = MainModule.GetType(NameSpace, "DelegateFuncToStructOperatorFunc`3").MakeGenericInstanceType(new[]
+            {
+                Element0,
+                Element0,
+                MainModule.TypeSystem.Int32,
+            });
+
+            var Operation = operation.MakeGenericInstanceType(new[]
             {
                 Enumerable0,
                 Enumerator0,
                 Enumerable1,
                 Enumerator1,
-                T
+                T,
+                TComparer,
+            });
+
+            var @return = MainModule.GetType(NameSpace, "SetOperationEnumerable`6").MakeGenericInstanceType(new[]
+            {
+                Enumerable0,
+                Enumerator0,
+                Enumerable1,
+                Enumerator1,
+                T,
+                Operation,
             });
             method.ReturnType = @return;
 
@@ -86,9 +122,24 @@ namespace CecilRewrite
             secondParam.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(secondParam);
 
+            var comparerParam = new ParameterDefinition("comparer", ParameterAttributes.None, Func);
+            method.Parameters.Add(comparerParam);
+
+            var allocParam = new ParameterDefinition("allocator", ParameterAttributes.HasDefault | ParameterAttributes.Optional, Allocator)
+            {
+                Constant = 2,
+            };
+            method.Parameters.Add(allocParam);
+
+            method.Body.Variables.Add(new VariableDefinition(TComparer));
+
             var processor = method.Body.GetILProcessor();
             processor.Do(OpCodes.Ldarg_0);
             processor.Do(OpCodes.Ldarg_1);
+            processor.Do(OpCodes.Ldarg_2);
+            processor.Do(OpCodes.Stloc_0);
+            processor.LdLocaS(0);
+            processor.Do(OpCodes.Ldarg_3);
             processor.NewObj(@return.FindMethod(".ctor"));
             processor.Ret();
 

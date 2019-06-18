@@ -25,12 +25,12 @@ namespace UniNativeLinq
 
         [PseudoIsReadOnly] private TSetOperation setOperation;
 
-        public SetOperationEnumerable(in TFirstEnumerable firstEnumerable, in TSecondEnumerable secondEnumerable, in TSetOperation setOperation, Allocator alloc)
+        public SetOperationEnumerable(in TFirstEnumerable firstEnumerable, in TSecondEnumerable secondEnumerable, in TSetOperation setOperation, Allocator allocator)
         {
             this.firstEnumerable = firstEnumerable;
             this.secondEnumerable = secondEnumerable;
             this.setOperation = setOperation;
-            this.alloc = alloc;
+            this.alloc = allocator;
         }
 
         public struct Enumerator : IRefEnumerator<T>

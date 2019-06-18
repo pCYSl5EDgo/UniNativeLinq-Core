@@ -99,6 +99,9 @@ namespace CecilRewrite
             //RepeatHelper.Create(MainModule);
             //WithIndexHelper.Create(MainModule);
             //ConcatHelper.Create(MainModule);
+            //IntersectExceptDefaultComparerHelper.Create(MainModule);
+            //IntersectExceptOperationHelper.Create(MainModule);
+            //IntersectExceptFuncHelper.Create(MainModule);
 
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
