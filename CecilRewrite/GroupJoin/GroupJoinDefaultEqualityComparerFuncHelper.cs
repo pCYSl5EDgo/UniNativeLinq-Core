@@ -9,12 +9,12 @@ namespace CecilRewrite
 {
     using static Program;
 
-    static class GroupJoinDefaultEqualityComparerHelper
+    static class GroupJoinDefaultEqualityComparerFuncHelper
     {
         internal static void Create(ModuleDefinition module)
         {
             var @static = new TypeDefinition(NameSpace,
-                nameof(GroupJoinDefaultEqualityComparerHelper),
+                nameof(GroupJoinDefaultEqualityComparerFuncHelper),
                 StaticExtensionClassTypeAttributes, module.TypeSystem.Object);
             @static.CustomAttributes.Add(ExtensionAttribute);
             module.Types.Add(@static);
@@ -51,21 +51,21 @@ namespace CecilRewrite
             TKey.Constraints.Add(MainModule.ImportReference(SystemModule.GetType("System", "IEquatable`1")).MakeGenericInstanceType(TKey));
             method.GenericParameters.Add(TKey);
 
-            var IRefFunc2 = MainModule.GetType(NameSpace, "IRefFunc`2");
-            GenericParameter TOuterKeySelector = new GenericParameter(nameof(TOuterKeySelector), method) { HasNotNullableValueTypeConstraint = true };
-            TOuterKeySelector.Constraints.Add(IRefFunc2.MakeGenericInstanceType(new[]
+            var Element0_TKey = new[]
             {
                 Element0,
                 TKey
-            }));
-            method.GenericParameters.Add(TOuterKeySelector);
-            GenericParameter TInnerKeySelector = new GenericParameter(nameof(TInnerKeySelector), method) { HasNotNullableValueTypeConstraint = true };
-            TInnerKeySelector.Constraints.Add(IRefFunc2.MakeGenericInstanceType(new[]
+            };
+            var TOuterKeySelectorFunc = MainModule.ImportReference(SystemModule.GetType("System", "Func`2")).MakeGenericInstanceType(Element0_TKey);
+            var TOuterKeySelector = MainModule.GetType(NameSpace, "DelegateFuncToStructOperatorFunc`2").MakeGenericInstanceType(Element0_TKey);
+
+            var Element1_TKey = new[]
             {
                 Element1,
                 TKey
-            }));
-            method.GenericParameters.Add(TInnerKeySelector);
+            };
+            var TInnerKeySelectorFunc = MainModule.ImportReference(SystemModule.GetType("System", "Func`2")).MakeGenericInstanceType(Element1_TKey);
+            var TInnerKeySelector = MainModule.GetType(NameSpace, "DelegateFuncToStructOperatorFunc`2").MakeGenericInstanceType(Element1_TKey);
 
             GenericParameter T = new GenericParameter(nameof(T), method) { HasNotNullableValueTypeConstraint = true };
             T.CustomAttributes.Add(UnManagedAttribute);
@@ -91,14 +91,14 @@ namespace CecilRewrite
                 GroupJoinPredicate,
             });
 
-            GenericParameter TSelector = new GenericParameter(nameof(TSelector), method) { HasNotNullableValueTypeConstraint = true };
-            TSelector.Constraints.Add(MainModule.GetType(NameSpace, "IRefFunc`3").MakeGenericInstanceType(new[]
+            var Tuple3 = new[]
             {
                 Element0,
                 WhereIndexEnumerable,
                 T
-            }));
-            method.GenericParameters.Add(TSelector);
+            };
+            var TSelectorFunc = MainModule.ImportReference(SystemModule.GetType("System", "Func`3")).MakeGenericInstanceType(Tuple3);
+            var TSelector = MainModule.GetType(NameSpace, "DelegateFuncToStructOperatorFunc`3").MakeGenericInstanceType(Tuple3);
 
             var @return = MainModule.GetType(NameSpace, "GroupJoinEnumerable`12").MakeGenericInstanceType(new[]
             {
@@ -125,16 +125,13 @@ namespace CecilRewrite
             inner.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(inner);
 
-            var outerSelector = new ParameterDefinition("outerSelector", ParameterAttributes.In, TOuterKeySelector.MakeByReferenceType());
-            outerSelector.CustomAttributes.Add(IsReadOnlyAttribute);
+            var outerSelector = new ParameterDefinition("outerSelector", ParameterAttributes.None, TOuterKeySelectorFunc);
             method.Parameters.Add(outerSelector);
 
-            var innerSelector = new ParameterDefinition("innerSelector", ParameterAttributes.In, TInnerKeySelector.MakeByReferenceType());
-            innerSelector.CustomAttributes.Add(IsReadOnlyAttribute);
+            var innerSelector = new ParameterDefinition("innerSelector", ParameterAttributes.None, TInnerKeySelectorFunc);
             method.Parameters.Add(innerSelector);
 
-            var selector = new ParameterDefinition("selector", ParameterAttributes.In, TSelector.MakeByReferenceType());
-            selector.CustomAttributes.Add(IsReadOnlyAttribute);
+            var selector = new ParameterDefinition("selector", ParameterAttributes.None, TSelectorFunc);
             method.Parameters.Add(selector);
 
             var allocator = new ParameterDefinition("allocator", ParameterAttributes.HasDefault | ParameterAttributes.Optional, Allocator)
@@ -143,15 +140,24 @@ namespace CecilRewrite
             };
             method.Parameters.Add(allocator);
 
+            method.Body.Variables.Add(new VariableDefinition(TOuterKeySelector));
+            method.Body.Variables.Add(new VariableDefinition(TInnerKeySelector));
             method.Body.Variables.Add(new VariableDefinition(DefaultTKeyEqualityComparer));
+            method.Body.Variables.Add(new VariableDefinition(TSelector));
 
             var processor = method.Body.GetILProcessor();
             processor.Do(OpCodes.Ldarg_0);
             processor.Do(OpCodes.Ldarg_1);
             processor.Do(OpCodes.Ldarg_2);
-            processor.Do(OpCodes.Ldarg_3);
+            processor.Do(OpCodes.Stloc_0);
             processor.LdLocaS(0);
+            processor.Do(OpCodes.Ldarg_3);
+            processor.Do(OpCodes.Stloc_1);
+            processor.LdLocaS(1);
+            processor.LdLocaS(2);
             processor.Append(Instruction.Create(OpCodes.Ldarg_S, selector));
+            processor.Do(OpCodes.Stloc_3);
+            processor.LdLocaS(3);
             processor.Append(Instruction.Create(OpCodes.Ldarg_S, allocator));
             processor.NewObj(@return.FindMethod(".ctor"));
             processor.Ret();

@@ -102,7 +102,10 @@ namespace CecilRewrite
             //IntersectExceptDefaultComparerHelper.Create(MainModule);
             //IntersectExceptOperationHelper.Create(MainModule);
             //IntersectExceptFuncHelper.Create(MainModule);
-            GroupJoinDefaultEqualityComparerHelper.Create(MainModule);
+            //GroupJoinDefaultEqualityComparerOperatorHelper.Create(MainModule);
+            //GroupJoinDefaultEqualityComparerFuncHelper.Create(MainModule);
+            //GroupJoinOperatorHelper.Create(MainModule);
+            //GroupJoinFuncHelper.Create(MainModule);
 
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
