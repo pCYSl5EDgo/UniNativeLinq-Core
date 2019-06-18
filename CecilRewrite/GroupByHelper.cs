@@ -18,7 +18,7 @@ namespace CecilRewrite
             @static.CustomAttributes.Add(ExtensionAttribute);
             module.Types.Add(@static);
 
-            foreach (var type in module.Types.Where(x => x.IsValueType && x.IsPublic && x.HasInterfaces && x.Interfaces.Any(y => y.InterfaceType.Name == "IRefEnumerable`2")))
+            foreach (var type in Enumerables)
             {
                 GroupBy(@static, type);
             }

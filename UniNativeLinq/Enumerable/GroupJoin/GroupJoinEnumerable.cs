@@ -8,8 +8,8 @@ namespace UniNativeLinq
 {
     [SlowCount]
     public unsafe struct
-        GroupJoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, T, TSelector, TKeyEqualityComparer>
-        : IRefEnumerable<GroupJoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, T, TSelector, TKeyEqualityComparer>.Enumerator, T>
+        GroupJoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TKeyEqualityComparer, T, TSelector>
+        : IRefEnumerable<GroupJoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TKeyEqualityComparer, T, TSelector>.Enumerator, T>
         where TOuterSource : unmanaged
         where TInnerSource : unmanaged
         where TOuterEnumerator : struct, IRefEnumerator<TOuterSource>
@@ -19,6 +19,7 @@ namespace UniNativeLinq
         where TKey : unmanaged
         where TOuterKeySelector : struct, IRefFunc<TOuterSource, TKey>
         where TInnerKeySelector : struct, IRefFunc<TInnerSource, TKey>
+        where TKeyEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
         where T : unmanaged
         where TSelector : struct,
         IRefFunc<TOuterSource,
@@ -27,9 +28,9 @@ namespace UniNativeLinq
                 NativeEnumerable<TInnerSource>.Enumerator,
                 TInnerSource,
                 GroupJoinPredicate<TInnerSource, TKey, TKeyEqualityComparer>
-                >,
-            T>
-        where TKeyEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
+            >,
+            T
+        >
     {
         private readonly TOuterEnumerable outerEnumerable;
         private readonly TInnerEnumerable innerEnumerable;
@@ -39,7 +40,7 @@ namespace UniNativeLinq
         private readonly TKeyEqualityComparer keyEqualityComparer;
         private readonly Allocator alloc;
 
-        public GroupJoinEnumerable(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TSelector sourceSelector, in TKeyEqualityComparer keyEqualityComparer, Allocator allocator)
+        public GroupJoinEnumerable(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TKeyEqualityComparer keyEqualityComparer, in TSelector sourceSelector, Allocator allocator)
         {
             this.outerEnumerable = outerEnumerable;
             this.innerEnumerable = innerEnumerable;
