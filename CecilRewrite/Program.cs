@@ -23,6 +23,8 @@ namespace CecilRewrite
         internal static readonly TypeReference Allocator;
         internal static readonly TypeReference NativeArray;
         internal static readonly TypeDefinition[] Enumerables;
+        internal static readonly MethodDefinition AsRefEnumerableArray;
+        internal static readonly MethodDefinition AsRefEnumerableNative;
 
         static Program()
         {
@@ -33,6 +35,8 @@ namespace CecilRewrite
             Assembly = AssemblyDefinition.ReadAssembly(UniNativeLinqDll, new ReaderParameters(readingMode: ReadingMode.Deferred) { AssemblyResolver = resolver });
             MainModule = Assembly.MainModule;
             var nativeEnumerable = MainModule.GetType("UniNativeLinq.NativeEnumerable");
+            AsRefEnumerableArray = nativeEnumerable.Methods.First(x => x.Name == "AsRefEnumerable" && x.Parameters.Count == 1 && x.Parameters.First().ParameterType.IsArray);
+            AsRefEnumerableNative = nativeEnumerable.Methods.First(x => x.Name == "AsRefEnumerable" && x.Parameters.Count == 1 && !x.Parameters.First().ParameterType.IsArray);
             ExtensionAttribute = nativeEnumerable.CustomAttributes.Single();
             var negateMethodDefinition = MainModule.GetType("UniNativeLinq.NegatePredicate`2").GetConstructors().First();
             IsReadOnlyAttribute = negateMethodDefinition.Parameters.First().CustomAttributes.First();
@@ -98,7 +102,7 @@ namespace CecilRewrite
             //SelectManyFuncHelper.Create(MainModule);
             //RepeatHelper.Create(MainModule);
             //WithIndexHelper.Create(MainModule);
-            //ConcatHelper.Create(MainModule);
+            ConcatHelper.Create(MainModule);
             //IntersectExceptDefaultComparerHelper.Create(MainModule);
             //IntersectExceptOperationHelper.Create(MainModule);
             //IntersectExceptFuncHelper.Create(MainModule);
