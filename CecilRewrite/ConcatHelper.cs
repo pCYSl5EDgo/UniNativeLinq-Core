@@ -20,15 +20,14 @@ namespace CecilRewrite
                 StaticExtensionClassTypeAttributes, module.TypeSystem.Object);
             @static.CustomAttributes.Add(ExtensionAttribute);
             module.Types.Add(@static);
-            static TypeReference CalcArrayType(IEnumerable<TypeReference> xs) => xs.First().MakeArrayType();
             foreach (var type0 in Enumerables)
             {
                 Concat(@static, type0, "Array", 0, CalcArrayType, AsRefEnumerableArray);
-                //Concat(@static, type0, "Array", 1, CalcArrayType, AsRefEnumerableArray);
-                //Concat(@static, type0, "Native", 0, NativeArray.MakeGenericInstanceType, AsRefEnumerableNative);
-                //Concat(@static, type0, "Native", 1, NativeArray.MakeGenericInstanceType, AsRefEnumerableNative);
-                //foreach (var type1 in Enumerables)
-                //    Concat(@static, type0, type1);
+                Concat(@static, type0, "Array", 1, CalcArrayType, AsRefEnumerableArray);
+                Concat(@static, type0, "Native", 0, NativeArray.MakeGenericInstanceType, AsRefEnumerableNative);
+                Concat(@static, type0, "Native", 1, NativeArray.MakeGenericInstanceType, AsRefEnumerableNative);
+                foreach (var type1 in Enumerables)
+                    Concat(@static, type0, type1);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -102,9 +103,9 @@ namespace CecilRewrite
             //SelectManyFuncHelper.Create(MainModule);
             //RepeatHelper.Create(MainModule);
             //WithIndexHelper.Create(MainModule);
-            ConcatHelper.Create(MainModule);
+            //ConcatHelper.Create(MainModule);
             //IntersectExceptDefaultComparerHelper.Create(MainModule);
-            //IntersectExceptOperationHelper.Create(MainModule);
+            IntersectExceptOperationHelper.Create(MainModule);
             //IntersectExceptFuncHelper.Create(MainModule);
             //GroupJoinDefaultEqualityComparerOperatorHelper.Create(MainModule);
             //GroupJoinDefaultEqualityComparerFuncHelper.Create(MainModule);
@@ -244,5 +245,7 @@ namespace CecilRewrite
                 }
             }
         }
+
+        internal static TypeReference CalcArrayType(IEnumerable<TypeReference> xs) => xs.First().MakeArrayType();
     }
 }
