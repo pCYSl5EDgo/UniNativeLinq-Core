@@ -105,7 +105,7 @@ namespace CecilRewrite
             //WithIndexHelper.Create(MainModule);
             //ConcatHelper.Create(MainModule);
             //IntersectExceptDefaultComparerHelper.Create(MainModule);
-            IntersectExceptOperationHelper.Create(MainModule);
+            //IntersectExceptOperationHelper.Create(MainModule);
             //IntersectExceptFuncHelper.Create(MainModule);
             //GroupJoinDefaultEqualityComparerOperatorHelper.Create(MainModule);
             //GroupJoinDefaultEqualityComparerFuncHelper.Create(MainModule);

@@ -35,11 +35,11 @@ namespace CecilRewrite
                 Make(IntersectOperatorHelper, type0, "Array", 1, CalcArrayType, AsRefEnumerableArray, nameof(Intersect), Intersect);
                 Make(ExceptOperatorHelper, type0, "Native", 0, NativeArray.MakeGenericInstanceType, AsRefEnumerableNative, nameof(Except), Except);
                 Make(ExceptOperatorHelper, type0, "Native", 1, NativeArray.MakeGenericInstanceType, AsRefEnumerableNative, nameof(Except), Except);
-                //foreach (var type1 in Enumerables)
-                //{
-                //    Make(IntersectOperatorHelper, type0, type1, nameof(Intersect), Intersect);
-                //    Make(ExceptOperatorHelper, type0, type1, nameof(Except), Except);
-                //}
+                foreach (var type1 in Enumerables)
+                {
+                    Make(IntersectOperatorHelper, type0, type1, nameof(Intersect), Intersect);
+                    Make(ExceptOperatorHelper, type0, type1, nameof(Except), Except);
+                }
             }
         }
 
