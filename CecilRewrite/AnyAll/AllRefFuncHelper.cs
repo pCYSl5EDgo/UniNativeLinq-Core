@@ -1,0 +1,110 @@
+﻿using System;
+using System.Linq;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
+using Mono.Cecil.Rocks;
+
+namespace CecilRewrite
+{
+    using static Program;
+    static class AllRefFuncHelper
+    {
+        private const string NameSpace = "UniNativeLinq";
+
+        internal static void Create(ModuleDefinition module)
+        {
+            var @static = new TypeDefinition(NameSpace, nameof(AllRefFuncHelper), StaticExtensionClassTypeAttributes, module.TypeSystem.Object);
+            @static.CustomAttributes.Add(ExtensionAttribute);
+            module.Types.Add(@static);
+            foreach (var type in module.Types.Where(x => x.IsValueType && x.IsPublic && x.HasInterfaces && x.Interfaces.Any(y => y.InterfaceType.Name == "IRefEnumerable`2")))
+            {
+                @static.All(type);
+            }
+        }
+
+        private static void All(this TypeDefinition @static, TypeDefinition type)
+        {
+            var method = new MethodDefinition(nameof(All), StaticMethodAttributes, MainModule.TypeSystem.Boolean)
+            {
+                DeclaringType = @static,
+                AggressiveInlining = true,
+            };
+            method.CustomAttributes.Add(ExtensionAttribute);
+            method.Parameters.Capacity = 1;
+            var argumentsFromTypeToMethodParam = method.FromTypeToMethodParam(type.GenericParameters);
+            var @this = type.MakeGenericInstanceType(argumentsFromTypeToMethodParam);
+
+            var thisParameterDefinition = new ParameterDefinition("this", ParameterAttributes.In, @this.MakeByReferenceType());
+            thisParameterDefinition.CustomAttributes.Add(IsReadOnlyAttribute);
+            method.Parameters.Add(thisParameterDefinition);
+
+            var predicateType = MainModule.GetType(NameSpace, "RefFunc`2").MakeGenericInstanceType(new[]
+            {
+                @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters),
+                MainModule.TypeSystem.Boolean
+            });
+            var predicateParameterDefinition = new ParameterDefinition("predicate", ParameterAttributes.None, predicateType);
+            method.Parameters.Add(predicateParameterDefinition);
+
+            var body = method.Body;
+
+            var typeReferenceEnumerator = (GenericInstanceType)@this.GetEnumeratorTypeOfCollectionType().Replace(method.GenericParameters);
+            var typeReferenceElement = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters);
+
+            var variables = body.Variables;
+            variables.Add(new VariableDefinition(typeReferenceEnumerator));
+            variables.Add(new VariableDefinition(typeReferenceElement.MakeByReferenceType()));
+            variables.Add(new VariableDefinition(MainModule.TypeSystem.Boolean));
+
+            var il001D = Instruction.Create(OpCodes.Ldarg_1);
+            var il0034 = Instruction.Create(OpCodes.Ldloca_S, variables[0]);
+            var il004A = Instruction.Create(OpCodes.Ldarg_1);
+
+            var processor = body.GetILProcessor();
+            processor.Do(OpCodes.Ldarg_0);
+            processor.Call(@this.FindMethod("GetEnumerator", Helper.NoParameter));
+            processor.Do(OpCodes.Stloc_0);
+            processor.LdLocaS(0);
+            processor.LdLocaS(2);
+            var TryGetNext = typeReferenceEnumerator.FindMethod("TryGetNext");
+            processor.Call(TryGetNext);
+            processor.Do(OpCodes.Stloc_1);
+            processor.Do(OpCodes.Ldloc_2);
+            processor.True(il001D);
+            processor.LdLocaS(0);
+            var Dispose = typeReferenceEnumerator.FindMethod("Dispose");
+            processor.Call(Dispose);
+            processor.Do(OpCodes.Ldc_I4_1);
+            processor.Do(OpCodes.Ret);
+            processor.Append(il001D);
+            processor.Do(OpCodes.Ldloc_1);
+            var methodReferenceFuncInvoke = predicateType.FindMethod("Invoke");
+            processor.CallVirtual(methodReferenceFuncInvoke);
+            processor.True(il0034);
+            processor.LdLocaS(0);
+            processor.Call(Dispose);
+            processor.Do(OpCodes.Ldc_I4_0);
+            processor.Do(OpCodes.Ret);
+            processor.Append(il0034);
+            processor.LdLocaS(2);
+            processor.Call(TryGetNext);
+            processor.Do(OpCodes.Stloc_1);
+            processor.Do(OpCodes.Ldloc_2);
+            processor.True(il004A);
+            processor.LdLocaS(0);
+            processor.Call(Dispose);
+            processor.Do(OpCodes.Ldc_I4_1);
+            processor.Do(OpCodes.Ret);
+            processor.Append(il004A);
+            processor.Do(OpCodes.Ldloc_1);
+            processor.CallVirtual(methodReferenceFuncInvoke);
+            processor.True(il0034);
+            processor.LdLocaS(0);
+            processor.Call(Dispose);
+            processor.Do(OpCodes.Ldc_I4_0);
+            processor.Do(OpCodes.Ret);
+
+            @static.Methods.Add(method);
+        }
+    }
+}
