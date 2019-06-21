@@ -167,7 +167,7 @@ namespace CecilRewrite
             }));
             method.GenericParameters.Add(TSelector);
 
-            @return = MainModule.GetType(NameSpace, "GroupJoinEnumerable`12").MakeGenericInstanceType(new[]
+            @return = MainModule.GetType(NameSpace, "JoinEnumerable`12").MakeGenericInstanceType(new[]
             {
                 Enumerable0,
                 Enumerator0,
