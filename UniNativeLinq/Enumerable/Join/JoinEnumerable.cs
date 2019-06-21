@@ -9,8 +9,8 @@ namespace UniNativeLinq
 {
     [SlowCount]
     public readonly unsafe struct
-        JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, T, TSelector, TKeyEqualityComparer>
-        : IRefEnumerable<JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, T, TSelector, TKeyEqualityComparer>.Enumerator, T>
+        JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TKeyEqualityComparer, T, TSelector>
+        : IRefEnumerable<JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TKeyEqualityComparer, T, TSelector>.Enumerator, T>
         where TOuterSource : unmanaged
         where TInnerSource : unmanaged
         where TOuterEnumerator : struct, IRefEnumerator<TOuterSource>
@@ -32,7 +32,7 @@ namespace UniNativeLinq
         private readonly TSelector sourceSelector;
         private readonly Allocator alloc;
 
-        public JoinEnumerable(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TSelector sourceSelector, in TKeyEqualityComparer equalityComparer, Allocator allocator)
+        public JoinEnumerable(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TKeyEqualityComparer equalityComparer, in TSelector sourceSelector, Allocator allocator)
         {
             this.outerEnumerable = outerEnumerable;
             this.innerEnumerable = innerEnumerable;

@@ -111,6 +111,10 @@ namespace CecilRewrite
             //GroupJoinDefaultEqualityComparerFuncHelper.Create(MainModule);
             //GroupJoinOperatorHelper.Create(MainModule);
             //GroupJoinFuncHelper.Create(MainModule);
+            //JoinDefaultEqualityComparerOperatorHelper.Create(MainModule);
+            //JoinDefaultEqualityComparerFuncHelper.Create(MainModule);
+            //JoinOperatorHelper.Create(MainModule);
+            //JoinFuncHelper.Create(MainModule);
 
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
