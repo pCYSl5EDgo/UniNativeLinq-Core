@@ -20,13 +20,13 @@ namespace UniNativeLinq
     {
         private readonly TFirstEnumerable firstCollection;
         private readonly TSecondEnumerable secondCollection;
-        private readonly TAction acts;
+        private readonly TAction action;
 
-        public AdjustedZipEnumerable(in TFirstEnumerable firstCollection, in TSecondEnumerable secondCollection, in TAction acts)
+        public AdjustedZipEnumerable(in TFirstEnumerable firstCollection, in TSecondEnumerable secondCollection, in TAction action)
         {
             this.firstCollection = firstCollection;
             this.secondCollection = secondCollection;
-            this.acts = acts;
+            this.action = action;
         }
 
         [LocalRefReturn]
@@ -121,7 +121,7 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(firstCollection.GetEnumerator(), secondCollection.GetEnumerator(), acts);
+        public readonly Enumerator GetEnumerator() => new Enumerator(firstCollection.GetEnumerator(), secondCollection.GetEnumerator(), action);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
