@@ -38,15 +38,15 @@ namespace CecilRewrite
                 @static.Methods.Add(method);
             }
             WithType(@static, type, MainModule.TypeSystem.Byte);
-            //WithType(@static, type, MainModule.TypeSystem.SByte);
-            //WithType(@static, type, MainModule.TypeSystem.Int16);
-            //WithType(@static, type, MainModule.TypeSystem.UInt16);
-            //WithType(@static, type, MainModule.TypeSystem.Int32);
-            //WithType(@static, type, MainModule.TypeSystem.UInt32);
-            //WithType(@static, type, MainModule.TypeSystem.Int64);
-            //WithType(@static, type, MainModule.TypeSystem.UInt64);
-            //WithType(@static, type, MainModule.TypeSystem.Single);
-            //WithType(@static, type, MainModule.TypeSystem.Double);
+            WithType(@static, type, MainModule.TypeSystem.SByte);
+            WithType(@static, type, MainModule.TypeSystem.Int16);
+            WithType(@static, type, MainModule.TypeSystem.UInt16);
+            WithType(@static, type, MainModule.TypeSystem.Int32);
+            WithType(@static, type, MainModule.TypeSystem.UInt32);
+            WithType(@static, type, MainModule.TypeSystem.Int64);
+            WithType(@static, type, MainModule.TypeSystem.UInt64);
+            WithType(@static, type, MainModule.TypeSystem.Single);
+            WithType(@static, type, MainModule.TypeSystem.Double);
         }
 
         private static void TryGetMinMethodFillTypeArgument(this MethodDefinition method, TypeDefinition collectionTypeDefinition, TypeReference fillTypeReference)

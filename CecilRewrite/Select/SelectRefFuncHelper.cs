@@ -8,12 +8,12 @@ using Mono.Cecil.Rocks;
 namespace CecilRewrite
 {
     using static Program;
-    static class SelectFuncHelper
+    static class SelectRefFuncHelper
     {
         internal static void Create(ModuleDefinition module)
         {
             var @static = new TypeDefinition(NameSpace,
-                nameof(SelectFuncHelper),
+                nameof(SelectRefFuncHelper),
                 StaticExtensionClassTypeAttributes, module.TypeSystem.Object);
             @static.CustomAttributes.Add(ExtensionAttribute);
             module.Types.Add(@static);
@@ -45,7 +45,7 @@ namespace CecilRewrite
             T.CustomAttributes.Add(UnManagedAttribute);
             method.GenericParameters.Add(T);
 
-            var TAction = MainModule.GetType(NameSpace, "DelegateFuncToStructOperatorAction`2").MakeGenericInstanceType(new[]
+            var TAction = MainModule.GetType(NameSpace, "DelegateRefActionToStructOperatorAction`2").MakeGenericInstanceType(new[]
             {
                 Element,
                 T,
@@ -65,7 +65,7 @@ namespace CecilRewrite
             thisParam.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(thisParam);
 
-            var Func = MainModule.ImportReference(SystemModule.GetType("System", "Func`2")).MakeGenericInstanceType(new[]
+            var Func = MainModule.GetType(NameSpace, "RefAction`2").MakeGenericInstanceType(new[]
             {
                 Element,
                 T,

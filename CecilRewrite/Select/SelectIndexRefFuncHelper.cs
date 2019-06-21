@@ -8,26 +8,26 @@ using Mono.Cecil.Rocks;
 namespace CecilRewrite
 {
     using static Program;
-    static class SelectFuncHelper
+    static class SelectIndexRefFuncHelper
     {
         internal static void Create(ModuleDefinition module)
         {
             var @static = new TypeDefinition(NameSpace,
-                nameof(SelectFuncHelper),
+                nameof(SelectIndexRefFuncHelper),
                 StaticExtensionClassTypeAttributes, module.TypeSystem.Object);
             @static.CustomAttributes.Add(ExtensionAttribute);
             module.Types.Add(@static);
 
             foreach (var type in module.Types.Where(x => x.IsValueType && x.IsPublic && x.HasInterfaces && x.Interfaces.Any(y => y.InterfaceType.Name == "IRefEnumerable`2")))
             {
-                Select(@static, type);
+                SelectIndex(@static, type);
             }
         }
 
-        private static void Select(TypeDefinition @static, TypeDefinition type)
+        private static void SelectIndex(TypeDefinition @static, TypeDefinition type)
         {
             var MainModule = @static.Module;
-            var method = new MethodDefinition(nameof(Select), StaticMethodAttributes, MainModule.TypeSystem.Boolean)
+            var method = new MethodDefinition(nameof(SelectIndex), StaticMethodAttributes, MainModule.TypeSystem.Boolean)
             {
                 DeclaringType = @static,
                 AggressiveInlining = true,
@@ -45,13 +45,13 @@ namespace CecilRewrite
             T.CustomAttributes.Add(UnManagedAttribute);
             method.GenericParameters.Add(T);
 
-            var TAction = MainModule.GetType(NameSpace, "DelegateFuncToStructOperatorAction`2").MakeGenericInstanceType(new[]
+            var TAction = MainModule.GetType(NameSpace, "DelegateRefFuncToSelectIndexStructOperator`2").MakeGenericInstanceType(new[]
             {
                 Element,
                 T,
             });
 
-            var @return = MainModule.GetType(NameSpace, "SelectEnumerable`5").MakeGenericInstanceType(new[]
+            var @return = MainModule.GetType(NameSpace, "SelectIndexEnumerable`5").MakeGenericInstanceType(new[]
             {
                 @this,
                 Enumerator,
@@ -65,7 +65,7 @@ namespace CecilRewrite
             thisParam.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(thisParam);
 
-            var Func = MainModule.ImportReference(SystemModule.GetType("System", "Func`2")).MakeGenericInstanceType(new[]
+            var Func = MainModule.GetType(NameSpace, "RefSelectIndex`2").MakeGenericInstanceType(new[]
             {
                 Element,
                 T,

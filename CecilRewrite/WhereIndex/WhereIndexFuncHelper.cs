@@ -8,12 +8,12 @@ using Mono.Cecil.Rocks;
 namespace CecilRewrite
 {
     using static Program;
-    static class WhereIndexFunctionHelper
+    static class WhereIndexFuncHelper
     {
         internal static void Create(ModuleDefinition module)
         {
             var @static = new TypeDefinition(NameSpace,
-                nameof(WhereIndexFunctionHelper),
+                nameof(WhereIndexFuncHelper),
                 StaticExtensionClassTypeAttributes, module.TypeSystem.Object);
             @static.CustomAttributes.Add(ExtensionAttribute);
             module.Types.Add(@static);
@@ -73,7 +73,6 @@ namespace CecilRewrite
             var processor = method.Body.GetILProcessor();
             processor.Do(OpCodes.Ldarg_0);
             processor.Do(OpCodes.Ldarg_1);
-            processor.NewObj(TPredicate0.FindMethod(".ctor"));
             processor.Do(OpCodes.Stloc_0);
             processor.LdLocaS(0);
             processor.NewObj(@return.FindMethod(".ctor"));

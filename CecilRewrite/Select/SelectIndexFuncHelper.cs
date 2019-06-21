@@ -45,7 +45,7 @@ namespace CecilRewrite
             T.CustomAttributes.Add(UnManagedAttribute);
             method.GenericParameters.Add(T);
 
-            var TAction = MainModule.GetType(NameSpace, "DefaultSelectIndexDelegate`2").MakeGenericInstanceType(new[]
+            var TAction = MainModule.GetType(NameSpace, "DelegateFuncToSelectIndexStructOperator`2").MakeGenericInstanceType(new[]
             {
                 Element,
                 T,
@@ -81,7 +81,6 @@ namespace CecilRewrite
             processor.Do(OpCodes.Ldarg_0);
             processor.LdLocaS(0);
             processor.Do(OpCodes.Ldarg_1);
-            processor.NewObj(TAction.FindMethod(".ctor"));
             processor.Append(Instruction.Create(OpCodes.Stloc_0));
             processor.NewObj(@return.FindMethod(".ctor"));
             processor.Ret();

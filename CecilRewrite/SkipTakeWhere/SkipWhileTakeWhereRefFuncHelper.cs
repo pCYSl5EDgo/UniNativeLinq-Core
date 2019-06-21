@@ -9,12 +9,12 @@ using Mono.Cecil.Rocks;
 namespace CecilRewrite
 {
     using static Program;
-    static class SkipTakeWhileWhereFuncHelper
+    static class SkipTakeWhileWhereRefFuncHelper
     {
         internal static void Create(ModuleDefinition module)
         {
             TypeDefinition Where;
-            var suffix = "FuncHelper";
+            var suffix = "RefFuncHelper";
             Where = new TypeDefinition(NameSpace,
                 nameof(Where) + suffix,
                 StaticExtensionClassTypeAttributes, module.TypeSystem.Object);
@@ -60,12 +60,12 @@ namespace CecilRewrite
             var Enumerator = @this.GetEnumeratorTypeOfCollectionType().Replace(method.GenericParameters);
 
             var typeSystemBoolean = MainModule.TypeSystem.Boolean;
-            var OperatorFunc = MainModule.GetType(NameSpace, "DelegateFuncToStructOperatorFunc`2").MakeGenericInstanceType(new[]
+            var OperatorFunc = MainModule.GetType(NameSpace, "DelegateRefFuncToStructOperatorFunc`2").MakeGenericInstanceType(new[]
             {
                 Element,
                 typeSystemBoolean
             });
-            var Func = MainModule.ImportReference(SystemModule.GetType("System", "Func`2")).MakeGenericInstanceType(Element, typeSystemBoolean);
+            var Func = MainModule.GetType(NameSpace, "RefFunc`2").MakeGenericInstanceType(Element, typeSystemBoolean);
 
             var @return = MainModule.GetType(NameSpace, name + "Enumerable`4").MakeGenericInstanceType(new[]
             {

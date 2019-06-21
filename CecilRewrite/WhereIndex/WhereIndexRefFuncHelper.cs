@@ -8,56 +8,54 @@ using Mono.Cecil.Rocks;
 namespace CecilRewrite
 {
     using static Program;
-    static class SelectFuncHelper
+    static class WhereIndexRefFuncHelper
     {
         internal static void Create(ModuleDefinition module)
         {
             var @static = new TypeDefinition(NameSpace,
-                nameof(SelectFuncHelper),
+                nameof(WhereIndexRefFuncHelper),
                 StaticExtensionClassTypeAttributes, module.TypeSystem.Object);
             @static.CustomAttributes.Add(ExtensionAttribute);
             module.Types.Add(@static);
 
             foreach (var type in module.Types.Where(x => x.IsValueType && x.IsPublic && x.HasInterfaces && x.Interfaces.Any(y => y.InterfaceType.Name == "IRefEnumerable`2")))
             {
-                Select(@static, type);
+                WhereIndex(@static, type);
             }
         }
 
-        private static void Select(TypeDefinition @static, TypeDefinition type)
+        private static void WhereIndex(TypeDefinition @static, TypeDefinition type)
         {
             var MainModule = @static.Module;
-            var method = new MethodDefinition(nameof(Select), StaticMethodAttributes, MainModule.TypeSystem.Boolean)
+            var method = new MethodDefinition(nameof(WhereIndex), StaticMethodAttributes, MainModule.TypeSystem.Boolean)
             {
                 DeclaringType = @static,
                 AggressiveInlining = true,
             };
             method.CustomAttributes.Add(ExtensionAttribute);
 
-            const string suffix = "00";
-            var added = method.FromTypeToMethodParam(type.GenericParameters, suffix);
+            var added = method.FromTypeToMethodParam(type.GenericParameters);
             var @this = type.MakeGenericInstanceType(added);
 
-            var Element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters, suffix);
-            var Enumerator = @this.GetEnumeratorTypeOfCollectionType().Replace(method.GenericParameters, suffix);
+            var Element = @this.GetElementTypeOfCollectionType().Replace(method.GenericParameters);
+            var Enumerator = @this.GetEnumeratorTypeOfCollectionType().Replace(method.GenericParameters);
 
-            var T = new GenericParameter("T", method) { HasNotNullableValueTypeConstraint = true };
-            T.CustomAttributes.Add(UnManagedAttribute);
-            method.GenericParameters.Add(T);
-
-            var TAction = MainModule.GetType(NameSpace, "DelegateFuncToStructOperatorAction`2").MakeGenericInstanceType(new[]
+            var Func = MainModule.GetType(NameSpace, "RefWhereIndex`1").MakeGenericInstanceType(new[]
             {
                 Element,
-                T,
             });
 
-            var @return = MainModule.GetType(NameSpace, "SelectEnumerable`5").MakeGenericInstanceType(new[]
+            var TPredicate0 = MainModule.GetType(NameSpace, "DelegateRefFuncToWhereIndexStructOperator`1").MakeGenericInstanceType(new[]
+            {
+                Element
+            });
+
+            var @return = MainModule.GetType(NameSpace, "WhereIndexEnumerable`4").MakeGenericInstanceType(new[]
             {
                 @this,
                 Enumerator,
                 Element,
-                T,
-                TAction,
+                TPredicate0,
             });
             method.ReturnType = @return;
 
@@ -65,22 +63,16 @@ namespace CecilRewrite
             thisParam.CustomAttributes.Add(IsReadOnlyAttribute);
             method.Parameters.Add(thisParam);
 
-            var Func = MainModule.ImportReference(SystemModule.GetType("System", "Func`2")).MakeGenericInstanceType(new[]
-            {
-                Element,
-                T,
-            });
-
             var funcParam = new ParameterDefinition("func", ParameterAttributes.None, Func);
             method.Parameters.Add(funcParam);
 
-            method.Body.Variables.Add(new VariableDefinition(TAction));
+            method.Body.Variables.Add(new VariableDefinition(TPredicate0));
 
             var processor = method.Body.GetILProcessor();
             processor.Do(OpCodes.Ldarg_0);
-            processor.LdLocaS(0);
             processor.Do(OpCodes.Ldarg_1);
-            processor.Append(Instruction.Create(OpCodes.Stloc_0));
+            processor.Do(OpCodes.Stloc_0);
+            processor.LdLocaS(0);
             processor.NewObj(@return.FindMethod(".ctor"));
             processor.Ret();
 
