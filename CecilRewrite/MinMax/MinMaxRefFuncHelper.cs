@@ -100,7 +100,7 @@ namespace CecilRewrite
                 number
             });
 
-            var @return = MainModule.GetType(NameSpace, name + "Enumerable" + number.Name + "`4").MakeGenericInstanceType(new[]
+            var @return = MainModule.GetType(NameSpace, name + number.Name + "Enumerable`4").MakeGenericInstanceType(new[]
             {
                 @this,
                 Enumerator,

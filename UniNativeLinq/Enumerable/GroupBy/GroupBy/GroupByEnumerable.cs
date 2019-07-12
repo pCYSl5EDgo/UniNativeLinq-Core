@@ -8,9 +8,10 @@ using Unity.Collections.LowLevel.Unsafe;
 namespace UniNativeLinq
 {
     [SlowCount]
+    [PseudoIsReadOnly]
     public unsafe struct
         GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeyFunc, TElement, TElementFunc, TEqualityComparer>
-        : IRefEnumerable<GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeyFunc, TElement, TElementFunc, TEqualityComparer>.Enumerator, Grouping<TKey, TElement>>
+        : IRefEnumerable<GroupByEnumerable<TEnumerable, TEnumerator, T, TKey, TKeyFunc, TElement, TElementFunc, TEqualityComparer>.Enumerator, GroupingEnumerable<TKey, TElement>>
         where T : unmanaged
         where TKey : unmanaged
         where TElement : unmanaged
@@ -20,7 +21,7 @@ namespace UniNativeLinq
         where TElementFunc : struct, IRefAction<T, TElement>
         where TEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
     {
-        private TEnumerable enumerable;
+        [PseudoIsReadOnly] private TEnumerable enumerable;
         private readonly TKeyFunc keySelector;
         private readonly TElementFunc elementSelector;
         private readonly TEqualityComparer equalityComparer;
@@ -38,9 +39,9 @@ namespace UniNativeLinq
         }
 
         public struct Enumerator
-            : IRefEnumerator<Grouping<TKey, TElement>>
+            : IRefEnumerator<GroupingEnumerable<TKey, TElement>>
         {
-            internal Grouping<TKey, TElement>* Groups;
+            internal GroupingEnumerable<TKey, TElement>* Groups;
             internal long Count;
             private long index;
             private readonly Allocator allocator;
@@ -60,7 +61,7 @@ namespace UniNativeLinq
                     return;
                 }
                 var capacity = INITIAL_CAPACITY;
-                Groups = UnsafeUtilityEx.Malloc<Grouping<TKey, TElement>>(capacity, allocator);
+                Groups = UnsafeUtilityEx.Malloc<GroupingEnumerable<TKey, TElement>>(capacity, allocator);
                 var capacities = UnsafeUtilityEx.Malloc<long>(capacity, Allocator.Temp);
                 var enumerator = enumerable.GetEnumerator();
                 EnumerateAndSort(ref capacity, ref enumerator, ref capacities, ref keySelector, ref elementSelector, ref equalityComparer);
@@ -86,7 +87,7 @@ namespace UniNativeLinq
                 }
             }
 
-            private void InsertTo(ref Grouping<TKey, TElement> group, ref long capa, ref T current, ref TElementFunc elementSelector)
+            private void InsertTo(ref GroupingEnumerable<TKey, TElement> group, ref long capa, ref T current, ref TElementFunc elementSelector)
             {
                 if (capa == group.Length)
                 {
@@ -96,7 +97,7 @@ namespace UniNativeLinq
                 elementSelector.Execute(ref current, ref group.Elements[group.Length++]);
             }
 
-            private void AllocGroup(in TKey key, ref Grouping<TKey, TElement> group, ref long capacity)
+            private void AllocGroup(in TKey key, ref GroupingEnumerable<TKey, TElement> group, ref long capacity)
             {
                 group.Key = key;
                 group.Allocator = allocator;
@@ -121,8 +122,8 @@ namespace UniNativeLinq
                 capacity <<= 1;
             }
 
-            public ref Grouping<TKey, TElement> Current => ref Groups[index];
-            Grouping<TKey, TElement> IEnumerator<Grouping<TKey, TElement>>.Current => Current;
+            public ref GroupingEnumerable<TKey, TElement> Current => ref Groups[index];
+            GroupingEnumerable<TKey, TElement> IEnumerator<GroupingEnumerable<TKey, TElement>>.Current => Current;
             object IEnumerator.Current => Current;
 
             public void Dispose()
@@ -146,16 +147,16 @@ namespace UniNativeLinq
 
             public void Reset() => index = -1;
 
-            public ref Grouping<TKey, TElement> TryGetNext(out bool success)
+            public ref GroupingEnumerable<TKey, TElement> TryGetNext(out bool success)
             {
                 success = ++index < Count;
                 if (success)
                     return ref Groups[index];
                 index = Count;
-                return ref Pseudo.AsRefNull<Grouping<TKey, TElement>>();
+                return ref Pseudo.AsRefNull<GroupingEnumerable<TKey, TElement>>();
             }
 
-            public bool TryMoveNext(out Grouping<TKey, TElement> value)
+            public bool TryMoveNext(out GroupingEnumerable<TKey, TElement> value)
             {
                 if (++index < Count)
                 {
@@ -176,7 +177,7 @@ namespace UniNativeLinq
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<Grouping<TKey, TElement>> IEnumerable<Grouping<TKey, TElement>>.GetEnumerator() => GetEnumerator();
+        readonly IEnumerator<GroupingEnumerable<TKey, TElement>> IEnumerable<GroupingEnumerable<TKey, TElement>>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -213,7 +214,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(Grouping<TKey, TElement>* dest)
+        public readonly void CopyTo(GroupingEnumerable<TKey, TElement>* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -222,30 +223,30 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly Grouping<TKey, TElement>[] ToArray()
+        public readonly GroupingEnumerable<TKey, TElement>[] ToArray()
         {
             var count = LongCount();
-            if (count == 0) return Array.Empty<Grouping<TKey, TElement>>();
-            var answer = new Grouping<TKey, TElement>[count];
+            if (count == 0) return Array.Empty<GroupingEnumerable<TKey, TElement>>();
+            var answer = new GroupingEnumerable<TKey, TElement>[count];
             CopyTo(Pseudo.AsPointer(ref answer[0]));
             return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<Grouping<TKey, TElement>> ToNativeEnumerable(Allocator allocator)
+        public readonly NativeEnumerable<GroupingEnumerable<TKey, TElement>> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
-            var ptr = UnsafeUtilityEx.Malloc<Grouping<TKey, TElement>>(count, allocator);
+            var ptr = UnsafeUtilityEx.Malloc<GroupingEnumerable<TKey, TElement>>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<Grouping<TKey, TElement>>(ptr, count);
+            return new NativeEnumerable<GroupingEnumerable<TKey, TElement>>(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<Grouping<TKey, TElement>> ToNativeArray(Allocator allocator)
+        public readonly NativeArray<GroupingEnumerable<TKey, TElement>> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
-            var answer = new NativeArray<Grouping<TKey, TElement>>(count, allocator, NativeArrayOptions.UninitializedMemory);
+            var answer = new NativeArray<GroupingEnumerable<TKey, TElement>>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(UnsafeUtilityEx.GetPointer(answer));
             return answer;
         }

@@ -8,8 +8,8 @@ namespace UniNativeLinq
 {
     [PseudoIsReadOnly]
     public unsafe struct
-        MaxByEnumerableUInt64<TEnumerable, TEnumerator, T, TKeySelector>
-        : IRefEnumerable<MaxByEnumerableUInt64<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
+        MaxByUInt64Enumerable<TEnumerable, TEnumerator, T, TKeySelector>
+        : IRefEnumerable<MaxByUInt64Enumerable<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
         where T : unmanaged
         where TKeySelector : struct, IRefFunc<T, ulong>
         where TEnumerator : struct, IRefEnumerator<T>
@@ -19,7 +19,7 @@ namespace UniNativeLinq
         [PseudoIsReadOnly] private TKeySelector keySelector;
         private readonly Allocator alloc;
 
-        public MaxByEnumerableUInt64(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
+        public MaxByUInt64Enumerable(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
         {
             this.enumerable = enumerable;
             this.keySelector = keySelector;

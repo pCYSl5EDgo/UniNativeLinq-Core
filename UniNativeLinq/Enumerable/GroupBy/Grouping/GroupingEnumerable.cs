@@ -9,8 +9,8 @@ namespace UniNativeLinq
 {
     [SlowCount]
     public unsafe struct
-        Grouping<TKey, T>
-        : IRefEnumerable<Grouping<TKey, T>.Enumerator, T>, IDisposable
+        GroupingEnumerable<TKey, T>
+        : IRefEnumerable<GroupingEnumerable<TKey, T>.Enumerator, T>, IDisposable
         where TKey : unmanaged
         where T : unmanaged
     {
@@ -19,7 +19,7 @@ namespace UniNativeLinq
         public long Length;
         public Allocator Allocator;
 
-        public Grouping(in TKey key, T* elements, long length, Allocator allocator)
+        public GroupingEnumerable(in TKey key, T* elements, long length, Allocator allocator)
         {
             Key = key;
             Elements = elements;
@@ -27,7 +27,7 @@ namespace UniNativeLinq
             Allocator = allocator;
         }
 
-        public Grouping(in TKey key, in NativeEnumerable<T> elements, Allocator allocator)
+        public GroupingEnumerable(in TKey key, in NativeEnumerable<T> elements, Allocator allocator)
         {
             Key = key;
             Elements = elements.Ptr;
@@ -41,7 +41,7 @@ namespace UniNativeLinq
             private readonly long count;
             private long index;
 
-            public Enumerator(in Grouping<TKey, T> parent)
+            public Enumerator(in GroupingEnumerable<TKey, T> parent)
             {
                 if (parent.Elements != null && parent.Length > 0)
                 {

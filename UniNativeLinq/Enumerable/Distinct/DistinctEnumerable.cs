@@ -8,6 +8,7 @@ using Unity.Collections.LowLevel.Unsafe;
 namespace UniNativeLinq
 {
     [SlowCount]
+    [PseudoIsReadOnly]
     public unsafe struct
         DistinctEnumerable<TEnumerable, TEnumerator, T, TEqualityComparer, TGetHashCodeFunc>
         : IRefEnumerable<DistinctEnumerable<TEnumerable, TEnumerator, T, TEqualityComparer, TGetHashCodeFunc>.Enumerator, T>
@@ -17,7 +18,7 @@ namespace UniNativeLinq
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
-        private TEnumerable enumerable;
+        [PseudoIsReadOnly] private TEnumerable enumerable;
         private readonly TEqualityComparer equalityComparer;
         private readonly TGetHashCodeFunc getHashCodeFunc;
         private readonly Allocator alloc;

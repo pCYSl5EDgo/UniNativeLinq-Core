@@ -30,7 +30,7 @@ namespace UniNativeLinq
             this.firstEnumerable = firstEnumerable;
             this.secondEnumerable = secondEnumerable;
             this.setOperation = setOperation;
-            this.alloc = allocator;
+            alloc = allocator;
         }
 
         public struct Enumerator : IRefEnumerator<T>

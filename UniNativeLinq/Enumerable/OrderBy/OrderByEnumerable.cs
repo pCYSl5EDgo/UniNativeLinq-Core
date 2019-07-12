@@ -8,6 +8,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
+    [PseudoIsReadOnly]
     public unsafe struct
         OrderByEnumerable<TEnumerable, TEnumerator, T, TComparer>
         : IRefOrderedEnumerable<
@@ -21,7 +22,7 @@ namespace UniNativeLinq
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
         where TComparer : struct, IRefFunc<T, T, int>
     {
-        private TEnumerable enumerable;
+        [PseudoIsReadOnly] private TEnumerable enumerable;
         private readonly TComparer orderComparer;
         private readonly Allocator alloc;
 

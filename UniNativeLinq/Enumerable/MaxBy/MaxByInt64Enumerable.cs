@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -8,10 +9,10 @@ namespace UniNativeLinq
 {
     [PseudoIsReadOnly]
     public unsafe struct
-        MinByEnumerableSingle<TEnumerable, TEnumerator, T, TKeySelector>
-        : IRefEnumerable<MinByEnumerableSingle<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
+        MaxByInt64Enumerable<TEnumerable, TEnumerator, T, TKeySelector>
+        : IRefEnumerable<MaxByInt64Enumerable<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
         where T : unmanaged
-        where TKeySelector : struct, IRefFunc<T, float>
+        where TKeySelector : struct, IRefFunc<T, long>
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
@@ -19,7 +20,7 @@ namespace UniNativeLinq
         [PseudoIsReadOnly] private TKeySelector keySelector;
         private readonly Allocator alloc;
 
-        public MinByEnumerableSingle(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
+        public MaxByInt64Enumerable(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
         {
             this.enumerable = enumerable;
             this.keySelector = keySelector;
@@ -60,7 +61,7 @@ namespace UniNativeLinq
                     {
                         list.Add(current);
                     }
-                    else if (value < target)
+                    else if (value > target)
                     {
                         target = value;
                         list.Clear();

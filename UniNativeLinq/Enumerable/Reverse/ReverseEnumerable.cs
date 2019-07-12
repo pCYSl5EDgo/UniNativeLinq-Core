@@ -17,10 +17,10 @@ namespace UniNativeLinq
         internal readonly TEnumerable Enumerable;
         private readonly Allocator alloc;
 
-        public ReverseEnumerable(in TEnumerable enumerable, Allocator alloc)
+        public ReverseEnumerable(in TEnumerable enumerable, Allocator allocator)
         {
             Enumerable = enumerable;
-            this.alloc = alloc;
+            alloc = allocator;
         }
 
         public ReverseEnumerable(NativeEnumerable<T> enumerable)

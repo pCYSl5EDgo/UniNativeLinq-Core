@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
@@ -9,8 +8,8 @@ namespace UniNativeLinq
 {
     [PseudoIsReadOnly]
     public unsafe struct
-        MaxByEnumerableInt32<TEnumerable, TEnumerator, T, TKeySelector>
-        : IRefEnumerable<MaxByEnumerableInt32<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
+        MinByInt32Enumerable<TEnumerable, TEnumerator, T, TKeySelector>
+        : IRefEnumerable<MinByInt32Enumerable<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
         where T : unmanaged
         where TKeySelector : struct, IRefFunc<T, int>
         where TEnumerator : struct, IRefEnumerator<T>
@@ -20,7 +19,7 @@ namespace UniNativeLinq
         [PseudoIsReadOnly] private TKeySelector keySelector;
         private readonly Allocator alloc;
 
-        public MaxByEnumerableInt32(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
+        public MinByInt32Enumerable(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
         {
             this.enumerable = enumerable;
             this.keySelector = keySelector;
@@ -61,7 +60,7 @@ namespace UniNativeLinq
                     {
                         list.Add(current);
                     }
-                    else if (value > target)
+                    else if (value < target)
                     {
                         target = value;
                         list.Clear();
@@ -89,21 +88,16 @@ namespace UniNativeLinq
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Enumerator GetEnumerator() => new Enumerator(ref enumerable, ref keySelector, alloc);
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool CanFastCount() => false;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Any() => enumerable.Any();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Count() => (int)LongCount();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long LongCount()
         {
             var enumerator = GetEnumerator();
@@ -112,7 +106,6 @@ namespace UniNativeLinq
             return count;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T* destination)
         {
             var enumerator = GetEnumerator();
@@ -121,7 +114,6 @@ namespace UniNativeLinq
             enumerator.Dispose();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var enumerator = GetEnumerator();
@@ -139,7 +131,6 @@ namespace UniNativeLinq
             return new NativeEnumerable<T>(ptr, length);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var enumerator = GetEnumerator();
@@ -156,7 +147,6 @@ namespace UniNativeLinq
             return answer;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()
         {
             var enumerator = GetEnumerator();

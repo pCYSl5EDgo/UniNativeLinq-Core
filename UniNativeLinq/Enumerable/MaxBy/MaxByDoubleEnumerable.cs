@@ -8,10 +8,10 @@ namespace UniNativeLinq
 {
     [PseudoIsReadOnly]
     public unsafe struct
-        MinByEnumerableInt32<TEnumerable, TEnumerator, T, TKeySelector>
-        : IRefEnumerable<MinByEnumerableInt32<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
+        MaxByDoubleEnumerable<TEnumerable, TEnumerator, T, TKeySelector>
+        : IRefEnumerable<MaxByDoubleEnumerable<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
         where T : unmanaged
-        where TKeySelector : struct, IRefFunc<T, int>
+        where TKeySelector : struct, IRefFunc<T, double>
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
@@ -19,7 +19,7 @@ namespace UniNativeLinq
         [PseudoIsReadOnly] private TKeySelector keySelector;
         private readonly Allocator alloc;
 
-        public MinByEnumerableInt32(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
+        public MaxByDoubleEnumerable(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
         {
             this.enumerable = enumerable;
             this.keySelector = keySelector;
@@ -60,7 +60,7 @@ namespace UniNativeLinq
                     {
                         list.Add(current);
                     }
-                    else if (value < target)
+                    else if (value > target)
                     {
                         target = value;
                         list.Clear();

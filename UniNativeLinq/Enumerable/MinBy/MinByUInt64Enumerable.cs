@@ -8,10 +8,10 @@ namespace UniNativeLinq
 {
     [PseudoIsReadOnly]
     public unsafe struct
-        MinByEnumerableUInt32<TEnumerable, TEnumerator, T, TKeySelector>
-        : IRefEnumerable<MinByEnumerableUInt32<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
+        MinByUInt64Enumerable<TEnumerable, TEnumerator, T, TKeySelector>
+        : IRefEnumerable<MinByUInt64Enumerable<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
         where T : unmanaged
-        where TKeySelector : struct, IRefFunc<T, uint>
+        where TKeySelector : struct, IRefFunc<T, ulong>
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
@@ -19,7 +19,7 @@ namespace UniNativeLinq
         [PseudoIsReadOnly] private TKeySelector keySelector;
         private readonly Allocator alloc;
 
-        public MinByEnumerableUInt32(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
+        public MinByUInt64Enumerable(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
         {
             this.enumerable = enumerable;
             this.keySelector = keySelector;

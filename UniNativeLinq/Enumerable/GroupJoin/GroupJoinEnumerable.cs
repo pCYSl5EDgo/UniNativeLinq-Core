@@ -35,7 +35,7 @@ namespace UniNativeLinq
         private readonly TOuterEnumerable outerEnumerable;
         private readonly TInnerEnumerable innerEnumerable;
         private readonly TOuterKeySelector outerKeySelector;
-        private readonly TInnerKeySelector InnerKeySelector;
+        private readonly TInnerKeySelector innerKeySelector;
         private readonly TSelector sourceSelector;
         private readonly TKeyEqualityComparer keyEqualityComparer;
         private readonly Allocator alloc;
@@ -45,7 +45,7 @@ namespace UniNativeLinq
             this.outerEnumerable = outerEnumerable;
             this.innerEnumerable = innerEnumerable;
             this.outerKeySelector = outerKeySelector;
-            InnerKeySelector = innerKeySelector;
+            this.innerKeySelector = innerKeySelector;
             this.sourceSelector = sourceSelector;
             this.keyEqualityComparer = keyEqualityComparer;
             alloc = allocator;
@@ -123,7 +123,7 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(outerEnumerable, innerEnumerable, outerKeySelector, InnerKeySelector, sourceSelector, keyEqualityComparer, alloc);
+        public readonly Enumerator GetEnumerator() => new Enumerator(outerEnumerable, innerEnumerable, outerKeySelector, innerKeySelector, sourceSelector, keyEqualityComparer, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
