@@ -23,27 +23,20 @@ namespace UniNativeLinq
             this.allocator = allocator;
         }
 
-        public static
+        public static unsafe
             GroupJoinPredicate<T, TKey, TEqualityComparer>
-            Create<TEnumerable, TEnumerator, TKeySelector>(in TEnumerable enumerable, in TKeySelector selector, in TEqualityComparer comparer, Allocator allocator)
-            where TEnumerator : struct, IRefEnumerator<T>
-            where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
+            Create<TKeySelector>(NativeEnumerable<T> enumerable, TKeySelector selector, in TEqualityComparer comparer, Allocator allocator)
             where TKeySelector : struct, IRefFunc<T, TKey>
-            => new GroupJoinPredicate<T, TKey, TEqualityComparer>(
-                new SelectEnumerable<TEnumerable, TEnumerator, T, TKey, FuncToAction<TKeySelector, T, TKey>>(enumerable, selector).ToNativeEnumerable(allocator),
+        {
+            var ptr = UnsafeUtilityEx.Malloc<TKey>(enumerable.Length, allocator);
+            for (var i = 0L; i < enumerable.Length; i++)
+                ptr[i] = selector.Calc(ref enumerable[i]);
+            return new GroupJoinPredicate<T, TKey, TEqualityComparer>(
+                new NativeEnumerable<TKey>(ptr, enumerable.Length), 
                 comparer,
                 allocator
             );
-
-        public static
-            GroupJoinPredicate<T, TKey, TEqualityComparer>
-            Create<TKeySelector>(in NativeEnumerable<T> enumerable, in TKeySelector selector, in TEqualityComparer comparer, Allocator allocator)
-            where TKeySelector : struct, IRefFunc<T, TKey>
-            => new GroupJoinPredicate<T, TKey, TEqualityComparer>(
-                new SelectEnumerable<NativeEnumerable<T>, NativeEnumerable<T>.Enumerator, T, TKey, FuncToAction<TKeySelector, T, TKey>>(enumerable, selector).ToNativeEnumerable(allocator),
-                comparer,
-                allocator
-            );
+        }
 
         public bool Calc(ref T value, long index) => comparer.Calc(ref Key, ref keys[index]);
 

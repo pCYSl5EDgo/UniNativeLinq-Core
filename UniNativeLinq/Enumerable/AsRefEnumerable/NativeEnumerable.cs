@@ -16,7 +16,7 @@ namespace UniNativeLinq
         public readonly T* Ptr;
         public readonly long Length;
 
-        public readonly ref T this[long index] => ref Ptr[index];
+        public ref T this[long index] => ref Ptr[index];
 
         public NativeEnumerable(NativeArray<T> array)
         {

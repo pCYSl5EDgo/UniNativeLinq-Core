@@ -57,6 +57,13 @@ namespace CecilRewrite
             ReWritePseudoIsReadOnly(MainModule);
             ReWritePseudoUtility(MainModule);
 
+            //DefineHelperMethods();
+
+            Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
+        }
+
+        private static void DefineHelperMethods()
+        {
             TryGetMinHelper.Create(MainModule);
             TryGetMaxHelper.Create(MainModule);
             TryGetMinFuncHelper.Create(MainModule);
@@ -138,8 +145,6 @@ namespace CecilRewrite
             ZipOperatorHelper.Create(MainModule);
             ZipFuncHelper.Create(MainModule);
             ZipRefFuncHelper.Create(MainModule);
-
-            Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
         }
 
         private static void ReWritePseudoUtility(ModuleDefinition module)
