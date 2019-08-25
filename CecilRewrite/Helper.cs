@@ -163,12 +163,12 @@ namespace CecilRewrite
             switch (constraint)
             {
                 case GenericInstanceType genericConstraint:
-                {
-                    var newConstraint = (GenericInstanceType)constraint.Module.ImportReference(new GenericInstanceType(constraint.Resolve()));
-                    foreach (var argument in genericConstraint.GenericArguments)
-                        newConstraint.GenericArguments.Add(argument.Replace(methodGenericParameters, specialName, specialType));
-                    return newConstraint;
-                }
+                    {
+                        var newConstraint = (GenericInstanceType)constraint.Module.ImportReference(new GenericInstanceType(constraint.Resolve()));
+                        foreach (var argument in genericConstraint.GenericArguments)
+                            newConstraint.GenericArguments.Add(argument.Replace(methodGenericParameters, specialName, specialType));
+                        return newConstraint;
+                    }
                 case GenericParameter genericParameter when genericParameter.Name == specialName:
                     return specialType;
                 case GenericParameter genericParameter:
@@ -227,12 +227,12 @@ namespace CecilRewrite
             switch (constraint)
             {
                 case GenericInstanceType genericConstraint:
-                {
-                    var newConstraint = (GenericInstanceType)constraint.Module.ImportReference(new GenericInstanceType(constraint.Resolve()));
-                    foreach (var argument in genericConstraint.GenericArguments)
-                        newConstraint.GenericArguments.Add(argument.Replace(methodGenericParameters));
-                    return newConstraint;
-                }
+                    {
+                        var newConstraint = (GenericInstanceType)constraint.Module.ImportReference(new GenericInstanceType(constraint.Resolve()));
+                        foreach (var argument in genericConstraint.GenericArguments)
+                            newConstraint.GenericArguments.Add(argument.Replace(methodGenericParameters));
+                        return newConstraint;
+                    }
                 case GenericParameter genericParameter:
                     var singleOrDefault = methodGenericParameters.SingleOrDefault(x => x.Name == genericParameter.Name);
                     switch (singleOrDefault)
@@ -252,12 +252,12 @@ namespace CecilRewrite
             switch (constraint)
             {
                 case GenericInstanceType genericConstraint:
-                {
-                    var newConstraint = (GenericInstanceType)constraint.Module.ImportReference(new GenericInstanceType(constraint.Resolve()));
-                    foreach (var argument in genericConstraint.GenericArguments)
-                        newConstraint.GenericArguments.Add(argument.Replace(methodGenericParameters, suffix));
-                    return newConstraint;
-                }
+                    {
+                        var newConstraint = (GenericInstanceType)constraint.Module.ImportReference(new GenericInstanceType(constraint.Resolve()));
+                        foreach (var argument in genericConstraint.GenericArguments)
+                            newConstraint.GenericArguments.Add(argument.Replace(methodGenericParameters, suffix));
+                        return newConstraint;
+                    }
                 case GenericParameter genericParameter:
                     var singleOrDefault = methodGenericParameters.SingleOrDefault(x => x.Name == genericParameter.Name + suffix);
                     switch (singleOrDefault)

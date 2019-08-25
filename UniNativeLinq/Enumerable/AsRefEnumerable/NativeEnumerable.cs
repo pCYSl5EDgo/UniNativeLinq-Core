@@ -13,8 +13,8 @@ namespace UniNativeLinq
         : IRefEnumerable<NativeEnumerable<T>.Enumerator, T>
         where T : unmanaged
     {
-        public readonly T* Ptr;
-        public readonly long Length;
+        public T* Ptr;
+        public long Length;
 
         public ref T this[long index] => ref Ptr[index];
 
@@ -32,37 +32,40 @@ namespace UniNativeLinq
             }
         }
 
-        public NativeEnumerable(NativeArray<T> array, long offset, long length)
+        public static NativeEnumerable<T> Create(NativeArray<T> array, long offset, long length)
         {
+            NativeEnumerable<T> answer = default;
             if (array.IsCreated && length > 0)
             {
                 if (offset >= 0)
                 {
-                    Ptr = array.GetPointer() + offset;
-                    Length = length;
+                    answer.Ptr = array.GetPointer() + offset;
+                    answer.Length = length;
                 }
                 else
                 {
-                    Ptr = array.GetPointer();
-                    Length = length + offset;
+                    answer.Ptr = array.GetPointer();
+                    answer.Length = length + offset;
                 }
             }
             else
             {
-                Ptr = null;
-                Length = 0;
+                answer.Ptr = null;
+                answer.Length = 0;
             }
+            return answer;
         }
 
-        public NativeEnumerable(T* ptr, long length)
+        public static NativeEnumerable<T> Create(T* ptr, long length)
         {
             if (length <= 0 || ptr == null)
             {
-                this = default;
-                return;
+                return default;
             }
-            Ptr = ptr;
-            Length = length;
+            NativeEnumerable<T> answer = default;
+            answer.Ptr = ptr;
+            answer.Length = length;
+            return answer;
         }
 
         public void Dispose(Allocator allocator)
@@ -72,8 +75,8 @@ namespace UniNativeLinq
             this = default;
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(this);
-        public readonly ReverseEnumerator GetReverseEnumerator() => new ReverseEnumerator(this);
+        public Enumerator GetEnumerator() => new Enumerator(this);
+        public ReverseEnumerator GetReverseEnumerator() => new ReverseEnumerator(this);
 
         public struct Enumerator : IRefEnumerator<T>
         {
@@ -172,48 +175,48 @@ namespace UniNativeLinq
         }
 
         #region Interface Implementation
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => true;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public bool CanFastCount() => true;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any() => Length != 0;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public bool Any() => Length != 0;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count() => (int)Length;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public int Count() => (int)Length;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount() => Length;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public long LongCount() => Length;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, Ptr, Length);
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, Ptr, Length);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly T[] ToArray()
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public T[] ToArray()
         {
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer(ref answer[0]));
             return answer;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<T>(ptr, count);
+            return Create(ptr, count);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
@@ -223,7 +226,7 @@ namespace UniNativeLinq
         }
         #endregion
 
-        public readonly long FindIndexBinarySearch<TComparer>(ref T searchItem, in TComparer comparer)
+        public long FindIndexBinarySearch<TComparer>(ref T searchItem, in TComparer comparer)
             where TComparer : struct, IRefFunc<T, T, int>
         {
             var minInclusive = 0L;
@@ -242,36 +245,42 @@ namespace UniNativeLinq
             return -1L;
         }
 
-        public readonly NativeEnumerable<T>
+        public NativeEnumerable<T>
             Skip(long count)
-            => new NativeEnumerable<T>(Ptr + count, Length - count);
+            => Create(Ptr + count, Length - count);
 
-        public readonly NativeEnumerable<T>
+        public NativeEnumerable<T>
             SkipLast(long count)
-            => new NativeEnumerable<T>(Ptr, Length - count);
+            => Create(Ptr, Length - count);
 
-        public readonly NativeEnumerable<T>
+        public NativeEnumerable<T>
             Take(long count)
         {
             if (count >= Length) return this;
             if (count <= 0) return default;
-            return new NativeEnumerable<T>(Ptr, count);
+            return Create(Ptr, count);
         }
 
-        public readonly NativeEnumerable<T>
+        public NativeEnumerable<T>
             TakeLast(long count)
         {
             if (count >= Length) return this;
             if (Ptr == null || count <= 0) return default;
-            return new NativeEnumerable<T>(Ptr + Length - count, count);
+            return Create(Ptr + Length - count, count);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool TryGetLast(out T value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public bool TryGetLast(out T value)
         {
             var answer = Length != 0;
             value = Ptr[Length - 1];
             return answer;
         }
+
+        public static implicit operator NativeArray<T>(NativeEnumerable<T> enumerable)
+            => NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<T>(enumerable.Ptr, (int)enumerable.Length, Allocator.None);
+
+        public static implicit operator NativeEnumerable<T>(NativeArray<T> array)
+            => new NativeEnumerable<T>(array);
     }
 }

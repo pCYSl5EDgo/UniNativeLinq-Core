@@ -160,7 +160,7 @@ namespace UniNativeLinq
             {
                 var ptr = UnsafeUtilityEx.Malloc<T>(Count, allocator);
                 CopyTo(ptr);
-                return new NativeEnumerable<T>(ptr, Count);
+                return NativeEnumerable<T>.Create(ptr, Count);
             }
 
             public readonly NativeArray<T> ToNativeArray(Allocator allocator)
@@ -392,7 +392,7 @@ namespace UniNativeLinq
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<T>(ptr, count);
+            return NativeEnumerable<T>.Create(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

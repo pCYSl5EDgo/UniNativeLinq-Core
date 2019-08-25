@@ -47,7 +47,7 @@ namespace UniNativeLinq
             }
             smaller.Dispose(Allocator.Temp);
             larger.Dispose(Allocator.Temp);
-            if (count != 0) return new NativeEnumerable<T>(ptr, count);
+            if (count != 0) return NativeEnumerable<T>.Create(ptr, count);
             UnsafeUtility.Free(ptr, allocator);
             return default;
         }

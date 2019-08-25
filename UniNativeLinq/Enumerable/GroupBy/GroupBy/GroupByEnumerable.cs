@@ -26,7 +26,7 @@ namespace UniNativeLinq
         private readonly TElementFunc elementSelector;
         private readonly TEqualityComparer equalityComparer;
         private readonly Allocator alloc;
-        public readonly GroupByDisposeOptions GroupByDisposeOption;
+        public GroupByDisposeOptions GroupByDisposeOption;
 
         public GroupByEnumerable(in TEnumerable enumerable, in TKeyFunc keySelector, in TElementFunc elementSelector, in TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions groupByDisposeOption)
         {
@@ -176,17 +176,17 @@ namespace UniNativeLinq
         [PseudoIsReadOnly] public Enumerator GetEnumerator(Allocator allocator, GroupByDisposeOptions option) => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, allocator, option);
 
         #region Interface Implementation
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<GroupingEnumerable<TKey, TElement>> IEnumerable<GroupingEnumerable<TKey, TElement>>.GetEnumerator() => GetEnumerator();
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        IEnumerator<GroupingEnumerable<TKey, TElement>> IEnumerable<GroupingEnumerable<TKey, TElement>>.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => false;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public bool CanFastCount() => false;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any()
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public bool Any()
         {
             var enumerator = GetEnumerator();
             if (enumerator.MoveNext())
@@ -198,12 +198,12 @@ namespace UniNativeLinq
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count()
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public int Count()
             => (int)LongCount();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount()
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public long LongCount()
         {
             var enumerator = GetEnumerator();
             var count = 0L;
@@ -213,8 +213,8 @@ namespace UniNativeLinq
             return count;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(GroupingEnumerable<TKey, TElement>* dest)
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public void CopyTo(GroupingEnumerable<TKey, TElement>* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -222,8 +222,8 @@ namespace UniNativeLinq
             enumerator.Dispose();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly GroupingEnumerable<TKey, TElement>[] ToArray()
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public GroupingEnumerable<TKey, TElement>[] ToArray()
         {
             var count = LongCount();
             if (count == 0) return Array.Empty<GroupingEnumerable<TKey, TElement>>();
@@ -232,17 +232,17 @@ namespace UniNativeLinq
             return answer;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<GroupingEnumerable<TKey, TElement>> ToNativeEnumerable(Allocator allocator)
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public NativeEnumerable<GroupingEnumerable<TKey, TElement>> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<GroupingEnumerable<TKey, TElement>>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<GroupingEnumerable<TKey, TElement>>(ptr, count);
+            return NativeEnumerable<GroupingEnumerable<TKey, TElement>>.Create(ptr, count);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<GroupingEnumerable<TKey, TElement>> ToNativeArray(Allocator allocator)
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public NativeArray<GroupingEnumerable<TKey, TElement>> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;

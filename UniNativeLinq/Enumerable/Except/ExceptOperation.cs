@@ -37,7 +37,7 @@ namespace UniNativeLinq
                 if (index != --count)
                     targets[index] = targets[count];
             }
-            return new NativeEnumerable<T>(targets.Ptr, count);
+            return NativeEnumerable<T>.Create(targets.Ptr, count);
         }
 
         public static implicit operator

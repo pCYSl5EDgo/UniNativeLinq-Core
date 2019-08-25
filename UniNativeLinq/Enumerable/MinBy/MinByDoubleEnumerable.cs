@@ -76,9 +76,9 @@ namespace UniNativeLinq
             public ref T TryGetNext(out bool success) => ref NativeEnumerator.TryGetNext(out success);
             public bool TryMoveNext(out T value) => NativeEnumerator.TryMoveNext(out value);
 
-            public readonly ref T Current => ref NativeEnumerator.Current;
-            readonly T IEnumerator<T>.Current => NativeEnumerator.Current;
-            readonly object IEnumerator.Current => ((IEnumerator)NativeEnumerator).Current;
+            public ref T Current => ref NativeEnumerator.Current;
+            T IEnumerator<T>.Current => NativeEnumerator.Current;
+            object IEnumerator.Current => ((IEnumerator)NativeEnumerator).Current;
 
             public void Dispose()
             {
@@ -125,10 +125,10 @@ namespace UniNativeLinq
                 return default;
             }
             if (alloc == allocator)
-                return new NativeEnumerable<T>(nativeEnumerator.Ptr, length);
+                return NativeEnumerable<T>.Create(nativeEnumerator.Ptr, length);
             var ptr = UnsafeUtilityEx.Malloc<T>(length, allocator);
             UnsafeUtilityEx.MemCpy(ptr, nativeEnumerator.Ptr, length);
-            return new NativeEnumerable<T>(ptr, length);
+            return NativeEnumerable<T>.Create(ptr, length);
         }
 
         public NativeArray<T> ToNativeArray(Allocator allocator)

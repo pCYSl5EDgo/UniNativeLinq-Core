@@ -39,7 +39,7 @@ namespace UniNativeLinq
                 get
                 {
                     var rest = enumerable.Length - index;
-                    return new NativeEnumerable<T>(enumerable.Ptr + index, rest > count ? count : rest);
+                    return NativeEnumerable<T>.Create(enumerable.Ptr + index, rest > count ? count : rest);
                 }
             }
             object IEnumerator.Current => Current;

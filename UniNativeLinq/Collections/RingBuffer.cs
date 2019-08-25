@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Runtime.CompilerServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
@@ -52,9 +52,10 @@ namespace UniNativeLinq
             ++Length;
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(this);
-        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public Enumerator GetEnumerator() => new Enumerator(this);
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         public struct Enumerator
             : IRefEnumerator<T>
         {
@@ -101,13 +102,17 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly bool Any() => Length != 0;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public bool Any() => Length != 0;
 
-        public readonly bool CanFastCount() => true;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public bool CanFastCount() => true;
 
-        public readonly int Count() => (int)Length;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public int Count() => (int)Length;
 
-        public readonly long LongCount() => Length;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public long LongCount() => Length;
 
         public void RemoveFirst()
         {
@@ -119,7 +124,8 @@ namespace UniNativeLinq
 
         public void RemoveLast() => --Length;
 
-        public readonly void CopyTo(T* dest)
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public void CopyTo(T* dest)
         {
             if (StartIndex + Length <= Capacity)
             {
@@ -133,25 +139,27 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly T[] ToArray()
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public T[] ToArray()
         {
             var answer = new T[Length];
             CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
 
-        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var answer = new NativeArray<T>((int)Length, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(answer.GetPointer());
             return answer;
         }
-
-        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var ptr = UnsafeUtilityEx.Malloc<T>(Length, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<T>(ptr, Length);
+            return NativeEnumerable<T>.Create(ptr, Length);
         }
 
         private void ReAllocate()

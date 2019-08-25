@@ -32,7 +32,7 @@ namespace UniNativeLinq
             for (var i = 0L; i < enumerable.Length; i++)
                 ptr[i] = selector.Calc(ref enumerable[i]);
             return new GroupJoinPredicate<T, TKey, TEqualityComparer>(
-                new NativeEnumerable<TKey>(ptr, enumerable.Length), 
+                NativeEnumerable<TKey>.Create(ptr, enumerable.Length),
                 comparer,
                 allocator
             );

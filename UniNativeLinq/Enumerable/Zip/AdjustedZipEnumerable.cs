@@ -29,6 +29,13 @@ namespace UniNativeLinq
             this.action = action;
         }
 
+        public AdjustedZipEnumerable(in TFirstEnumerable firstCollection, in TSecondEnumerable secondCollection)
+        {
+            this.firstCollection = firstCollection;
+            this.secondCollection = secondCollection;
+            action = default;
+        }
+
         [LocalRefReturn]
         public struct Enumerator : IRefEnumerator<T>
         {
@@ -186,7 +193,7 @@ namespace UniNativeLinq
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<T>(ptr, count);
+            return NativeEnumerable<T>.Create(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

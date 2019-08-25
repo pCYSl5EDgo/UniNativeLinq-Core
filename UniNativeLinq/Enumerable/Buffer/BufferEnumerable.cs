@@ -104,7 +104,7 @@ namespace UniNativeLinq
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<SkipEnumerable<TEnumerable, TEnumerator, T>>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<SkipEnumerable<TEnumerable, TEnumerator, T>>(ptr, count);
+            return NativeEnumerable<SkipEnumerable<TEnumerable, TEnumerator, T>>.Create(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

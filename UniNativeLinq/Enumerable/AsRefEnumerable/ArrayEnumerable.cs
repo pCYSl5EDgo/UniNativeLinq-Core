@@ -13,9 +13,9 @@ namespace UniNativeLinq
         : IRefEnumerable<ArrayEnumerable<T>.Enumerator, T>
         where T : unmanaged
     {
-        private readonly T[] array;
-        private readonly long offset;
-        internal readonly long Length;
+        private T[] array;
+        private long offset;
+        internal long Length;
 
         internal readonly T* GetPointer() => Pseudo.AsPointer<T>(ref array[offset]);
         private readonly T* GetPinPointer(out ulong gcHandle) => (T*)UnsafeUtility.PinGCArrayAndGetDataAddress(array, out gcHandle) + offset;
@@ -27,18 +27,9 @@ namespace UniNativeLinq
             offset = 0;
         }
 
-        public ArrayEnumerable(ArraySegment<T> segment)
+        public static ArrayEnumerable<T> Create(T[] array, long offset, long count)
         {
-            array = segment.Array ?? throw new ArgumentNullException();
-            Length = segment.Count;
-            offset = segment.Offset;
-        }
-
-        public ArrayEnumerable(T[] array, long offset, long count)
-        {
-            this.array = array ?? throw new ArgumentNullException();
-            Length = count;
-            this.offset = offset;
+            return new ArrayEnumerable<T>(array) { Length = count, offset = offset };
         }
 
         public readonly ref T this[long index] => ref array[offset + index];
@@ -160,16 +151,16 @@ namespace UniNativeLinq
         {
             if (length > Length)
                 length = Length;
-            return length <= 0 ? new ArrayEnumerable<T>(Array.Empty<T>(), 0, 0) : new ArrayEnumerable<T>(array, offset, length);
+            return length <= 0 ? Create(Array.Empty<T>(), 0, 0) : Create(array, offset, length);
         }
         public readonly ArrayEnumerable<T> Slice(long offset, long length)
         {
             if (array.Length == 0) return this;
             var rest = this.offset + Length - offset;
-            if (length <= 0 || rest <= 0) return new ArrayEnumerable<T>(Array.Empty<T>(), 0, 0);
+            if (length <= 0 || rest <= 0) return Create(Array.Empty<T>(), 0, 0);
             if (length > rest)
                 length = rest;
-            return new ArrayEnumerable<T>(array, offset + this.offset, length);
+            return Create(array, offset + this.offset, length);
         }
 
         #region Interface Implementation
@@ -210,7 +201,7 @@ namespace UniNativeLinq
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
             CopyTo(ptr);
-            return new NativeEnumerable<T>(ptr, count);
+            return NativeEnumerable<T>.Create(ptr, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>8</LangVersion>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-    <NullableReferenceTypes>True</NullableReferenceTypes>
+    <Nullable>enable</Nullable>
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 

@@ -41,8 +41,7 @@ namespace CecilRewrite
             var negateMethodDefinition = MainModule.GetType("UniNativeLinq.NegatePredicate`2").GetConstructors().First();
             IsReadOnlyAttribute = negateMethodDefinition.Parameters.First().CustomAttributes.First();
             var nativeEnumerable1 = MainModule.GetType(NameSpace, "NativeEnumerable`1");
-            MethodDefinition ToNativeArray;
-            ToNativeArray = nativeEnumerable1.Methods.First(x => x.Name == nameof(ToNativeArray));
+            MethodDefinition ToNativeArray = nativeEnumerable1.Methods.First(x => x.Name == nameof(ToNativeArray));
             NativeArray = MainModule.ImportReference(ToNativeArray.ReturnType.Resolve());
             Allocator = ToNativeArray.Parameters.First().ParameterType;
             var t = nativeEnumerable1.GenericParameters.First();

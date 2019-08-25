@@ -1,10 +1,9 @@
 using System;
 using System.Runtime.CompilerServices;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public readonly unsafe struct DefaultOrderByAscending<T>
+    public readonly struct DefaultOrderByAscending<T>
         : IRefFunc<T, T, int>
         where T : unmanaged, IComparable<T>
     {

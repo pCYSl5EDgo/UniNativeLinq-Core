@@ -126,10 +126,10 @@ namespace UniNativeLinq
                 return default;
             }
             if (alloc == allocator)
-                return new NativeEnumerable<T>(nativeEnumerator.Ptr, length);
+                return NativeEnumerable<T>.Create(nativeEnumerator.Ptr,  length);
             var ptr = UnsafeUtilityEx.Malloc<T>(length, allocator);
             UnsafeUtilityEx.MemCpy(ptr, nativeEnumerator.Ptr, length);
-            return new NativeEnumerable<T>(ptr, length);
+            return NativeEnumerable<T>.Create(ptr, length);
         }
 
         public NativeArray<T> ToNativeArray(Allocator allocator)

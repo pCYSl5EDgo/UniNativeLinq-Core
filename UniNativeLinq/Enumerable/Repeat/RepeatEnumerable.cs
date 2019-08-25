@@ -149,7 +149,7 @@ namespace UniNativeLinq
             var length = count * repeatCount;
             var answer = UnsafeUtilityEx.Malloc<T>(length, allocator);
             CopyTo(answer, count);
-            return new NativeEnumerable<T>(answer, length);
+            return NativeEnumerable<T>.Create(answer, length);
         }
 
         public NativeArray<T> ToNativeArray(Allocator allocator)
