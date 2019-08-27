@@ -19,6 +19,17 @@ namespace UniNativeLinq
         public long Length;
         public Allocator Allocator;
 
+        public bool CanIndexAccess => true;
+
+        public ref T this[long index]
+        {
+            get
+            {
+                if (index >= Length) throw new ArgumentOutOfRangeException();
+                return ref Elements[index];
+            }
+        }
+
         public GroupingEnumerable(in TKey key, T* elements, long length, Allocator allocator)
         {
             Key = key;

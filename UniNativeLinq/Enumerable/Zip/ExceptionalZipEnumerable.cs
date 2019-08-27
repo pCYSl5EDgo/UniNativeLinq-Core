@@ -21,7 +21,8 @@ namespace UniNativeLinq
         private readonly TFirstEnumerable firstCollection;
         private readonly TSecondEnumerable secondCollection;
         private readonly TAction action;
-
+        public bool CanIndexAccess => false;
+        public ref T this[long index] => throw new NotSupportedException();
         public ExceptionalZipEnumerable(in TFirstEnumerable firstCollection, in TSecondEnumerable secondCollection, in TAction action)
         {
             this.firstCollection = firstCollection;

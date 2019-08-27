@@ -76,7 +76,6 @@ namespace UniNativeLinq
         }
 
         public Enumerator GetEnumerator() => new Enumerator(this);
-        public ReverseEnumerator GetReverseEnumerator() => new ReverseEnumerator(this);
 
         public struct Enumerator : IRefEnumerator<T>
         {
@@ -126,54 +125,6 @@ namespace UniNativeLinq
             }
         }
 
-        public struct ReverseEnumerator : IRefEnumerator<T>
-        {
-            internal readonly T* Ptr;
-            private readonly long length;
-            private long index;
-
-            public ref T Current => ref Ptr[index];
-            T IEnumerator<T>.Current => Current;
-            object IEnumerator.Current => Current;
-
-            internal ReverseEnumerator(in NativeEnumerable<T> parent)
-            {
-                index = parent.Length;
-                Ptr = parent.Ptr;
-                length = parent.Length;
-            }
-
-            public void Dispose() => this = default;
-
-            public bool MoveNext() => --index >= 0;
-
-            public void Reset() => index = length;
-
-            public ref T TryGetNext(out bool success)
-            {
-                success = --index >= 0;
-                if (success)
-                    return ref Ptr[index];
-                index = 0;
-                return ref Pseudo.AsRefNull<T>();
-            }
-
-            public bool TryMoveNext(out T value)
-            {
-                if (--index >= 0)
-                {
-                    value = Ptr[index];
-                    return true;
-                }
-                else
-                {
-                    value = default;
-                    index = 0;
-                    return false;
-                }
-            }
-        }
-
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
@@ -205,6 +156,8 @@ namespace UniNativeLinq
             CopyTo(Pseudo.AsPointer(ref answer[0]));
             return answer;
         }
+
+        public bool CanIndexAccess => true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
         public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)

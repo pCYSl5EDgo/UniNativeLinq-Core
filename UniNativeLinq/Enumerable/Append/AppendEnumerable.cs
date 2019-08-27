@@ -15,7 +15,18 @@ namespace UniNativeLinq
     {
         private TEnumerable enumerable;
         private readonly T element;
+        public bool CanIndexAccess => enumerable.CanIndexAccess;
 
+        public ref T this[long index]
+        {
+            get
+            {
+                var length = enumerable.LongCount();
+                if (index >= length + 1) throw new ArgumentOutOfRangeException();
+                if (index == length) throw new NotImplementedException();
+                return ref enumerable[index];
+            }
+        }
         public AppendEnumerable(in TEnumerable enumerable, in T element)
         {
             this.enumerable = enumerable;

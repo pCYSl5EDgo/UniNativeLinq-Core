@@ -18,5 +18,8 @@ namespace UniNativeLinq
         NativeEnumerable<T> ToNativeEnumerable(Allocator allocator);
         NativeArray<T> ToNativeArray(Allocator allocator);
         T[] ToArray();
+
+        bool CanIndexAccess { get; }
+        ref T this[long index] { get; }
     }
 }

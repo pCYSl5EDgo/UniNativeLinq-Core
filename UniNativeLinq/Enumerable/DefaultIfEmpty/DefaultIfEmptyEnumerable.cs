@@ -15,7 +15,20 @@ namespace UniNativeLinq
     {
         private readonly TEnumerable enumerable;
         private readonly T element;
+        public bool CanIndexAccess => enumerable.CanIndexAccess;
 
+        public ref T this[long index]
+        {
+            get
+            {
+                if (!enumerable.Any())
+                {
+                    if (index != 0) throw new ArgumentOutOfRangeException();
+                    throw new NotImplementedException();
+                }
+                return ref enumerable[index];
+            }
+        }
         public DefaultIfEmptyEnumerable(in TEnumerable enumerable, in T element)
         {
             this.enumerable = enumerable;
@@ -84,7 +97,7 @@ namespace UniNativeLinq
                     success = true;
                     throw new NotImplementedException();
                 }
-                if(isDefault)
+                if (isDefault)
                 {
                     success = false;
                     throw new NotImplementedException();
@@ -94,10 +107,10 @@ namespace UniNativeLinq
 
             public bool TryMoveNext(out T value)
             {
-                if(isFirst)
+                if (isFirst)
                 {
                     isFirst = false;
-                    if(enumerator.TryMoveNext(out value))
+                    if (enumerator.TryMoveNext(out value))
                     {
                         isDefault = false;
                         return true;
@@ -106,7 +119,7 @@ namespace UniNativeLinq
                     value = element;
                     return true;
                 }
-                if(isDefault)
+                if (isDefault)
                 {
                     value = default;
                     return false;

@@ -15,10 +15,10 @@ namespace UniNativeLinq
     {
         private T[] array;
         private long offset;
-        internal long Length;
+        public long Length;
 
-        internal readonly T* GetPointer() => Pseudo.AsPointer<T>(ref array[offset]);
-        private readonly T* GetPinPointer(out ulong gcHandle) => (T*)UnsafeUtility.PinGCArrayAndGetDataAddress(array, out gcHandle) + offset;
+        internal T* GetPointer() => Pseudo.AsPointer(ref array[offset]);
+        private T* GetPinPointer(out ulong gcHandle) => (T*)UnsafeUtility.PinGCArrayAndGetDataAddress(array, out gcHandle) + offset;
 
         public ArrayEnumerable(T[] array)
         {
@@ -32,7 +32,7 @@ namespace UniNativeLinq
             return new ArrayEnumerable<T>(array) { Length = count, offset = offset };
         }
 
-        public readonly ref T this[long index] => ref array[offset + index];
+        public ref T this[long index] => ref array[offset + index];
 
         public struct Enumerator : IRefEnumerator<T>
         {
@@ -51,9 +51,9 @@ namespace UniNativeLinq
 
             public bool MoveNext() => ++index < length;
             public void Reset() => index = -1;
-            public readonly ref T Current => ref ptr[index];
-            readonly T IEnumerator<T>.Current => Current;
-            readonly object IEnumerator.Current => Current;
+            public ref T Current => ref ptr[index];
+            T IEnumerator<T>.Current => Current;
+            object IEnumerator.Current => Current;
 
             public void Dispose()
             {
@@ -87,73 +87,20 @@ namespace UniNativeLinq
             }
         }
 
-        public struct ReverseEnumerator : IRefEnumerator<T>
-        {
-            private readonly T* ptr;
-            private readonly long length;
-            private readonly ulong gcHandle;
-            private long index;
-
-            internal ReverseEnumerator(T* ptr, long length, ulong gcHandle)
-            {
-                this.ptr = ptr;
-                this.length = length;
-                this.gcHandle = gcHandle;
-                index = length;
-            }
-
-            public bool MoveNext() => --index >= 0;
-            public void Reset() => index = length;
-            public ref T Current => ref ptr[index];
-            T IEnumerator<T>.Current => Current;
-            object IEnumerator.Current => Current;
-
-            public void Dispose()
-            {
-                if (ptr != null)
-                    UnsafeUtility.ReleaseGCObject(gcHandle);
-                this = default;
-            }
-
-            public ref T TryGetNext(out bool success)
-            {
-                success = --index >= 0;
-                if (success)
-                    return ref ptr[index];
-                index = 0;
-                return ref Pseudo.AsRefNull<T>();
-            }
-
-            public bool TryMoveNext(out T value)
-            {
-                if (--index >= 0)
-                {
-                    value = ptr[index];
-                    return true;
-                }
-                else
-                {
-                    index = 0;
-                    value = default;
-                    return false;
-                }
-            }
-        }
-
-        public readonly Enumerator GetEnumerator()
+        public Enumerator GetEnumerator()
         {
             if (array is null || array.Length == 0)
                 return default;
             return new Enumerator(GetPinPointer(out var gcHandle), Length, gcHandle);
         }
 
-        public readonly ArrayEnumerable<T> Slice(long length)
+        public ArrayEnumerable<T> Slice(long length)
         {
             if (length > Length)
                 length = Length;
             return length <= 0 ? Create(Array.Empty<T>(), 0, 0) : Create(array, offset, length);
         }
-        public readonly ArrayEnumerable<T> Slice(long offset, long length)
+        public ArrayEnumerable<T> Slice(long offset, long length)
         {
             if (array.Length == 0) return this;
             var rest = this.offset + Length - offset;
@@ -164,29 +111,29 @@ namespace UniNativeLinq
         }
 
         #region Interface Implementation
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => true;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public bool CanFastCount() => true;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any() => Length != 0;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public bool Any() => Length != 0;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count() => (int)Length;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public int Count() => (int)Length;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount() => Length;
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public long LongCount() => Length;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, GetPointer(), Length);
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, GetPointer(), Length);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly T[] ToArray()
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public T[] ToArray()
         {
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
@@ -195,8 +142,10 @@ namespace UniNativeLinq
             return answer;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
+        public bool CanIndexAccess => true;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
@@ -204,8 +153,8 @@ namespace UniNativeLinq
             return NativeEnumerable<T>.Create(ptr, count);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
@@ -215,8 +164,8 @@ namespace UniNativeLinq
         }
         #endregion
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool TryGetLast(out T value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        public bool TryGetLast(out T value)
         {
             var answer = Length != 0;
             value = array[offset + Length - 1];

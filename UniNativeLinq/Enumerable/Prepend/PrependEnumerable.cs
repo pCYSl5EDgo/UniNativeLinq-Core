@@ -14,12 +14,23 @@ namespace UniNativeLinq
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
         private readonly TEnumerable enumerable;
-        private readonly T prepend;
+        private readonly T element;
 
-        public PrependEnumerable(in TEnumerable enumerable, in T prepend)
+        public bool CanIndexAccess => enumerable.CanIndexAccess;
+
+        public ref T this[long index]
+        {
+            get
+            {
+                if (index == 0) throw new NotImplementedException();
+                return ref enumerable[index - 1];
+            }
+        }
+
+        public PrependEnumerable(in TEnumerable enumerable, in T element)
         {
             this.enumerable = enumerable;
-            this.prepend = prepend;
+            this.element = element;
         }
 
         [LocalRefReturn]
@@ -59,12 +70,12 @@ namespace UniNativeLinq
 
             public bool MoveNext()
             {
-                if(isInitialState)
+                if (isInitialState)
                 {
                     isInitialState = false;
                     return true;
                 }
-                if(isPrependNow)
+                if (isPrependNow)
                     isPrependNow = false;
                 return enumerator.MoveNext();
             }
@@ -73,7 +84,7 @@ namespace UniNativeLinq
 
             public ref T TryGetNext(out bool success)
             {
-                if(isInitialState)
+                if (isInitialState)
                 {
                     isInitialState = false;
                     success = true;
@@ -94,7 +105,7 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), prepend);
+        public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), element);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -156,7 +167,7 @@ namespace UniNativeLinq
 
         public readonly bool TryGetFirst(out T value)
         {
-            value = prepend;
+            value = element;
             return true;
         }
     }

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
+// ReSharper disable IdentifierTypo
 
 // ReSharper disable VariableHidesOuterVariable
 
@@ -224,9 +226,9 @@ namespace CecilRewrite
         {
             const string local = "LocalRefReturnAttribute";
             var enumeratorTypes = module.GetTypes()
-                .Where(x => x.IsPublic && x.IsValueType && x.HasNestedTypes)
+                .Where(x => x.IsValueType && x.HasNestedTypes)
                 .SelectMany(x => x.NestedTypes)
-                .Where(x => x.HasCustomAttributes && x.CustomAttributes.Any(y => y.AttributeType.Name == local));
+                .Concat(module.GetTypes().Where(x => x.IsValueType));
             foreach (var enumeratorType in enumeratorTypes)
             {
                 ReWriteRefReturn(module, enumeratorType);
@@ -242,11 +244,25 @@ namespace CecilRewrite
 
         internal static void ReWriteRefReturn(ModuleDefinition module, TypeDefinition type)
         {
-            var element = type.Fields.First(x => x.Name == "element").FillGenericParams();
-            ReWrite(type.Methods.First(x => x.Name == "TryGetNext"), element);
+            var firstOrDefault = type.Fields.FirstOrDefault(x => x.Name == "element");
+            if (firstOrDefault is null) return;
+            var element = firstOrDefault.FillGenericParams();
+            foreach (var methodDefinition in type.Methods)
+            {
+                switch (methodDefinition.Name)
+                {
+                    case "TryGetNext":
+                    case "get_Item":
+                        ReWrite(methodDefinition, element);
+                        break;
+                }
+            }
             static bool Predicate(PropertyDefinition x)
                 => x.Name == "Current" && x.PropertyType.IsByReference;
-            ReWrite(type.Properties.First(Predicate).GetMethod, element);
+
+            var method = type.Properties.FirstOrDefault(Predicate)?.GetMethod;
+            if (method is null) return;
+            ReWrite(method, element);
         }
 
         internal static FieldReference FillGenericParams(this FieldDefinition definition)
@@ -267,13 +283,15 @@ namespace CecilRewrite
             for (var i = body.Instructions.Count; --i >= 0;)
             {
                 var instruction = body.Instructions[i];
-                if (instruction.OpCode == OpCodes.Throw)
-                    processor.Replace(instruction, ret);
-                else if (instruction.OpCode == OpCodes.Newobj)
-                {
-                    processor.InsertBefore(instruction, ldarg0);
-                    processor.Replace(instruction, ldflda);
-                }
+                if (instruction.OpCode != OpCodes.Throw) continue;
+                var prev = instruction.Previous;
+                if (prev.OpCode != OpCodes.Newobj) continue;
+                var exceptionTypeConstructor = ((MethodReference)prev.Operand);
+                Console.WriteLine(exceptionTypeConstructor.DeclaringType.FullName);
+                if (exceptionTypeConstructor.DeclaringType.FullName != "System.NotImplementedException") continue;
+                processor.Replace(instruction, ret);
+                processor.InsertBefore(prev, ldarg0);
+                processor.Replace(prev, ldflda);
             }
         }
 

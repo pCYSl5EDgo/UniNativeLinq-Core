@@ -172,5 +172,9 @@ namespace UniNativeLinq
             CopyTo(Pseudo.AsPointer(ref answer[0]), count);
             return answer;
         }
+
+        public bool CanIndexAccess => false;
+
+        public ref T this[long index] => throw new NotSupportedException();
     }
 }

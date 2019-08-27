@@ -19,6 +19,10 @@ namespace UniNativeLinq
         [PseudoIsReadOnly] private TEnumerable enumerable;
         [PseudoIsReadOnly] private TPredicate predicate;
 
+        public bool CanIndexAccess => false;
+
+        public ref T this[long index] => throw new NotSupportedException();
+
         public SkipWhileEnumerable(in TEnumerable enumerable, in TPredicate predicate)
         {
             this.enumerable = enumerable;

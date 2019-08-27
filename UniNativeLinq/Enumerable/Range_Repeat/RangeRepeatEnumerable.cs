@@ -18,6 +18,10 @@ namespace UniNativeLinq
         private readonly long Length;
         private readonly TAction acts;
 
+        public bool CanIndexAccess => false;
+
+        ref T IRefEnumerable<Enumerator, T>.this[long index] => throw new NotSupportedException();
+
         public readonly T this[long index]
         {
             get

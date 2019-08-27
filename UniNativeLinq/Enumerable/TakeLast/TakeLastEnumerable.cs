@@ -106,6 +106,17 @@ namespace UniNativeLinq
             return answer;
         }
 
+        public bool CanIndexAccess => enumerable.CanIndexAccess;
+
+        public ref T this[long index]
+        {
+            get
+            {
+                if (index >= takeCount) throw new ArgumentOutOfRangeException();
+                return ref enumerable[enumerable.LongCount() - takeCount + index];
+            }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
         public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {

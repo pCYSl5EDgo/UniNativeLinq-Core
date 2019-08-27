@@ -130,6 +130,9 @@ namespace UniNativeLinq
             return answer;
         }
 
+        public bool CanIndexAccess => false;
+        public ref T this[long index] => throw new NotSupportedException();
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {

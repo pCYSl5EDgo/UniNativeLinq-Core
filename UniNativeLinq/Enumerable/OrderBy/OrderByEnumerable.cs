@@ -26,6 +26,10 @@ namespace UniNativeLinq
         private readonly TComparer orderComparer;
         private readonly Allocator alloc;
 
+        public bool CanIndexAccess => false;
+
+        public ref T this[long index] => throw new NotSupportedException();
+
         public OrderByEnumerable(in TEnumerable enumerable, in TComparer comparer, Allocator allocator)
         {
             this.enumerable = enumerable;

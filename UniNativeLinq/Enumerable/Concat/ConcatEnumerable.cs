@@ -17,7 +17,18 @@ namespace UniNativeLinq
     {
         public TFirstEnumerable FirstEnumerable;
         public TSecondEnumerable SecondEnumerable;
+        public bool CanIndexAccess => FirstEnumerable.CanIndexAccess && SecondEnumerable.CanIndexAccess;
 
+        public ref T this[long index]
+        {
+            get
+            {
+                var firstCount = FirstEnumerable.LongCount();
+                if (index < firstCount)
+                    return ref FirstEnumerable[index];
+                return ref SecondEnumerable[index - firstCount];
+            }
+        }
         public ConcatEnumerable(in TFirstEnumerable firstEnumerable, in TSecondEnumerable secondEnumerable)
         {
             FirstEnumerable = firstEnumerable;
@@ -104,12 +115,12 @@ namespace UniNativeLinq
                 *dest++ = enumerator.Current;
             enumerator.Dispose();
         }
-            
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly T[] ToArray()
         {
             var count = LongCount();
-            if(count == 0) return Array.Empty<T>();
+            if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
             CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
@@ -123,12 +134,12 @@ namespace UniNativeLinq
             CopyTo(ptr);
             return NativeEnumerable<T>.Create(ptr, count);
         }
-            
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
-            if(count == 0) return default;
+            if (count == 0) return default;
             var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
             CopyTo(answer.GetPointer());
             return answer;

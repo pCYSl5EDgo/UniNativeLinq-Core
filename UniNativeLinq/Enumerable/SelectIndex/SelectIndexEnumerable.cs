@@ -18,6 +18,10 @@ namespace UniNativeLinq
         private readonly TPrevEnumerable enumerable;
         private readonly TAction acts;
 
+        public bool CanIndexAccess => false;
+
+        public ref T this[long index] => throw new NotSupportedException();
+
         public SelectIndexEnumerable(in TPrevEnumerable enumerable, in TAction acts)
         {
             this.enumerable = enumerable;
@@ -35,7 +39,7 @@ namespace UniNativeLinq
             internal Enumerator(in TPrevEnumerator enumerator, in TAction action)
             {
                 this.enumerator = enumerator;
-                element =  default;
+                element = default;
                 this.action = action;
                 index = -1;
             }
@@ -66,7 +70,7 @@ namespace UniNativeLinq
             public bool TryMoveNext(out T value)
             {
                 ++index;
-                if(!enumerator.TryMoveNext(out var prevSource))
+                if (!enumerator.TryMoveNext(out var prevSource))
                 {
                     value = default;
                     return false;
@@ -78,7 +82,7 @@ namespace UniNativeLinq
         }
 
         public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), acts);
-        
+
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();

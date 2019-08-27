@@ -34,8 +34,8 @@ namespace UniNativeLinq
         public struct Node : IRefEnumerable<Node.Enumerator, T>
         {
             public IntPtr<Node> Next;
-            public readonly IntPtr<T> Values;
-            public readonly long Capacity;
+            public IntPtr<T> Values;
+            public long Capacity;
             public long Count;
 
             public Node(long capacity, Allocator allocator)
@@ -79,7 +79,8 @@ namespace UniNativeLinq
 
             public void Clear() => Interlocked.Exchange(ref Count, 0);
 
-            public readonly ref T this[long index] => ref Values[index];
+            public bool CanIndexAccess => true;
+            public ref T this[long index] => ref Values[index];
 
             public struct Enumerator : IRefEnumerator<T>
             {
@@ -118,12 +119,9 @@ namespace UniNativeLinq
                         value = values[index];
                         return true;
                     }
-                    else
-                    {
-                        value = default;
-                        index = count;
-                        return false;
-                    }
+                    value = default;
+                    index = count;
+                    return false;
                 }
             }
 
@@ -186,7 +184,7 @@ namespace UniNativeLinq
                 AddStartFromLastFull(in value);
             else AddStartFromFirst(in value);
         }
-        
+
         #region private Add
         private void AddStartFromFirst(in T value)
         {
@@ -326,6 +324,24 @@ namespace UniNativeLinq
                 if (!Current.HasNext) return false;
                 Current = Current.NextRef;
                 return true;
+            }
+        }
+
+        public bool CanIndexAccess => true;
+
+        public ref T this[long index]
+        {
+            get
+            {
+                ref var node = ref First;
+                while (true)
+                {
+                    if (index < node.Count)
+                    {
+                        return ref node[index];
+                    }
+                    index -= node.Count;
+                }
             }
         }
 

@@ -35,6 +35,17 @@ namespace UniNativeLinq
         public bool IsEmpty => Length == 0;
         public bool IsFull => Length == Capacity;
 
+        public bool CanIndexAccess => true;
+
+        public ref T this[long index]
+        {
+            get
+            {
+                if (index >= Length) throw new ArgumentOutOfRangeException();
+                return ref Ptr[index];
+            }
+        }
+
         public void Add(in T value)
         {
             if (Length == Capacity)

@@ -48,7 +48,7 @@ namespace UniNativeLinq
             public ref T TryGetNext(out bool success)
             {
                 success = --takeCount >= 0;
-                if(!success)
+                if (!success)
                 {
                     takeCount = 0;
                     return ref Pseudo.AsRefNull<T>();
@@ -58,7 +58,7 @@ namespace UniNativeLinq
 
             public bool TryMoveNext(out T value)
             {
-                if(--takeCount >= 0)
+                if (--takeCount >= 0)
                     return enumerator.TryMoveNext(out value);
                 takeCount = 0;
                 value = default;
@@ -111,6 +111,10 @@ namespace UniNativeLinq
             CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
             return answer;
         }
+
+        public bool CanIndexAccess => enumerable.CanIndexAccess;
+
+        public ref T this[long index] => ref enumerable[index];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)

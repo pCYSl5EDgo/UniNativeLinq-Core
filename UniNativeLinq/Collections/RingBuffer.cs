@@ -37,9 +37,11 @@ namespace UniNativeLinq
                 return ref Elements[index];
             }
         }
+        public bool CanIndexAccess => true;
 
         public bool IsFull => Length == Capacity;
         public bool IsEmpty => Length == 0L;
+
 
         public void Add(in T value)
         {

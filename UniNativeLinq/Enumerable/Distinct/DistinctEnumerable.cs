@@ -19,7 +19,8 @@ namespace UniNativeLinq
         [PseudoIsReadOnly] private TEnumerable enumerable;
         private readonly TEqualityComparer equalityComparer;
         private readonly Allocator alloc;
-
+        public bool CanIndexAccess => false;
+        public ref T this[long index] => throw new NotSupportedException();
         public DistinctEnumerable(in TEnumerable enumerable, in TEqualityComparer equalityComparer, Allocator allocator)
         {
             this.enumerable = enumerable;

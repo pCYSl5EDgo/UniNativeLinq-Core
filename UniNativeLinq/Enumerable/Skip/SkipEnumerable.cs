@@ -16,6 +16,10 @@ namespace UniNativeLinq
         private readonly TEnumerable enumerable;
         private readonly long skipCount;
 
+        public bool CanIndexAccess => enumerable.CanIndexAccess;
+
+        public ref T this[long index] => ref enumerable[skipCount + index];
+
         public SkipEnumerable(in TEnumerable enumerable, long skipCount)
         {
             this.enumerable = enumerable;

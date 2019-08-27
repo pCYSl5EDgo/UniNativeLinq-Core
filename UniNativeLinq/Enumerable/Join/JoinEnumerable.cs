@@ -31,7 +31,8 @@ namespace UniNativeLinq
         private readonly TKeyEqualityComparer equalityComparer;
         private readonly TSelector sourceSelector;
         private readonly Allocator alloc;
-
+        public bool CanIndexAccess => false;
+        public ref T this[long index] => throw new NotSupportedException();
         public JoinEnumerable(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TKeyEqualityComparer equalityComparer, in TSelector sourceSelector, Allocator allocator)
         {
             this.outerEnumerable = outerEnumerable;
