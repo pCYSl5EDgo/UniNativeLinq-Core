@@ -79,7 +79,7 @@ namespace UniNativeLinq
 
             public void Clear() => Interlocked.Exchange(ref Count, 0);
 
-            public bool CanIndexAccess => true;
+            public bool CanIndexAccess() => true;
             public ref T this[long index] => ref Values[index];
 
             public struct Enumerator : IRefEnumerator<T>
@@ -327,7 +327,7 @@ namespace UniNativeLinq
             }
         }
 
-        public bool CanIndexAccess => true;
+        public bool CanIndexAccess() => true;
 
         public ref T this[long index]
         {

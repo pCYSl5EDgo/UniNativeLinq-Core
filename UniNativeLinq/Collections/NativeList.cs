@@ -35,7 +35,7 @@ namespace UniNativeLinq
         public bool IsEmpty => Length == 0;
         public bool IsFull => Length == Capacity;
 
-        public bool CanIndexAccess => true;
+        public bool CanIndexAccess() => true;
 
         public ref T this[long index]
         {

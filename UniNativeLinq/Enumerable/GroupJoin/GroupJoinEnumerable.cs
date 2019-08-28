@@ -39,7 +39,7 @@ namespace UniNativeLinq
         private readonly TSelector sourceSelector;
         private readonly TKeyEqualityComparer keyEqualityComparer;
         private readonly Allocator alloc;
-        public bool CanIndexAccess => false;
+        public bool CanIndexAccess() => false;
         public ref T this[long index] => throw new NotSupportedException();
         public GroupJoinEnumerable(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TKeyEqualityComparer keyEqualityComparer, in TSelector sourceSelector, Allocator allocator)
         {

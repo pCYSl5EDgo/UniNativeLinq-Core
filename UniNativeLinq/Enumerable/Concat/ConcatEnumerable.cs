@@ -17,7 +17,7 @@ namespace UniNativeLinq
     {
         public TFirstEnumerable FirstEnumerable;
         public TSecondEnumerable SecondEnumerable;
-        public bool CanIndexAccess => FirstEnumerable.CanIndexAccess && SecondEnumerable.CanIndexAccess;
+        public bool CanIndexAccess() => FirstEnumerable.CanIndexAccess() && SecondEnumerable.CanIndexAccess();
 
         public ref T this[long index]
         {

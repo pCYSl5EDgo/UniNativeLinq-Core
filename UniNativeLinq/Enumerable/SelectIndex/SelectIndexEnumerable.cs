@@ -18,7 +18,7 @@ namespace UniNativeLinq
         private readonly TPrevEnumerable enumerable;
         private readonly TAction acts;
 
-        public bool CanIndexAccess => false;
+        public bool CanIndexAccess() => false;
 
         public ref T this[long index] => throw new NotSupportedException();
 

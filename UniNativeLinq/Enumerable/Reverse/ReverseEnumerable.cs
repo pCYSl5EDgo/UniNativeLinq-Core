@@ -127,7 +127,7 @@ namespace UniNativeLinq
             return answer;
         }
 
-        public bool CanIndexAccess => Enumerable.CanIndexAccess;
+        public bool CanIndexAccess() => Enumerable.CanIndexAccess();
         public ref T this[long index] => ref Enumerable[Enumerable.LongCount() - 1L - index];
 
         [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]

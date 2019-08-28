@@ -27,7 +27,7 @@ namespace UniNativeLinq
         private readonly TEqualityComparer equalityComparer;
         private readonly Allocator alloc;
         public GroupByDisposeOptions GroupByDisposeOption;
-        public bool CanIndexAccess => false;
+        public bool CanIndexAccess() => false;
         public ref GroupingEnumerable<TKey, TElement> this[long index] => throw new NotSupportedException();
         public GroupByEnumerable(in TEnumerable enumerable, in TKeyFunc keySelector, in TElementFunc elementSelector, in TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions groupByDisposeOption)
         {

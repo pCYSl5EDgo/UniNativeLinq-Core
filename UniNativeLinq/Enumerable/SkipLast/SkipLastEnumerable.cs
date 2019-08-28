@@ -18,7 +18,7 @@ namespace UniNativeLinq
         private readonly long skipCount;
         private readonly Allocator alloc;
 
-        public bool CanIndexAccess => enumerable.CanIndexAccess;
+        public bool CanIndexAccess() => enumerable.CanIndexAccess();
         public ref T this[long index] => ref enumerable[index];
 
         public SkipLastEnumerable(in TEnumerable enumerable, long skipCount, Allocator allocator)

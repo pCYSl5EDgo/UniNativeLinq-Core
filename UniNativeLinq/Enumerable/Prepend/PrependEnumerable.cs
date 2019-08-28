@@ -16,7 +16,7 @@ namespace UniNativeLinq
         private readonly TEnumerable enumerable;
         private readonly T element;
 
-        public bool CanIndexAccess => enumerable.CanIndexAccess;
+        public bool CanIndexAccess() => enumerable.CanIndexAccess();
 
         public ref T this[long index]
         {

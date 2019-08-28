@@ -157,7 +157,7 @@ namespace UniNativeLinq
             return answer;
         }
 
-        public bool CanIndexAccess => true;
+        public bool CanIndexAccess() => true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
         public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)

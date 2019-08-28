@@ -112,7 +112,7 @@ namespace UniNativeLinq
             return answer;
         }
 
-        public bool CanIndexAccess => enumerable.CanIndexAccess;
+        public bool CanIndexAccess() => enumerable.CanIndexAccess();
 
         public ref T this[long index] => ref enumerable[index];
 

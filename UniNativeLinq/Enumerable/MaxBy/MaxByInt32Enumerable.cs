@@ -19,7 +19,7 @@ namespace UniNativeLinq
         [PseudoIsReadOnly] private TEnumerable enumerable;
         [PseudoIsReadOnly] private TKeySelector keySelector;
         private readonly Allocator alloc;
-        public bool CanIndexAccess => false;
+        public bool CanIndexAccess() => false;
         public ref T this[long index] => throw new NotSupportedException();
         public MaxByInt32Enumerable(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
         {

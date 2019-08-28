@@ -133,7 +133,7 @@ namespace UniNativeLinq
             return answer;
         }
 
-        public bool CanIndexAccess => false;
+        public bool CanIndexAccess() => false;
         public ref T this[long index] => throw new NotSupportedException();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

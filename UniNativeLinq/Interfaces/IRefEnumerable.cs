@@ -19,7 +19,7 @@ namespace UniNativeLinq
         NativeArray<T> ToNativeArray(Allocator allocator);
         T[] ToArray();
 
-        bool CanIndexAccess { get; }
+        bool CanIndexAccess();
         ref T this[long index] { get; }
     }
 }

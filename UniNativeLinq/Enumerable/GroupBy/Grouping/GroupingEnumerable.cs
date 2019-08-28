@@ -19,7 +19,7 @@ namespace UniNativeLinq
         public long Length;
         public Allocator Allocator;
 
-        public bool CanIndexAccess => true;
+        public bool CanIndexAccess() => true;
 
         public ref T this[long index]
         {
