@@ -37,6 +37,13 @@ namespace UniNativeLinq
             alloc = allocator;
         }
 
+        public OrderByEnumerable(in TEnumerable enumerable, Allocator allocator)
+        {
+            this.enumerable = enumerable;
+            orderComparer = default;
+            alloc = allocator;
+        }
+
         public struct Enumerator : IRefEnumerator<T>
         {
             internal T* Ptr;

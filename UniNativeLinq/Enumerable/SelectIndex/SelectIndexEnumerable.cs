@@ -28,6 +28,12 @@ namespace UniNativeLinq
             this.acts = acts;
         }
 
+        public SelectIndexEnumerable(in TPrevEnumerable enumerable)
+        {
+            this.enumerable = enumerable;
+            acts = default;
+        }
+
         [LocalRefReturn]
         public struct Enumerator : IRefEnumerator<T>
         {
