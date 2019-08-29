@@ -38,13 +38,11 @@ namespace UniNativeLinq
 
         public struct Enumerator : IRefEnumerator<T>
         {
-            private readonly ReverseEnumerableKind kind;
             private readonly Allocator allocator;
             private NativeEnumerable<T>.Enumerator enumerator;
 
             internal Enumerator(ref TEnumerable enumerable, Allocator allocator)
             {
-                kind = ReverseEnumerableKind.Other;
                 var nativeEnumerable = enumerable.ToNativeEnumerable(allocator);
                 for (long i = 0L, j = nativeEnumerable.Length - 1; i < j; i++, j--)
                 {
@@ -66,17 +64,10 @@ namespace UniNativeLinq
 
             public void Dispose()
             {
-                switch (kind)
+                if (enumerator.Ptr != null)
                 {
-                    case ReverseEnumerableKind.None:
-                        return;
-                    case ReverseEnumerableKind.NativeArray:
-                        enumerator.Dispose();
-                        break;
-                    case ReverseEnumerableKind.Other:
-                        UnsafeUtility.Free(enumerator.Ptr, allocator);
-                        enumerator.Dispose();
-                        break;
+                    UnsafeUtility.Free(enumerator.Ptr, allocator);
+                    enumerator.Dispose();
                 }
                 this = default;
             }
@@ -116,7 +107,7 @@ namespace UniNativeLinq
                 *dest++ = enumerator.Current;
             enumerator.Dispose();
         }
-
+        
         [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
         public T[] ToArray()
         {
