@@ -3,6 +3,17 @@
 namespace UniNativeLinq
 {
     public struct
+        DelegateActionToStructOperatorAction<TArg0>
+        : IRefAction<TArg0>
+    {
+        public Action<TArg0> Func;
+        public DelegateActionToStructOperatorAction(Action<TArg0> Func) => this.Func = Func;
+        public void Execute(ref TArg0 arg0) => Func(arg0);
+
+        public static implicit operator DelegateActionToStructOperatorAction<TArg0>(Action<TArg0> Func) => new DelegateActionToStructOperatorAction<TArg0>(Func);
+    }
+
+    public struct
         DelegateFuncToStructOperatorAction<TArg0>
         : IRefAction<TArg0>
     {
