@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
+
 // ReSharper disable IdentifierTypo
+// ReSharper disable InconsistentNaming
 
 // ReSharper disable VariableHidesOuterVariable
 
@@ -14,19 +14,12 @@ namespace CecilRewrite
     {
         internal const string NameSpace = "UniNativeLinq";
 
-        internal const TypeAttributes StaticExtensionClassTypeAttributes = TypeAttributes.AnsiClass | TypeAttributes.AutoLayout | TypeAttributes.BeforeFieldInit | TypeAttributes.Sealed | TypeAttributes.Public | TypeAttributes.Abstract;
-        internal const MethodAttributes StaticMethodAttributes = MethodAttributes.Public | MethodAttributes.Static | MethodAttributes.HideBySig;
         internal static readonly ModuleDefinition MainModule;
-        internal static readonly CustomAttribute ExtensionAttribute;
         internal static readonly CustomAttribute IsReadOnlyAttribute;
-        internal static readonly CustomAttribute UnManagedAttribute;
         internal static readonly ModuleDefinition SystemModule;
         internal static readonly AssemblyDefinition Assembly;
         internal static readonly TypeReference Allocator;
-        internal static readonly TypeReference NativeArray;
         internal static readonly TypeDefinition[] Enumerables;
-        internal static readonly MethodDefinition AsRefEnumerableArray;
-        internal static readonly MethodDefinition AsRefEnumerableNative;
 
         static Program()
         {
@@ -36,116 +29,23 @@ namespace CecilRewrite
             resolver.AddSearchDirectory(folderPath);
             Assembly = AssemblyDefinition.ReadAssembly(UniNativeLinqDll, new ReaderParameters(readingMode: ReadingMode.Deferred) { AssemblyResolver = resolver });
             MainModule = Assembly.MainModule;
-            var nativeEnumerable = MainModule.GetType("UniNativeLinq.NativeEnumerable");
-            AsRefEnumerableArray = nativeEnumerable.Methods.First(x => x.Name == "AsRefEnumerable" && x.Parameters.Count == 1 && x.Parameters.First().ParameterType.IsArray);
-            AsRefEnumerableNative = nativeEnumerable.Methods.First(x => x.Name == "AsRefEnumerable" && x.Parameters.Count == 1 && !x.Parameters.First().ParameterType.IsArray);
-            ExtensionAttribute = nativeEnumerable.CustomAttributes.Single();
-            var negateMethodDefinition = MainModule.GetType("UniNativeLinq.NegatePredicate`2").GetConstructors().First();
-            IsReadOnlyAttribute = negateMethodDefinition.Parameters.First().CustomAttributes.First();
+
+            IsReadOnlyAttribute = MainModule.GetType("UniNativeLinq", "AppendEnumerable`3").Methods.First(x => x.Name == "GetEnumerator" && !x.HasParameters).CustomAttributes[0];
+
             var nativeEnumerable1 = MainModule.GetType(NameSpace, "NativeEnumerable`1");
             MethodDefinition ToNativeArray = nativeEnumerable1.Methods.First(x => x.Name == nameof(ToNativeArray));
-            NativeArray = MainModule.ImportReference(ToNativeArray.ReturnType.Resolve());
             Allocator = ToNativeArray.Parameters.First().ParameterType;
-            var t = nativeEnumerable1.GenericParameters.First();
-            UnManagedAttribute = t.CustomAttributes[0];
             SystemModule = ModuleDefinition.ReadModule(@"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.3\build\netstandard2.0\ref\netstandard.dll");
             Enumerables = MainModule.Types.Where(x => x.IsValueType && x.IsPublic && x.HasInterfaces && x.Interfaces.Any(y => y.InterfaceType.Name == "IRefEnumerable`2")).ToArray();
         }
 
-        public static void Main(string[] args)
+        public static void Main()
         {
             RewriteThrow(MainModule);
             ReWritePseudoIsReadOnly(MainModule);
             ReWritePseudoUtility(MainModule);
 
-            //DefineHelperMethods();
-
             Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
-        }
-
-        private static void DefineHelperMethods()
-        {
-            TryGetMinHelper.Create(MainModule);
-            TryGetMaxHelper.Create(MainModule);
-            TryGetMinFuncHelper.Create(MainModule);
-            TryGetMaxFuncHelper.Create(MainModule);
-            TryGetMinOperatorHelper.Create(MainModule);
-            TryGetMaxOperatorHelper.Create(MainModule);
-            AnyOperatorHelper.Create(MainModule);
-            AllOperatorHelper.Create(MainModule);
-            AnyFuncHelper.Create(MainModule);
-            AnyRefFuncHelper.Create(MainModule);
-            AllFuncHelper.Create(MainModule);
-            AllRefFuncHelper.Create(MainModule);
-            IsEmptyHelper.Create(MainModule);
-            AggregateOperatorSmallHelper.Create(MainModule);
-            AggregateFuncSmallHelper.Create(MainModule);
-            AggregateRefFuncSmallHelper.Create(MainModule);
-            AggregateOperatorWithResultTypeHelper.Create(MainModule);
-            AggregateFuncWithResultTypeHelper.Create(MainModule);
-            AggregateRefFuncWithResultTypeHelper.Create(MainModule);
-            ContainsDefaultEqualityComparerHelper.Create(MainModule);
-            ContainsFuncHelper.Create(MainModule);
-            ContainsRefFuncHelper.Create(MainModule);
-            TryGetElementAtHelper.Create(MainModule);
-            TryGetFirstHelper.Create(MainModule);
-            TryGetLastHelper.Create(MainModule);
-            TryGetSingleHelper.Create(MainModule);
-            SumHelper.Create(MainModule);
-            AverageHelper.Create(MainModule);
-            AppendPrependDefaultIfEmptyHelper.Create(MainModule);
-            SelectOperatorHelper.Create(MainModule);
-            SelectFuncHelper.Create(MainModule);
-            SelectRefFuncHelper.Create(MainModule);
-            SkipTakeWhileWhereOperatorHelper.Create(MainModule);
-            SkipTakeWhileWhereFuncHelper.Create(MainModule);
-            SkipTakeWhileWhereRefFuncHelper.Create(MainModule);
-            OrderByOperatorHelper.Create(MainModule);
-            OrderByFuncHelper.Create(MainModule);
-            OrderByRefFuncHelper.Create(MainModule);
-            OrderByDefaultHelper.Create(MainModule);
-            ReverseHelper.Create(MainModule);
-            SkipTakeLastHelper.Create(MainModule);
-            DistinctDefaultHelper.Create(MainModule);
-            DistinctOperatorHelper.Create(MainModule);
-            DistinctFuncHelper.Create(MainModule);
-            DistinctRefFuncHelper.Create(MainModule);
-            GroupByHelper.Create(MainModule);
-            SelectIndexFuncHelper.Create(MainModule);
-            SelectIndexRefFuncHelper.Create(MainModule);
-            SelectIndexOperatorHelper.Create(MainModule);
-            WhereIndexOperatorHelper.Create(MainModule);
-            WhereIndexFuncHelper.Create(MainModule);
-            WhereIndexRefFuncHelper.Create(MainModule);
-            MinMaxOperatorHelper.Create(MainModule);
-            MinMaxFuncHelper.Create(MainModule);
-            MinMaxRefFuncHelper.Create(MainModule);
-            SelectManyOperatorHelper.Create(MainModule);
-            SelectManyFuncHelper.Create(MainModule);
-            SelectManyRefFuncHelper.Create(MainModule);
-            RepeatHelper.Create(MainModule);
-            WithIndexHelper.Create(MainModule);
-            ConcatHelper.Create(MainModule);
-            IntersectExceptDefaultComparerHelper.Create(MainModule);
-            IntersectExceptOperationHelper.Create(MainModule);
-            IntersectExceptFuncHelper.Create(MainModule);
-            IntersectExceptRefFuncHelper.Create(MainModule);
-            GroupJoinDefaultEqualityComparerOperatorHelper.Create(MainModule);
-            GroupJoinDefaultEqualityComparerFuncHelper.Create(MainModule);
-            GroupJoinDefaultEqualityComparerRefFuncHelper.Create(MainModule);
-            GroupJoinOperatorHelper.Create(MainModule);
-            GroupJoinFuncHelper.Create(MainModule);
-            GroupJoinRefFuncHelper.Create(MainModule);
-            JoinDefaultEqualityComparerOperatorHelper.Create(MainModule);
-            JoinDefaultEqualityComparerFuncHelper.Create(MainModule);
-            JoinDefaultEqualityComparerRefFuncHelper.Create(MainModule);
-            JoinOperatorHelper.Create(MainModule);
-            JoinFuncHelper.Create(MainModule);
-            JoinRefFuncHelper.Create(MainModule);
-            ZipHelper.Create(MainModule);
-            ZipOperatorHelper.Create(MainModule);
-            ZipFuncHelper.Create(MainModule);
-            ZipRefFuncHelper.Create(MainModule);
         }
 
         private static void ReWritePseudoUtility(ModuleDefinition module)
@@ -294,7 +194,5 @@ namespace CecilRewrite
                 processor.Replace(prev, ldflda);
             }
         }
-
-        internal static TypeReference CalcArrayType(IEnumerable<TypeReference> xs) => xs.First().MakeArrayType();
     }
 }
