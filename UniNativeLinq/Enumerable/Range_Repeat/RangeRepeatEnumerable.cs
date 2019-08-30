@@ -32,11 +32,18 @@ namespace UniNativeLinq
             }
         }
 
-        public RangeRepeatEnumerable(T start, long length, TAction acts)
+        public RangeRepeatEnumerable(in T start, long length, in TAction acts)
         {
             this.start = start;
-            this.Length = length;
+            Length = length;
             this.acts = acts;
+        }
+
+        public RangeRepeatEnumerable(in T start, long length)
+        {
+            this.start = start;
+            Length = length;
+            acts = default;
         }
 
         [LocalRefReturn]
