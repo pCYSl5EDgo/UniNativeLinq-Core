@@ -55,18 +55,20 @@ namespace CecilRewrite
             {
                 foreach (var method in type.Methods)
                 {
-                    var processor = method.Body.GetILProcessor();
-                    var instructions = method.Body.Instructions;
-                    for (int i = instructions.Count; --i >= 0;)
+                    using (ScopedProcessor processor = method.Body.GetILProcessor())
                     {
-                        var instruction = instructions[i];
-                        if (instruction.OpCode != OpCodes.Call || !(instruction.Operand is MethodReference methodReference) || methodReference.DeclaringType.Name != "Pseudo") continue;
-                        if (methodReference.Name == "AsRefNull")
+                        var instructions = method.Body.Instructions;
+                        for (var i = instructions.Count; --i >= 0;)
                         {
-                            processor.InsertBefore(instruction, Instruction.Create(OpCodes.Ldc_I4_0));
-                            processor.InsertBefore(instruction, Instruction.Create(OpCodes.Conv_U));
+                            var instruction = instructions[i];
+                            if (instruction.OpCode != OpCodes.Call || !(instruction.Operand is MethodReference methodReference) || methodReference.DeclaringType.Name != "Pseudo") continue;
+                            if (methodReference.Name == "AsRefNull")
+                            {
+                                processor.InsertBefore(instruction, Instruction.Create(OpCodes.Ldc_I4_0));
+                                processor.InsertBefore(instruction, Instruction.Create(OpCodes.Conv_U));
+                            }
+                            processor.Remove(instruction);
                         }
-                        processor.Remove(instruction);
                     }
                 }
             }
@@ -161,22 +163,28 @@ namespace CecilRewrite
         internal static void ReWrite(MethodDefinition method, FieldReference field)
         {
             var body = method.Body;
-            var processor = body.GetILProcessor();
-            var ldflda = Instruction.Create(OpCodes.Ldflda, field);
-            var ret = Instruction.Create(OpCodes.Ret);
-            var ldarg0 = Instruction.Create(OpCodes.Ldarg_0);
-            for (var i = body.Instructions.Count; --i >= 0;)
+            using (ScopedProcessor processor = body.GetILProcessor())
             {
-                var instruction = body.Instructions[i];
-                if (instruction.OpCode != OpCodes.Throw) continue;
-                var prev = instruction.Previous;
-                if (prev.OpCode != OpCodes.Newobj) continue;
-                var exceptionTypeConstructor = ((MethodReference)prev.Operand);
-                Console.WriteLine(exceptionTypeConstructor.DeclaringType.FullName);
-                if (exceptionTypeConstructor.DeclaringType.FullName != "System.NotImplementedException") continue;
-                processor.Replace(instruction, ret);
-                processor.InsertBefore(prev, ldarg0);
-                processor.Replace(prev, ldflda);
+                for (var i = body.Instructions.Count; --i >= 0;)
+                {
+                    var throwInstruction = body.Instructions[i];
+                    if (throwInstruction.OpCode != OpCodes.Throw) continue;
+                    var newObjInstruction = throwInstruction.Previous;
+                    if (newObjInstruction.OpCode != OpCodes.Newobj) continue;
+                    var NotImplementedExceptionConstructor = ((MethodReference)newObjInstruction.Operand);
+                    Console.WriteLine(NotImplementedExceptionConstructor.DeclaringType.FullName);
+                    if (NotImplementedExceptionConstructor.DeclaringType.FullName != "System.NotImplementedException") continue;
+
+                    var ldarg0 = Instruction.Create(OpCodes.Ldarg_0);
+                    var ldflda = Instruction.Create(OpCodes.Ldflda, field);
+                    var ret = Instruction.Create(OpCodes.Ret);
+
+                    processor
+                        .Remove(newObjInstruction)
+                        .Replace(throwInstruction, ldarg0)
+                        .InsertAfter(ldarg0, ldflda)
+                        .InsertAfter(ldflda, ret);
+                }
             }
         }
     }

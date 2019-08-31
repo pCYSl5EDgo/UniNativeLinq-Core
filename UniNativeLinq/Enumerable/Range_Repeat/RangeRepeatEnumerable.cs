@@ -82,15 +82,15 @@ namespace UniNativeLinq
 
             public ref T TryGetNext(out bool success)
             {
-                success = ++index >= count;
-                if (!success)
+                success = ++index < count;
+                if (success)
                 {
-                    index = count;
-                    return ref Pseudo.AsRefNull<T>();
+                    if (index > 0)
+                        action.Execute(ref element);
+                    throw new NotImplementedException();
                 }
-                if (index > 0)
-                    action.Execute(ref element);
-                throw new NotImplementedException();
+                index = count;
+                return ref Pseudo.AsRefNull<T>();
             }
 
             public bool TryMoveNext(out T value)
