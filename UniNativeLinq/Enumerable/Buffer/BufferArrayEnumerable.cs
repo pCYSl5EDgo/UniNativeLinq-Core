@@ -5,13 +5,13 @@ using System.Runtime.CompilerServices;
 
 namespace UniNativeLinq
 {
-    public readonly struct
+    public struct
         BufferArrayEnumerable<T>
         : IEnumerable<ArrayEnumerable<T>>
         where T : unmanaged
     {
-        private readonly ArrayEnumerable<T> enumerable;
-        private readonly long count;
+        private ArrayEnumerable<T> enumerable;
+        private long count;
 
         public BufferArrayEnumerable(in ArrayEnumerable<T> enumerable, long count)
         {
@@ -22,8 +22,8 @@ namespace UniNativeLinq
 
         public struct Enumerator : IEnumerator<ArrayEnumerable<T>>
         {
-            private readonly ArrayEnumerable<T> enumerable;
-            private readonly long count;
+            private ArrayEnumerable<T> enumerable;
+            private long count;
             private long index;
 
             internal Enumerator(in BufferArrayEnumerable<T> @this)
@@ -33,8 +33,8 @@ namespace UniNativeLinq
                 index = -count;
             }
 
-            public readonly ArrayEnumerable<T> Current => enumerable.Slice(index, count);
-            readonly object IEnumerator.Current => throw new NotImplementedException();
+            public ArrayEnumerable<T> Current => enumerable.Slice(index, count);
+            object IEnumerator.Current => throw new NotImplementedException();
 
             public void Dispose() => this = default;
 
@@ -50,20 +50,20 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly ArrayEnumerable<T> Flatten() => enumerable;
+        public ArrayEnumerable<T> Flatten() => enumerable;
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<ArrayEnumerable<T>> IEnumerable<ArrayEnumerable<T>>.GetEnumerator() => GetEnumerator();
+        IEnumerator<ArrayEnumerable<T>> IEnumerable<ArrayEnumerable<T>>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => true;
+        public bool CanFastCount() => true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any()
+        public bool Any()
         {
             var enumerator = GetEnumerator();
             if (enumerator.MoveNext())
@@ -76,14 +76,14 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count()
+        public int Count()
             => (int)LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount() => (enumerable.LongCount() - 1) / count + 1L;
+        public long LongCount() => (enumerable.LongCount() - 1) / count + 1L;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly ArrayEnumerable<T>[] ToArray()
+        public ArrayEnumerable<T>[] ToArray()
         {
             var count = LongCount();
             if (count == 0) return Array.Empty<ArrayEnumerable<T>>();

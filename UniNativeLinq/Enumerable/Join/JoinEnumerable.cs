@@ -8,7 +8,7 @@ using Unity.Collections.LowLevel.Unsafe;
 namespace UniNativeLinq
 {
     [SlowCount]
-    public readonly unsafe struct
+    public unsafe struct
         JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TKeyEqualityComparer, T, TSelector>
         : IRefEnumerable<JoinEnumerable<TOuterEnumerable, TOuterEnumerator, TOuterSource, TInnerEnumerable, TInnerEnumerator, TInnerSource, TKey, TOuterKeySelector, TInnerKeySelector, TKeyEqualityComparer, T, TSelector>.Enumerator, T>
         where TOuterSource : unmanaged
@@ -24,13 +24,13 @@ namespace UniNativeLinq
         where TKeyEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
         where TSelector : struct, IRefFunc<TOuterSource, TInnerSource, T>
     {
-        private readonly TOuterEnumerable outerEnumerable;
-        private readonly TInnerEnumerable innerEnumerable;
-        private readonly TOuterKeySelector outerKeySelector;
-        private readonly TInnerKeySelector innerKeySelector;
-        private readonly TKeyEqualityComparer equalityComparer;
-        private readonly TSelector sourceSelector;
-        private readonly Allocator alloc;
+        private TOuterEnumerable outerEnumerable;
+        private TInnerEnumerable innerEnumerable;
+        private TOuterKeySelector outerKeySelector;
+        private TInnerKeySelector innerKeySelector;
+        private TKeyEqualityComparer equalityComparer;
+        private TSelector sourceSelector;
+        private Allocator alloc;
         public bool CanIndexAccess() => false;
         public ref T this[long index] => throw new NotSupportedException();
         public JoinEnumerable(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TKeyEqualityComparer equalityComparer, in TSelector sourceSelector, Allocator allocator)
@@ -50,14 +50,14 @@ namespace UniNativeLinq
             private TOuterEnumerator outerEnumerator;
             private TOuterKeySelector outerKeySelector;
             private TKey outerKey;
-            private readonly long innerCount;
+            private long innerCount;
             private long innerIndex;
             private TInnerSource* innerValues;
             private TKey* innerKeys;
             private T element;
             private TKeyEqualityComparer equalityComparer;
             private TSelector sourceSelector;
-            private readonly Allocator allocator;
+            private Allocator allocator;
 
             public Enumerator(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TSelector sourceSelector, in TKeyEqualityComparer equalityComparer, Allocator allocator)
             {
@@ -102,9 +102,9 @@ namespace UniNativeLinq
                 capacity = newCapacity;
             }
 
-            public readonly ref T Current => throw new NotImplementedException();
-            readonly T IEnumerator<T>.Current => Current;
-            readonly object IEnumerator.Current => Current;
+            public ref T Current => throw new NotImplementedException();
+            T IEnumerator<T>.Current => Current;
+            object IEnumerator.Current => Current;
 
             public bool MoveNext()
             {
@@ -128,7 +128,7 @@ namespace UniNativeLinq
                 }
             }
 
-            public readonly void Reset() => throw new InvalidOperationException();
+            public void Reset() => throw new InvalidOperationException();
 
             public void Dispose()
             {
@@ -188,20 +188,20 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(outerEnumerable, innerEnumerable, outerKeySelector, innerKeySelector, sourceSelector, equalityComparer, alloc);
+        public Enumerator GetEnumerator() => new Enumerator(outerEnumerable, innerEnumerable, outerKeySelector, innerKeySelector, sourceSelector, equalityComparer, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => false;
+        public bool CanFastCount() => false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any()
+        public bool Any()
         {
             var enumerator = GetEnumerator();
             if (enumerator.MoveNext())
@@ -214,11 +214,11 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count()
+        public int Count()
             => (int)LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount()
+        public long LongCount()
         {
             var enumerator = GetEnumerator();
             var count = 0L;
@@ -229,7 +229,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(T* dest)
+        public void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -238,7 +238,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly T[] ToArray()
+        public T[] ToArray()
         {
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
@@ -248,7 +248,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
+        public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
@@ -257,12 +257,12 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
+        public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
             var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
-            CopyTo(UnsafeUtilityEx.GetPointer(answer));
+            CopyTo(answer.GetPointer());
             return answer;
         }
         #endregion

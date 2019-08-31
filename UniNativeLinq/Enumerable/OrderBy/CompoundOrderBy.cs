@@ -1,12 +1,12 @@
 namespace UniNativeLinq
 {
-    public readonly struct CompoundOrderBy<T, TComparer0, TComparer1>
+    public struct CompoundOrderBy<T, TComparer0, TComparer1>
         : IRefFunc<T, T, int>
         where TComparer0 : struct, IRefFunc<T, T, int>
         where TComparer1 : struct, IRefFunc<T, T, int>
     {
-        private readonly TComparer0 comparer0;
-        private readonly TComparer1 comparer1;
+        private TComparer0 comparer0;
+        private TComparer1 comparer1;
 
         public CompoundOrderBy(in TComparer0 comparer0, in TComparer1 comparer1)
         {

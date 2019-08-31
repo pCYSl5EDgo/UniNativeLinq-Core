@@ -3,5 +3,5 @@
 # IDE0022: メソッドにブロック本体を使用する
 csharp_style_expression_bodied_methods = false:none
 
-# CS8656: Call to non-readonly member from a 'readonly' member results in an implicit copy.
+# CS8656: Call to non-member from a 'readonly' member results in an implicit copy.
 dotnet_diagnostic.CS8656.severity = error

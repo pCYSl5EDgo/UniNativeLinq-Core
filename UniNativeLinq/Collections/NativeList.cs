@@ -15,7 +15,7 @@ namespace UniNativeLinq
         private T* Ptr;
         private long Capacity;
         private long Length;
-        private readonly Allocator Allocator;
+        private Allocator Allocator;
 
         public NativeList(Allocator allocator)
         {
@@ -25,11 +25,11 @@ namespace UniNativeLinq
             Allocator = allocator;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Enumerator GetEnumerator() => new Enumerator(this);
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public bool IsEmpty => Length == 0;
@@ -59,25 +59,25 @@ namespace UniNativeLinq
 
         public void Clear() => Length = 0;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool CanFastCount() => true;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Any() => Length != 0;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Count() => (int)Length;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long LongCount() => Length;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeEnumerable<T> AsNativeEnumerable() => NativeEnumerable<T>.Create(Ptr, Length);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, Ptr, Length);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var ptr = UnsafeUtilityEx.Malloc<T>(Length, allocator);
@@ -85,7 +85,7 @@ namespace UniNativeLinq
             return NativeEnumerable<T>.Create(ptr, Length);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var answer = new NativeArray<T>(Count(), allocator, NativeArrayOptions.UninitializedMemory);
@@ -93,7 +93,7 @@ namespace UniNativeLinq
             return answer;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()
         {
             var answer = new T[Length];
@@ -103,8 +103,8 @@ namespace UniNativeLinq
 
         public struct Enumerator : IRefEnumerator<T>
         {
-            private readonly T* ptr;
-            private readonly long count;
+            private T* ptr;
+            private long count;
             private long index;
 
             internal Enumerator(in NativeList<T> @this)

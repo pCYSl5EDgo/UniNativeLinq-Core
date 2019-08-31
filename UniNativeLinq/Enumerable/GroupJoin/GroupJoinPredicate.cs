@@ -10,9 +10,9 @@ namespace UniNativeLinq
         where TEqualityComparer : struct, IRefFunc<TKey, TKey, bool>
     {
         public TKey Key;
-        private readonly NativeEnumerable<TKey> keys;
-        private readonly TEqualityComparer comparer;
-        private readonly Allocator allocator;
+        private NativeEnumerable<TKey> keys;
+        private TEqualityComparer comparer;
+        private Allocator allocator;
         public long Length => keys.Length;
 
         public GroupJoinPredicate(in NativeEnumerable<TKey> inners, in TEqualityComparer comparer, Allocator allocator)

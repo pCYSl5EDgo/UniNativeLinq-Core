@@ -15,7 +15,7 @@ namespace UniNativeLinq
     {
         private Node First;
         private Node LastFull;
-        private readonly Allocator alloc;
+        private Allocator alloc;
 
         public UnrolledLinkedList(Allocator allocator)
         {
@@ -46,10 +46,10 @@ namespace UniNativeLinq
                 Values = UnsafeUtilityEx.Malloc<T>(capacity, allocator);
             }
 
-            public readonly bool IsFull => Count == Capacity;
-            public readonly bool IsEmpty => Count == 0;
-            public readonly bool HasNext => Next;
-            public readonly ref Node NextRef => ref *Next.Value;
+            public bool IsFull => Count == Capacity;
+            public bool IsEmpty => Count == 0;
+            public bool HasNext => Next;
+            public ref Node NextRef => ref *Next.Value;
 
             public bool TryAddConcurrent(in T value)
             {
@@ -84,8 +84,8 @@ namespace UniNativeLinq
 
             public struct Enumerator : IRefEnumerator<T>
             {
-                private readonly T* values;
-                private readonly long count;
+                private T* values;
+                private long count;
                 private long index;
 
                 internal Enumerator(in Node parent)
@@ -95,9 +95,9 @@ namespace UniNativeLinq
                     index = -1;
                 }
 
-                public readonly ref T Current => ref values[index];
-                readonly T IEnumerator<T>.Current => Current;
-                readonly object IEnumerator.Current => Current;
+                public ref T Current => ref values[index];
+                T IEnumerator<T>.Current => Current;
+                object IEnumerator.Current => Current;
                 public void Dispose() => this = default;
                 public bool MoveNext() => ++index < count;
                 public void Reset() => index = -1;
@@ -125,9 +125,9 @@ namespace UniNativeLinq
                 }
             }
 
-            public readonly Enumerator GetEnumerator() => new Enumerator(this);
-            readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-            readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+            public Enumerator GetEnumerator() => new Enumerator(this);
+            IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
             public void Dispose(Allocator allocator)
             {
@@ -144,31 +144,31 @@ namespace UniNativeLinq
                 this = default;
             }
 
-            public readonly bool CanFastCount() => true;
+            public bool CanFastCount() => true;
 
-            public readonly bool Any() => Count > 0;
+            public bool Any() => Count > 0;
 
-            readonly int IRefEnumerable<Enumerator, T>.Count() => (int)Count;
+            int IRefEnumerable<Enumerator, T>.Count() => (int)Count;
 
-            public readonly long LongCount() => Count;
+            public long LongCount() => Count;
 
-            public readonly void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, Values, Count);
+            public void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, Values, Count);
 
-            public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
+            public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
             {
                 var ptr = UnsafeUtilityEx.Malloc<T>(Count, allocator);
                 CopyTo(ptr);
                 return NativeEnumerable<T>.Create(ptr, Count);
             }
 
-            public readonly NativeArray<T> ToNativeArray(Allocator allocator)
+            public NativeArray<T> ToNativeArray(Allocator allocator)
             {
                 var answer = new NativeArray<T>((int)Count, allocator, NativeArrayOptions.UninitializedMemory);
                 CopyTo(answer.GetPointer());
                 return answer;
             }
 
-            public readonly T[] ToArray()
+            public T[] ToArray()
             {
                 var answer = new T[Count];
                 CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
@@ -239,7 +239,7 @@ namespace UniNativeLinq
         }
         #endregion
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(this);
+        public Enumerator GetEnumerator() => new Enumerator(this);
 
         public struct Enumerator
             : IRefEnumerator<T>
@@ -347,16 +347,16 @@ namespace UniNativeLinq
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => false;
+        public bool CanFastCount() => false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any()
+        public bool Any()
         {
             var enumerator = GetEnumerator();
             if (enumerator.MoveNext())
@@ -369,11 +369,11 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count()
+        public int Count()
             => (int)LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount()
+        public long LongCount()
         {
             var enumerator = GetEnumerator();
             var count = 0L;
@@ -384,7 +384,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(T* dest)
+        public void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -393,7 +393,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly T[] ToArray()
+        public T[] ToArray()
         {
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
@@ -403,7 +403,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
+        public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
@@ -412,7 +412,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
+        public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;

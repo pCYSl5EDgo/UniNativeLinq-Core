@@ -79,8 +79,8 @@ namespace UniNativeLinq
 
         public struct Enumerator : IRefEnumerator<T>
         {
-            internal readonly T* Ptr;
-            internal readonly long Length;
+            internal T* Ptr;
+            internal long Length;
             private long index;
 
             public ref T Current => ref Ptr[index];
@@ -126,28 +126,28 @@ namespace UniNativeLinq
         }
 
         #region Interface Implementation
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool CanFastCount() => true;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Any() => Length != 0;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Count() => (int)Length;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long LongCount() => Length;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, Ptr, Length);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()
         {
             var count = LongCount();
@@ -159,7 +159,7 @@ namespace UniNativeLinq
 
         public bool CanIndexAccess() => true;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
@@ -168,7 +168,7 @@ namespace UniNativeLinq
             return Create(ptr, count);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
@@ -222,7 +222,7 @@ namespace UniNativeLinq
             return Create(Ptr + Length - count, count);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetLast(out T value)
         {
             var answer = Length != 0;

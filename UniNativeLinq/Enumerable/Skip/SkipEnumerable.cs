@@ -6,15 +6,15 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
-    public readonly unsafe struct
+    public unsafe struct
         SkipEnumerable<TEnumerable, TEnumerator, T>
         : IRefEnumerable<SkipEnumerable<TEnumerable, TEnumerator, T>.Enumerator, T>
         where T : unmanaged
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
-        private readonly TEnumerable enumerable;
-        private readonly long skipCount;
+        private TEnumerable enumerable;
+        private long skipCount;
 
         public bool CanIndexAccess() => enumerable.CanIndexAccess();
 
@@ -43,20 +43,20 @@ namespace UniNativeLinq
             public void Dispose() => enumerator.Dispose();
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator());
+        public Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator());
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => enumerable.CanFastCount();
+        public bool CanFastCount() => enumerable.CanFastCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any()
+        public bool Any()
         {
             var enumerator = GetEnumerator();
             if (enumerator.MoveNext())
@@ -69,18 +69,18 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count()
+        public int Count()
             => (int)LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount()
+        public long LongCount()
         {
             var count = enumerable.LongCount() - skipCount;
             return count < 0 ? 0 : count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(T* dest)
+        public void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -89,7 +89,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly T[] ToArray()
+        public T[] ToArray()
         {
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
@@ -99,7 +99,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
+        public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
@@ -108,12 +108,12 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
+        public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
             var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
-            CopyTo(UnsafeUtilityEx.GetPointer(answer));
+            CopyTo(answer.GetPointer());
             return answer;
         }
         #endregion

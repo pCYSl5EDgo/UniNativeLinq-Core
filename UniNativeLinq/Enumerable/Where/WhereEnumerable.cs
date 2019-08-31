@@ -7,31 +7,31 @@ using Unity.Collections;
 namespace UniNativeLinq
 {
     [SlowCount]
-    public readonly unsafe struct
-        WhereEnumerable<TPrevEnumerable, TPrevEnumerator, T, TPredicate>
-        : IRefEnumerable<WhereEnumerable<TPrevEnumerable, TPrevEnumerator, T, TPredicate>.Enumerator, T>
+    public unsafe struct
+        WhereEnumerable<TEnumerable, TEnumerator, T, TPredicate>
+        : IRefEnumerable<WhereEnumerable<TEnumerable, TEnumerator, T, TPredicate>.Enumerator, T>
         where T : unmanaged
         where TPredicate : struct, IRefFunc<T, bool>
-        where TPrevEnumerator : struct, IRefEnumerator<T>
-        where TPrevEnumerable : struct, IRefEnumerable<TPrevEnumerator, T>
+        where TEnumerator : struct, IRefEnumerator<T>
+        where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
-        private readonly TPrevEnumerable enumerable;
-        private readonly TPredicate predicts;
+        private TEnumerable enumerable;
+        private TPredicate predicts;
 
-        public WhereEnumerable(in TPrevEnumerable enumerable, in TPredicate predicts)
+        public WhereEnumerable(in TEnumerable enumerable, in TPredicate predicts)
         {
             this.enumerable = enumerable;
             this.predicts = predicts;
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), predicts);
+        public Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), predicts);
 
         public struct Enumerator : IRefEnumerator<T>
         {
-            private TPrevEnumerator enumerator;
+            private TEnumerator enumerator;
             private TPredicate predicts;
 
-            internal Enumerator(in TPrevEnumerator enumerator, in TPredicate predicts)
+            internal Enumerator(in TEnumerator enumerator, in TPredicate predicts)
             {
                 this.enumerator = enumerator;
                 this.predicts = predicts;
@@ -39,55 +39,71 @@ namespace UniNativeLinq
 
             public bool MoveNext()
             {
-                while (enumerator.MoveNext())
-                    if (predicts.Calc(ref enumerator.Current))
-                        return true;
-                return false;
+                while (true)
+                {
+                    ref var value = ref enumerator.TryGetNext(out var success);
+                    if (!success) return false;
+                    if (predicts.Calc(ref value)) return true;
+                }
             }
 
             public void Reset() => throw new InvalidOperationException();
 
-            public readonly ref T Current => ref enumerator.Current;
+            public ref T Current => ref enumerator.Current;
 
-            readonly T IEnumerator<T>.Current => Current;
+            T IEnumerator<T>.Current => Current;
 
-            readonly object IEnumerator.Current => Current;
+            object IEnumerator.Current => Current;
 
             public void Dispose() => enumerator.Dispose();
 
             public ref T TryGetNext(out bool success)
             {
-                ref var value = ref enumerator.TryGetNext(out success);
-                while (success)
+                while (true)
                 {
+                    ref var value = ref enumerator.TryGetNext(out success);
+                    if (!success)
+                    {
+                        return ref Pseudo.AsRefNull<T>();
+                    }
                     if (predicts.Calc(ref value))
+                    {
                         return ref value;
-                    value = ref enumerator.TryGetNext(out success);
+                    }
                 }
-                return ref value;
             }
 
             public bool TryMoveNext(out T value)
             {
-                while (enumerator.TryMoveNext(out value))
-                    if (predicts.Calc(ref value))
+                while (true)
+                {
+                    ref var temp = ref enumerator.TryGetNext(out var success);
+                    if (!success)
+                    {
+                        value = default;
+                        return false;
+                    }
+                    if (predicts.Calc(ref temp))
+                    {
+                        value = temp;
                         return true;
-                return false;
+                    }
+                }
             }
         }
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => false;
+        public bool CanFastCount() => false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any()
+        public bool Any()
         {
             var enumerator = GetEnumerator();
             if (enumerator.MoveNext())
@@ -100,11 +116,11 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count()
+        public int Count()
             => (int)LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount()
+        public long LongCount()
         {
             var enumerator = GetEnumerator();
             var count = 0L;
@@ -115,7 +131,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(T* dest)
+        public void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -124,7 +140,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly T[] ToArray()
+        public T[] ToArray()
         {
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
@@ -137,7 +153,7 @@ namespace UniNativeLinq
         public ref T this[long index] => throw new NotSupportedException();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
+        public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
@@ -146,12 +162,12 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
+        public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
             var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
-            CopyTo(UnsafeUtilityEx.GetPointer(answer));
+            CopyTo(answer.GetPointer());
             return answer;
         }
         #endregion

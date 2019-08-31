@@ -5,7 +5,7 @@
         : IRefAction<TResult>
         where TFunc : IFunc<TResult>
     {
-        private readonly TFunc func;
+        private TFunc func;
         public FuncToAction(in TFunc func) => this.func = func;
 
         public void Execute(ref TResult arg1) => arg1 = func.Calc();
@@ -18,7 +18,7 @@
         : IRefAction<TArg0, TResult>
         where TFunc : IRefFunc<TArg0, TResult>
     {
-        private readonly TFunc func;
+        private TFunc func;
         public FuncToAction(in TFunc func) => this.func = func;
 
         public void Execute(ref TArg0 arg0, ref TResult arg1) => arg1 = func.Calc(ref arg0);
@@ -31,7 +31,7 @@
         : IRefAction<TArg0, TArg1, TResult>
         where TFunc : IRefFunc<TArg0, TArg1, TResult>
     {
-        private readonly TFunc func;
+        private TFunc func;
         public FuncToAction(in TFunc func) => this.func = func;
 
         public void Execute(ref TArg0 arg0, ref TArg1 arg1, ref TResult arg2) => arg2 = func.Calc(ref arg0, ref arg1);

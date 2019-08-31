@@ -6,7 +6,6 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    [PseudoIsReadOnly]
     public unsafe struct
         MinByDoubleEnumerable<TEnumerable, TEnumerator, T, TKeySelector>
         : IRefEnumerable<MinByDoubleEnumerable<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
@@ -15,9 +14,9 @@ namespace UniNativeLinq
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
-        [PseudoIsReadOnly] private TEnumerable enumerable;
-        [PseudoIsReadOnly] private TKeySelector keySelector;
-        private readonly Allocator alloc;
+        private TEnumerable enumerable;
+        private TKeySelector keySelector;
+        private Allocator alloc;
         public bool CanIndexAccess() => false;
         public ref T this[long index] => throw new NotSupportedException();
         public MinByDoubleEnumerable(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
@@ -30,7 +29,7 @@ namespace UniNativeLinq
         public struct Enumerator : IRefEnumerator<T>
         {
             internal NativeEnumerable<T>.Enumerator NativeEnumerator;
-            private readonly Allocator allocator;
+            private Allocator allocator;
 
             internal Enumerator(ref TEnumerable enumerable, ref TKeySelector keySelector, Allocator allocator)
             {

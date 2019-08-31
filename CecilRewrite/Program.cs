@@ -14,12 +14,12 @@ namespace CecilRewrite
     {
         internal const string NameSpace = "UniNativeLinq";
 
-        internal static readonly ModuleDefinition MainModule;
-        internal static readonly CustomAttribute IsReadOnlyAttribute;
-        internal static readonly ModuleDefinition SystemModule;
-        internal static readonly AssemblyDefinition Assembly;
-        internal static readonly TypeReference Allocator;
-        internal static readonly TypeDefinition[] Enumerables;
+        internal static ModuleDefinition MainModule;
+        internal static CustomAttribute IsReadOnlyAttribute;
+        internal static ModuleDefinition SystemModule;
+        internal static AssemblyDefinition Assembly;
+        internal static TypeReference Allocator;
+        internal static TypeDefinition[] Enumerables;
 
         static Program()
         {
@@ -30,7 +30,7 @@ namespace CecilRewrite
             Assembly = AssemblyDefinition.ReadAssembly(UniNativeLinqDll, new ReaderParameters(readingMode: ReadingMode.Deferred) { AssemblyResolver = resolver });
             MainModule = Assembly.MainModule;
 
-            IsReadOnlyAttribute = MainModule.GetType("UniNativeLinq", "AppendEnumerable`3").Methods.First(x => x.Name == "GetEnumerator" && !x.HasParameters).CustomAttributes[0];
+            IsReadOnlyAttribute = MainModule.GetType("UniNativeLinq", "ZipValueTuple`2").CustomAttributes[2];
 
             var nativeEnumerable1 = MainModule.GetType(NameSpace, "NativeEnumerable`1");
             MethodDefinition ToNativeArray = nativeEnumerable1.Methods.First(x => x.Name == nameof(ToNativeArray));
@@ -74,22 +74,19 @@ namespace CecilRewrite
             module.Types.Remove(pseudo);
         }
 
-        private static void ReWritePseudoIsReadOnlyGeneric<T>(this T member)
-            where T : ICustomAttributeProvider
+        private static void ReWritePseudoIsReadOnly(this ParameterDefinition param)
         {
-            var memberCustomAttributes = member.CustomAttributes;
+            var memberCustomAttributes = param.CustomAttributes;
             var pseudo = memberCustomAttributes.FirstOrDefault(x => x.AttributeType.Name == "PseudoIsReadOnlyAttribute");
-            if (!(pseudo is null))
-            {
-                memberCustomAttributes.Remove(pseudo);
-                memberCustomAttributes.Add(IsReadOnlyAttribute);
-            }
+            if (pseudo is null) return;
+            memberCustomAttributes.Remove(pseudo);
+            memberCustomAttributes.Add(IsReadOnlyAttribute);
+            param.Attributes = ParameterAttributes.In;
         }
 
         private static void ReWritePseudoIsReadOnly(ModuleDefinition module)
         {
-            foreach (var type in module.GetTypes()
-                .Where(x => x.IsValueType && x.Interfaces.Any(y => y.InterfaceType.Name == "IRefEnumerable`2")))
+            foreach (var type in module.GetTypes().Where(x => x.HasNestedTypes))
             {
                 ReWritePseudoIsReadOnly(type);
             }
@@ -99,23 +96,11 @@ namespace CecilRewrite
 
         private static void ReWritePseudoIsReadOnly(TypeDefinition type)
         {
-            type.ReWritePseudoIsReadOnlyGeneric();
-            foreach (var field in type.Fields)
-            {
-                var fieldCustomAttributes = field.CustomAttributes;
-                var pseudo = fieldCustomAttributes.FirstOrDefault(x => x.AttributeType.Name == "PseudoIsReadOnlyAttribute");
-                if (!(pseudo is null))
-                {
-                    fieldCustomAttributes.Remove(pseudo);
-                    field.IsInitOnly = true;
-                }
-            }
             foreach (var method in type.Methods)
             {
-                method.ReWritePseudoIsReadOnlyGeneric();
                 foreach (var parameter in method.Parameters)
                 {
-                    parameter.ReWritePseudoIsReadOnlyGeneric();
+                    parameter.ReWritePseudoIsReadOnly();
                 }
             }
             foreach (var nestedType in type.NestedTypes)

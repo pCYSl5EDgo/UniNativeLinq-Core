@@ -24,12 +24,12 @@ namespace UniNativeLinq
             Value = value;
         }
 
-        public readonly ref T this[long index] => ref Value[index];
+        public ref T this[long index] => ref Value[index];
 
-        public override readonly bool Equals(object obj) => obj is IntPtr<T> other && Equals(other);
-        public override readonly int GetHashCode() => Ptr.ToInt32();
-        public readonly bool Equals(IntPtr other) => Ptr == other;
-        readonly bool IEquatable<IntPtr<T>>.Equals(IntPtr<T> other) => Value == other.Value;
+        public override bool Equals(object obj) => obj is IntPtr<T> other && Equals(other);
+        public override int GetHashCode() => Ptr.ToInt32();
+        public bool Equals(IntPtr other) => Ptr == other;
+        bool IEquatable<IntPtr<T>>.Equals(IntPtr<T> other) => Value == other.Value;
         public static explicit operator IntPtr<T>(IntPtr ptr) => new IntPtr<T>(ptr);
         public static implicit operator IntPtr<T>(T* ptr) => new IntPtr<T>(ptr);
         public static implicit operator IntPtr(IntPtr<T> @this) => @this.Ptr;

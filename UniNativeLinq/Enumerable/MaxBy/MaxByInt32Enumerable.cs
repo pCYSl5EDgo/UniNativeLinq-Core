@@ -7,7 +7,6 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    [PseudoIsReadOnly]
     public unsafe struct
         MaxByInt32Enumerable<TEnumerable, TEnumerator, T, TKeySelector>
         : IRefEnumerable<MaxByInt32Enumerable<TEnumerable, TEnumerator, T, TKeySelector>.Enumerator, T>
@@ -16,9 +15,9 @@ namespace UniNativeLinq
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
-        [PseudoIsReadOnly] private TEnumerable enumerable;
-        [PseudoIsReadOnly] private TKeySelector keySelector;
-        private readonly Allocator alloc;
+        private TEnumerable enumerable;
+        private TKeySelector keySelector;
+        private Allocator alloc;
         public bool CanIndexAccess() => false;
         public ref T this[long index] => throw new NotSupportedException();
         public MaxByInt32Enumerable(in TEnumerable enumerable, in TKeySelector keySelector, Allocator allocator)
@@ -31,7 +30,7 @@ namespace UniNativeLinq
         public struct Enumerator : IRefEnumerator<T>
         {
             internal NativeEnumerable<T>.Enumerator NativeEnumerator;
-            private readonly Allocator allocator;
+            private Allocator allocator;
 
             internal Enumerator(ref TEnumerable enumerable, ref TKeySelector keySelector, Allocator allocator)
             {
@@ -78,9 +77,9 @@ namespace UniNativeLinq
             public ref T TryGetNext(out bool success) => ref NativeEnumerator.TryGetNext(out success);
             public bool TryMoveNext(out T value) => NativeEnumerator.TryMoveNext(out value);
 
-            public readonly ref T Current => ref NativeEnumerator.Current;
-            readonly T IEnumerator<T>.Current => NativeEnumerator.Current;
-            readonly object IEnumerator.Current => ((IEnumerator)NativeEnumerator).Current;
+            public ref T Current => ref NativeEnumerator.Current;
+            T IEnumerator<T>.Current => NativeEnumerator.Current;
+            object IEnumerator.Current => ((IEnumerator)NativeEnumerator).Current;
 
             public void Dispose()
             {

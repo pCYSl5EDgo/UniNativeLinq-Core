@@ -6,15 +6,15 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
-    public readonly unsafe struct
+    public unsafe struct
         DefaultIfEmptyEnumerable<TEnumerable, TEnumerator, T>
         : IRefEnumerable<DefaultIfEmptyEnumerable<TEnumerable, TEnumerator, T>.Enumerator, T>
         where T : unmanaged
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
         where TEnumerator : struct, IRefEnumerator<T>
     {
-        private readonly TEnumerable enumerable;
-        private readonly T element;
+        private TEnumerable enumerable;
+        private T element;
         public bool CanIndexAccess() => enumerable.CanIndexAccess();
 
         public ref T this[long index]
@@ -35,13 +35,13 @@ namespace UniNativeLinq
             this.element = element;
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), element);
+        public Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), element);
 
         [LocalRefReturn]
         public struct Enumerator : IRefEnumerator<T>
         {
             private TEnumerator enumerator;
-            private readonly T element;
+            private T element;
             private bool isFirst;
             private bool isDefault;
 
@@ -53,7 +53,7 @@ namespace UniNativeLinq
                 isDefault = false;
             }
 
-            public readonly ref T Current
+            public ref T Current
             {
                 get
                 {
@@ -63,8 +63,8 @@ namespace UniNativeLinq
                 }
             }
 
-            readonly T IEnumerator<T>.Current => Current;
-            readonly object IEnumerator.Current => Current;
+            T IEnumerator<T>.Current => Current;
+            object IEnumerator.Current => Current;
 
             public void Dispose()
             {
@@ -130,30 +130,30 @@ namespace UniNativeLinq
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => enumerable.CanFastCount();
+        public bool CanFastCount() => enumerable.CanFastCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any() => true;
+        public bool Any() => true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count()
+        public int Count()
             => (int)LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount()
+        public long LongCount()
         {
             var count = enumerable.LongCount();
             return count == 0 ? 1 : count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(T* dest)
+        public void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -162,7 +162,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly T[] ToArray()
+        public T[] ToArray()
         {
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
@@ -172,7 +172,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
+        public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
@@ -181,7 +181,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
+        public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;

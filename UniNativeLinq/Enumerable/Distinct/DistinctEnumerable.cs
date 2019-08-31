@@ -7,7 +7,6 @@ using Unity.Collections;
 namespace UniNativeLinq
 {
     [SlowCount]
-    [PseudoIsReadOnly]
     public unsafe struct
         DistinctEnumerable<TEnumerable, TEnumerator, T, TEqualityComparer>
         : IRefEnumerable<DistinctEnumerable<TEnumerable, TEnumerator, T, TEqualityComparer>.Enumerator, T>
@@ -16,9 +15,9 @@ namespace UniNativeLinq
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
-        [PseudoIsReadOnly] private TEnumerable enumerable;
-        private readonly TEqualityComparer equalityComparer;
-        private readonly Allocator alloc;
+        private TEnumerable enumerable;
+        private TEqualityComparer equalityComparer;
+        private Allocator alloc;
         public bool CanIndexAccess() => false;
         public ref T this[long index] => throw new NotSupportedException();
         public DistinctEnumerable(in TEnumerable enumerable, in TEqualityComparer equalityComparer, Allocator allocator)
@@ -120,20 +119,20 @@ namespace UniNativeLinq
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Enumerator GetEnumerator() => new Enumerator(ref enumerable, equalityComparer, alloc);
 
         #region Interface Implementation
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool CanFastCount() => false;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Any()
         {
             var enumerator = GetEnumerator();
@@ -146,11 +145,11 @@ namespace UniNativeLinq
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Count()
             => (int)LongCount();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public long LongCount()
         {
             var enumerator = GetEnumerator();
@@ -161,7 +160,7 @@ namespace UniNativeLinq
             return count;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
@@ -170,7 +169,7 @@ namespace UniNativeLinq
             enumerator.Dispose();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()
         {
             var count = LongCount();
@@ -180,7 +179,7 @@ namespace UniNativeLinq
             return answer;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
@@ -189,7 +188,7 @@ namespace UniNativeLinq
             return NativeEnumerable<T>.Create(ptr, count);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();

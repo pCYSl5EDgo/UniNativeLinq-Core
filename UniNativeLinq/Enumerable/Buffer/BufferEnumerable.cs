@@ -6,15 +6,15 @@ using Unity.Collections;
 
 namespace UniNativeLinq
 {
-    public readonly unsafe struct
+    public unsafe struct
         BufferEnumerable<TEnumerable, TEnumerator, T>
          : IEnumerable<SkipEnumerable<TEnumerable, TEnumerator, T>>
         where T : unmanaged
         where TEnumerator : unmanaged, IRefEnumerator<T>
         where TEnumerable : unmanaged, IRefEnumerable<TEnumerator, T>
     {
-        private readonly TEnumerable enumerable;
-        private readonly long count;
+        private TEnumerable enumerable;
+        private long count;
 
         public BufferEnumerable(in TEnumerable enumerable, long count)
         {
@@ -26,8 +26,8 @@ namespace UniNativeLinq
 
         public struct Enumerator : IEnumerator<SkipEnumerable<TEnumerable, TEnumerator, T>>
         {
-            private readonly TEnumerable enumerable;
-            private readonly long count;
+            private TEnumerable enumerable;
+            private long count;
             private long index;
             private long length;
 
@@ -61,10 +61,10 @@ namespace UniNativeLinq
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<SkipEnumerable<TEnumerable, TEnumerator, T>> IEnumerable<SkipEnumerable<TEnumerable, TEnumerator, T>>.GetEnumerator() => GetEnumerator();
+        IEnumerator<SkipEnumerable<TEnumerable, TEnumerator, T>> IEnumerable<SkipEnumerable<TEnumerable, TEnumerator, T>>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Any()

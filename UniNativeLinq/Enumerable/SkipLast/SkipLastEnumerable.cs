@@ -15,8 +15,8 @@ namespace UniNativeLinq
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
         private TEnumerable enumerable;
-        private readonly long skipCount;
-        private readonly Allocator alloc;
+        private long skipCount;
+        private Allocator alloc;
 
         public bool CanIndexAccess() => enumerable.CanIndexAccess();
         public ref T this[long index] => ref enumerable[index];
@@ -31,14 +31,14 @@ namespace UniNativeLinq
         public struct Enumerator : IRefEnumerator<T>
         {
             private TEnumerator enumerator;
-            private readonly T* buffer;
+            private T* buffer;
             private long index;
-            private readonly long skipCount;
-            private readonly Allocator allocator;
+            private long skipCount;
+            private Allocator allocator;
 
-            public readonly ref T Current => ref buffer[index];
-            readonly T IEnumerator<T>.Current => Current;
-            readonly object IEnumerator.Current => Current;
+            public ref T Current => ref buffer[index];
+            T IEnumerator<T>.Current => Current;
+            object IEnumerator.Current => Current;
 
             public Enumerator(in TEnumerable enumerable, long skipCount, Allocator allocator)
             {
@@ -101,20 +101,20 @@ namespace UniNativeLinq
             }
         }
 
-        public readonly Enumerator GetEnumerator() => new Enumerator(enumerable, skipCount, alloc);
+        public Enumerator GetEnumerator() => new Enumerator(enumerable, skipCount, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => enumerable.CanFastCount();
+        public bool CanFastCount() => enumerable.CanFastCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any()
+        public bool Any()
         {
             var enumerator = GetEnumerator();
             if (enumerator.MoveNext())
@@ -127,18 +127,18 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count()
+        public int Count()
             => (int)LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount()
+        public long LongCount()
         {
             var count = enumerable.LongCount() - skipCount;
             return count < 0 ? 0 : count;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(T* dest)
+        public void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -147,7 +147,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly T[] ToArray()
+        public T[] ToArray()
         {
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
@@ -157,7 +157,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
+        public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
@@ -166,12 +166,12 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
+        public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
             var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
-            CopyTo(UnsafeUtilityEx.GetPointer(answer));
+            CopyTo(answer.GetPointer());
             return answer;
         }
         #endregion

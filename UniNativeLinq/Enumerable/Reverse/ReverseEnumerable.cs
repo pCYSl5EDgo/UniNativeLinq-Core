@@ -7,7 +7,6 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    [PseudoIsReadOnly]
     public unsafe struct
         ReverseEnumerable<TEnumerable, TEnumerator, T>
         : IRefEnumerable<ReverseEnumerable<TEnumerable, TEnumerator, T>.Enumerator, T>
@@ -16,7 +15,7 @@ namespace UniNativeLinq
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
         internal TEnumerable Enumerable;
-        private readonly Allocator alloc;
+        private Allocator alloc;
 
         public ReverseEnumerable(in TEnumerable enumerable, Allocator allocator)
         {
@@ -38,7 +37,7 @@ namespace UniNativeLinq
 
         public struct Enumerator : IRefEnumerator<T>
         {
-            private readonly Allocator allocator;
+            private Allocator allocator;
             private NativeEnumerable<T>.Enumerator enumerator;
 
             internal Enumerator(ref TEnumerable enumerable, Allocator allocator)
@@ -77,29 +76,29 @@ namespace UniNativeLinq
             public bool TryMoveNext(out T value) => enumerator.TryMoveNext(out value);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Enumerator GetEnumerator() => new Enumerator(ref Enumerable, alloc);
 
         #region Interface Implementation
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => Enumerable.CanFastCount();
+        public bool CanFastCount() => Enumerable.CanFastCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any() => Enumerable.Any();
+        public bool Any() => Enumerable.Any();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count() => Enumerable.Count();
+        public int Count() => Enumerable.Count();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount() => Enumerable.LongCount();
+        public long LongCount() => Enumerable.LongCount();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
@@ -108,7 +107,7 @@ namespace UniNativeLinq
             enumerator.Dispose();
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()
         {
             var count = LongCount();
@@ -121,7 +120,7 @@ namespace UniNativeLinq
         public bool CanIndexAccess() => Enumerable.CanIndexAccess();
         public ref T this[long index] => ref Enumerable[Enumerable.LongCount() - 1L - index];
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
@@ -130,13 +129,13 @@ namespace UniNativeLinq
             return NativeEnumerable<T>.Create(ptr, count);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining), PseudoIsReadOnly]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
             var answer = new NativeArray<T>(count, allocator, NativeArrayOptions.UninitializedMemory);
-            CopyTo(UnsafeUtilityEx.GetPointer(answer));
+            CopyTo(answer.GetPointer());
             return answer;
         }
         #endregion

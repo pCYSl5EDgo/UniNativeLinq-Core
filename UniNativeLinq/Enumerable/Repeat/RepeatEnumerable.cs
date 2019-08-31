@@ -6,7 +6,6 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    [PseudoIsReadOnly]
     public unsafe struct
         RepeatEnumerable<TEnumerable, TEnumerator, T>
         : IRefEnumerable<RepeatEnumerable<TEnumerable, TEnumerator, T>.Enumerator, T>
@@ -14,8 +13,8 @@ namespace UniNativeLinq
         where TEnumerator : struct, IRefEnumerator<T>
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
-        [PseudoIsReadOnly] private TEnumerable enumerable;
-        private readonly long repeatCount;
+        private TEnumerable enumerable;
+        private long repeatCount;
 
         public RepeatEnumerable(in TEnumerable enumerable, long repeatCount)
         {
@@ -68,7 +67,7 @@ namespace UniNativeLinq
                 enumerator = originalEnumerator;
             }
 
-            public readonly ref T Current => ref enumerator.Current;
+            public ref T Current => ref enumerator.Current;
 
             public ref T TryGetNext(out bool success)
             {
@@ -101,9 +100,9 @@ namespace UniNativeLinq
                 return count > ++index;
             }
 
-            readonly T IEnumerator<T>.Current => Current;
+            T IEnumerator<T>.Current => Current;
 
-            readonly object IEnumerator.Current => Current;
+            object IEnumerator.Current => Current;
 
             public void Dispose()
             {

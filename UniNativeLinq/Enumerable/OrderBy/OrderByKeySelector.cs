@@ -1,14 +1,14 @@
 ﻿namespace UniNativeLinq
 {
-    public readonly struct 
+    public struct 
         OrderByKeySelector<T, TKey, TKeySelector, TComparer>
         : IRefFunc<T, T, int>
         where TKeySelector : struct, IRefAction<T, TKey>
         where TComparer : struct, IRefFunc<TKey, TKey, int>
     {
-        private readonly TKeySelector keySelector;
-        private readonly TComparer comparer;
-        private readonly bool descending;
+        private TKeySelector keySelector;
+        private TComparer comparer;
+        private bool descending;
 
         public OrderByKeySelector(TKeySelector keySelector, TComparer comparer, bool descending)
         {

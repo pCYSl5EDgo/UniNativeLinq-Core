@@ -36,11 +36,19 @@ namespace CecilRewrite
             return type is TypeDefinition definition ? definition : type is GenericInstanceType genericInstanceType ? genericInstanceType.ElementType.ToDefinition() : type.Resolve();
         }
 
-        public static MethodReference FindMethod(this GenericInstanceType type, string name, Func<MethodDefinition, bool> predicate)
+        public static MethodReference FindMethod(this TypeReference type, string name, Func<MethodDefinition, bool> predicate)
         {
             var methodDefinitions = type.ToDefinition().Methods;
             var methodDefinition = methodDefinitions.Single(x => x.Name == name && predicate(x));
-            return methodDefinition.MakeHostInstanceGeneric(type.GenericArguments);
+            if (type is GenericInstanceType genericInstanceType)
+            {
+                if (methodDefinition.Module == type.Module)
+                    return methodDefinition.MakeHostInstanceGeneric(genericInstanceType.GenericArguments);
+                return type.Module.ImportReference(methodDefinition).MakeHostInstanceGeneric(genericInstanceType.GenericArguments);
+            }
+            if (methodDefinition.Module == type.Module)
+                return methodDefinition;
+            return type.Module.ImportReference(methodDefinition);
         }
 
         internal static TypeReference Replace(this TypeReference constraint, IEnumerable<GenericParameter> methodGenericParameters, string specialName, TypeReference specialType)
@@ -168,7 +176,7 @@ namespace CecilRewrite
 
         public static void GetEnumerator(this ILProcessor processor, GenericInstanceType @this)
             => processor.Call(@this.FindMethod(nameof(GetEnumerator), NoParameter));
-        
+
         public static bool NoParameter(this MethodDefinition method)
             => !method.HasParameters;
     }

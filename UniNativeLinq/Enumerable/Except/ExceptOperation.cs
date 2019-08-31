@@ -2,7 +2,7 @@
 
 namespace UniNativeLinq
 {
-    public readonly unsafe struct
+    public unsafe struct
         ExceptOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T, TComparer>
         : ISetOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T>
         where T : unmanaged
@@ -12,7 +12,7 @@ namespace UniNativeLinq
         where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T>
         where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T>
     {
-        private readonly TComparer comparer;
+        private TComparer comparer;
 
         public ExceptOperation(in TComparer comparer) => this.comparer = comparer;
 

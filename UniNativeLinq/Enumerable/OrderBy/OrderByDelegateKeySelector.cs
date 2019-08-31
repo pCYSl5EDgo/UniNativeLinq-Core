@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace UniNativeLinq
 {
-    public readonly struct
+    public struct
         OrderByDelegateKeySelector<T, TKey>
         : IRefFunc<T, T, int>
     {
-        private readonly Func<T, TKey> keySelector;
-        private readonly IComparer<TKey> comparer;
-        private readonly bool descending;
+        private Func<T, TKey> keySelector;
+        private IComparer<TKey> comparer;
+        private bool descending;
 
         public OrderByDelegateKeySelector(Func<T, TKey> keySelector, IComparer<TKey> comparer, bool descending)
         {

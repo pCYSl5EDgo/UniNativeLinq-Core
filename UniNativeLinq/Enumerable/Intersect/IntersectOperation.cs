@@ -13,7 +13,7 @@ namespace UniNativeLinq
         where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T>
         where TComparer : struct, IRefFunc<T, T, int>
     {
-        private readonly TComparer comparer;
+        private TComparer comparer;
 
         public IntersectOperation(in TComparer comparer) => this.comparer = comparer;
 

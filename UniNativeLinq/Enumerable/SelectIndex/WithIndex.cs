@@ -1,6 +1,6 @@
 ﻿namespace UniNativeLinq
 {
-    public readonly struct
+    public struct
         WithIndex<T>
         : ISelectIndex<T, (T element, long index)>
         where T : unmanaged

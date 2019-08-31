@@ -1,10 +1,10 @@
 namespace UniNativeLinq
 {
-    public readonly struct OrderByDescending<T, TComparer>
+    public struct OrderByDescending<T, TComparer>
         : IRefFunc<T, T, int>
         where TComparer : struct, IRefFunc<T, T, int>
     {
-        private readonly TComparer comparer;
+        private TComparer comparer;
         public OrderByDescending(in TComparer comparer) => this.comparer = comparer;
         public int Calc(ref T arg0, ref T arg1) => comparer.Calc(ref arg1, ref arg0);
 

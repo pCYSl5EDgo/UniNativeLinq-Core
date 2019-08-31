@@ -14,7 +14,7 @@ namespace UniNativeLinq
         where TEnumerator : struct, IRefEnumerator<T>
     {
         private TEnumerable enumerable;
-        private readonly T element;
+        private T element;
         public bool CanIndexAccess() => enumerable.CanIndexAccess();
 
         public ref T this[long index]
@@ -38,7 +38,7 @@ namespace UniNativeLinq
             : IRefEnumerator<T>
         {
             private TEnumerator enumerator;
-            private readonly T element;
+            private T element;
             private bool isCurrentEnumerator;
 
             public Enumerator(in TEnumerator enumerator, in T element)
@@ -104,30 +104,30 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), element);
+        public Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), element);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool CanFastCount() => true;
+        public bool CanFastCount() => true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool Any() => true;
+        public bool Any() => true;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly int Count()
+        public int Count()
             => (int)LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly long LongCount() => enumerable.LongCount() + 1;
+        public long LongCount() => enumerable.LongCount() + 1;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly void CopyTo(T* dest)
+        public void CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
             while (enumerator.MoveNext())
@@ -136,7 +136,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly T[] ToArray()
+        public T[] ToArray()
         {
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
@@ -146,7 +146,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
+        public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
         {
             var count = LongCount();
             var ptr = UnsafeUtilityEx.Malloc<T>(count, allocator);
@@ -155,7 +155,7 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly NativeArray<T> ToNativeArray(Allocator allocator)
+        public NativeArray<T> ToNativeArray(Allocator allocator)
         {
             var count = Count();
             if (count == 0) return default;
@@ -166,7 +166,7 @@ namespace UniNativeLinq
         #endregion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly bool TryGetLast(out T value)
+        public bool TryGetLast(out T value)
         {
             value = element;
             return true;

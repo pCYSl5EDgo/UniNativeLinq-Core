@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace UniNativeLinq
 {
-    public readonly unsafe struct
+    public unsafe struct
         BufferNativeEnumerable<T>
         : IEnumerable<NativeEnumerable<T>>
         where T : unmanaged
     {
-        private readonly NativeEnumerable<T> enumerable;
-        private readonly long count;
+        private NativeEnumerable<T> enumerable;
+        private long count;
 
         public BufferNativeEnumerable(in NativeEnumerable<T> enumerable, long count)
         {
@@ -23,8 +23,8 @@ namespace UniNativeLinq
 
         public struct Enumerator : IEnumerator<NativeEnumerable<T>>
         {
-            private readonly NativeEnumerable<T> enumerable;
-            private readonly long count;
+            private NativeEnumerable<T> enumerable;
+            private long count;
             private long index;
 
             internal Enumerator(in BufferNativeEnumerable<T> @this)
@@ -54,6 +54,6 @@ namespace UniNativeLinq
 
             public void Reset() => index = -count;
         }
-        public readonly NativeEnumerable<T> Flatten() => enumerable;
+        public NativeEnumerable<T> Flatten() => enumerable;
     }
 }
