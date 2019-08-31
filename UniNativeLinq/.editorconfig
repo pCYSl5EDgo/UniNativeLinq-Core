@@ -5,3 +5,15 @@ csharp_style_expression_bodied_methods = false:none
 
 # CS8656: Call to non-member from a 'readonly' member results in an implicit copy.
 dotnet_diagnostic.CS8656.severity = error
+
+# IDE0003: 修飾子を削除
+dotnet_style_qualification_for_field = false:warning
+
+# IDE0003: 修飾子を削除
+dotnet_style_qualification_for_method = false:warning
+
+# IDE0003: 修飾子を削除
+dotnet_style_qualification_for_event = false:warning
+
+# IDE0003: 修飾子を削除
+dotnet_style_qualification_for_property = false:warning

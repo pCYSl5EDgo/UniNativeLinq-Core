@@ -4,3 +4,4 @@ obj/
 .idea/
 *.il
 *.res
+*.editorconfig

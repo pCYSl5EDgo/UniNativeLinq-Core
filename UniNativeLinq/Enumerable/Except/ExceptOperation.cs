@@ -12,19 +12,19 @@ namespace UniNativeLinq
         where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T>
         where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T>
     {
-        private TComparer comparer;
+        public TComparer Func;
 
-        public ExceptOperation(in TComparer comparer) => this.comparer = comparer;
+        public ExceptOperation(in TComparer comparer) => Func = comparer;
 
         public NativeEnumerable<T> Calc(ref TEnumerable0 first, ref TEnumerable1 second, Allocator allocator)
         {
-            var targets = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, comparer, allocator).ToNativeEnumerable();
+            var targets = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, Func, allocator).ToNativeEnumerable();
             if (targets.Length == 0)
             {
                 targets.Dispose(allocator);
                 return default;
             }
-            var removes = new SortedDistinctEnumerable<TEnumerable1, TEnumerator1, T, TComparer>(second, comparer, Allocator.Temp).ToNativeEnumerable();
+            var removes = new SortedDistinctEnumerable<TEnumerable1, TEnumerator1, T, TComparer>(second, Func, Allocator.Temp).ToNativeEnumerable();
             if (removes.Length == 0)
             {
                 removes.Dispose(Allocator.Temp);
@@ -33,7 +33,7 @@ namespace UniNativeLinq
             var count = targets.Length;
             for (var index = count; --index >= 0;)
             {
-                if (removes.FindIndexBinarySearch(ref targets[index], comparer) == -1) continue;
+                if (removes.FindIndexBinarySearch(ref targets[index], Func) == -1) continue;
                 if (index != --count)
                     targets[index] = targets[count];
             }

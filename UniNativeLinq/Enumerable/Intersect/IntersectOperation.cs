@@ -13,20 +13,20 @@ namespace UniNativeLinq
         where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T>
         where TComparer : struct, IRefFunc<T, T, int>
     {
-        private TComparer comparer;
+        public TComparer Func;
 
-        public IntersectOperation(in TComparer comparer) => this.comparer = comparer;
+        public IntersectOperation(in TComparer comparer) => this.Func = comparer;
 
         public NativeEnumerable<T> Calc(ref TEnumerable0 first, ref TEnumerable1 second, Allocator allocator)
         {
-            var smaller = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, comparer, Allocator.Temp).ToNativeEnumerable();
+            var smaller = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, Func, Allocator.Temp).ToNativeEnumerable();
             if (smaller.Length == 0)
             {
                 smaller.Dispose(Allocator.Temp);
                 return default;
             }
             var capacity = smaller.Length;
-            var larger = new SortedDistinctEnumerable<TEnumerable1, TEnumerator1, T, TComparer>(second, comparer, Allocator.Temp).ToNativeEnumerable();
+            var larger = new SortedDistinctEnumerable<TEnumerable1, TEnumerator1, T, TComparer>(second, Func, Allocator.Temp).ToNativeEnumerable();
             if (larger.Length == 0)
             {
                 smaller.Dispose(Allocator.Temp);
@@ -42,7 +42,7 @@ namespace UniNativeLinq
             var count = 0L;
             for (var i = 0L; i < capacity; i++)
             {
-                if (larger.FindIndexBinarySearch(ref smaller[i], comparer) != -1) continue;
+                if (larger.FindIndexBinarySearch(ref smaller[i], Func) != -1) continue;
                 ptr[count++] = smaller[i];
             }
             smaller.Dispose(Allocator.Temp);
