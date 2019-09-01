@@ -44,7 +44,7 @@ namespace UniNativeLinq
             }
             object IEnumerator.Current => Current;
 
-            public void Dispose() => this = default;
+            public void Dispose() { }
 
             public bool MoveNext()
             {

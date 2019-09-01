@@ -117,12 +117,11 @@ namespace UniNativeLinq
             public ref T Current => ref ptr[index];
             T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
-            public void Dispose() => this = default;
+            public void Dispose() { }
             public void Dispose(Allocator allocator)
             {
-                if (UnsafeUtility.IsValidAllocator(allocator) && ptr != null)
-                    UnsafeUtility.Free(ptr, allocator);
-                this = default;
+                if (!UnsafeUtility.IsValidAllocator(allocator) || ptr == null) return;
+                UnsafeUtility.Free(ptr, allocator);
             }
             public bool MoveNext() => ++index < count;
             public void Reset() => index = -1;
@@ -158,7 +157,6 @@ namespace UniNativeLinq
         {
             if (Ptr == null || !UnsafeUtility.IsValidAllocator(Allocator)) return;
             UnsafeUtility.Free(Ptr, Allocator);
-            this = default;
         }
     }
 }

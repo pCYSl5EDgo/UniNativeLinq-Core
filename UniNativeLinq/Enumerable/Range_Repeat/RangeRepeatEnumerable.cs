@@ -78,7 +78,7 @@ namespace UniNativeLinq
             public ref T Current => throw new NotImplementedException();
             T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
-            public void Dispose() => this = default;
+            public void Dispose() { }
 
             public ref T TryGetNext(out bool success)
             {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Mono.Cecil.Cil;
 using Mono.Collections.Generic;
 
-namespace UniNativeLinq
+namespace CecilRewrite
 {
     public sealed class ScopedProcessor : IDisposable
     {

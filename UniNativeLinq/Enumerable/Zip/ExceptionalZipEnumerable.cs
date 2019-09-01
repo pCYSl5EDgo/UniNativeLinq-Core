@@ -114,7 +114,6 @@ namespace UniNativeLinq
             {
                 firstEnumerator.Dispose();
                 secondEnumerator.Dispose();
-                this = default;
             }
         }
 

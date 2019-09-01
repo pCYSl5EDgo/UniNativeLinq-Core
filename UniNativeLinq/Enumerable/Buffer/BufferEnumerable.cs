@@ -43,7 +43,7 @@ namespace UniNativeLinq
             public SkipEnumerable<TEnumerable, TEnumerator, T> Current => new SkipEnumerable<TEnumerable, TEnumerator, T>(enumerable, count * index);
             object IEnumerator.Current => Current;
 
-            public void Dispose() => this = default;
+            public void Dispose() { }
 
             public bool MoveNext() => ++index < length;
 

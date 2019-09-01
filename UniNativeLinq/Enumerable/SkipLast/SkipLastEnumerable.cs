@@ -74,9 +74,8 @@ namespace UniNativeLinq
             public void Dispose()
             {
                 enumerator.Dispose();
-                if (buffer != null && UnsafeUtility.IsValidAllocator(allocator))
-                    UnsafeUtility.Free(buffer, allocator);
-                this = default;
+                if (buffer == null || !UnsafeUtility.IsValidAllocator(allocator)) return;
+                UnsafeUtility.Free(buffer, allocator);
             }
 
             public ref T TryGetNext(out bool success)

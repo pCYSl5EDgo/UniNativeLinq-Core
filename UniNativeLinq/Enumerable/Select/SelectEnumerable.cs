@@ -51,7 +51,6 @@ namespace UniNativeLinq
             public void Dispose()
             {
                 enumerator.Dispose();
-                this = default;
             }
 
             public bool MoveNext()
@@ -118,7 +117,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer(ref answer[0]));
             return answer;
         }
 

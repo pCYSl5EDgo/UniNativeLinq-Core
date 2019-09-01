@@ -36,7 +36,7 @@ namespace UniNativeLinq
             public ArrayEnumerable<T> Current => enumerable.Slice(index, count);
             object IEnumerator.Current => throw new NotImplementedException();
 
-            public void Dispose() => this = default;
+            public void Dispose() { }
 
             public bool MoveNext()
             {

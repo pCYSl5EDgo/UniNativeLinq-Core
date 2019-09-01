@@ -40,10 +40,6 @@ namespace UniNativeLinq
 
         public bool Calc(ref T value, long index) => comparer.Calc(ref Key, ref keys[index]);
 
-        public void Dispose()
-        {
-            keys.Dispose(allocator);
-            this = default;
-        }
+        public void Dispose() => keys.Dispose(allocator);
     }
 }

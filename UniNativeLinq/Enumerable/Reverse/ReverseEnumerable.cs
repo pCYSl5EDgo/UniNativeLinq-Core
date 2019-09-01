@@ -63,12 +63,9 @@ namespace UniNativeLinq
 
             public void Dispose()
             {
-                if (enumerator.Ptr != null)
-                {
-                    UnsafeUtility.Free(enumerator.Ptr, allocator);
-                    enumerator.Dispose();
-                }
-                this = default;
+                if (enumerator.Ptr == null || !UnsafeUtility.IsValidAllocator(allocator)) return;
+                UnsafeUtility.Free(enumerator.Ptr, allocator);
+                enumerator.Dispose();
             }
 
             public ref T TryGetNext(out bool success) => ref enumerator.TryGetNext(out success);
@@ -106,7 +103,7 @@ namespace UniNativeLinq
                 *dest++ = enumerator.Current;
             enumerator.Dispose();
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()
         {

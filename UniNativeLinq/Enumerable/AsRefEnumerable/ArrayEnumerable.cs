@@ -57,9 +57,8 @@ namespace UniNativeLinq
 
             public void Dispose()
             {
-                if (ptr != null)
-                    UnsafeUtility.ReleaseGCObject(gcHandle);
-                this = default;
+                if (ptr == null) return;
+                UnsafeUtility.ReleaseGCObject(gcHandle);
             }
 
             public ref T TryGetNext(out bool success)

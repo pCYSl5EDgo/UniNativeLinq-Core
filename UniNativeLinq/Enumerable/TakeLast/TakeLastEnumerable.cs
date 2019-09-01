@@ -50,11 +50,7 @@ namespace UniNativeLinq
 
             public void Reset() => throw new InvalidOperationException();
 
-            public void Dispose()
-            {
-                enumerator.Parent.Dispose();
-                this = default;
-            }
+            public void Dispose() => enumerator.Parent.Dispose();
 
             public ref T TryGetNext(out bool success) => ref enumerator.TryGetNext(out success);
 

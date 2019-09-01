@@ -88,7 +88,6 @@ namespace UniNativeLinq
                 enumerator.Dispose();
                 enumerable.Enumerable.Dispose(allocator);
                 enumerable.Predication.Dispose();
-                this = default;
             }
 
             public bool MoveNext()

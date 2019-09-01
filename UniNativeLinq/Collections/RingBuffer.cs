@@ -69,7 +69,7 @@ namespace UniNativeLinq
             T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
 
-            public void Dispose() => this = default;
+            public void Dispose() { }
 
             public bool MoveNext()
             {
@@ -176,9 +176,8 @@ namespace UniNativeLinq
 
         public void Dispose()
         {
-            if (Elements != null && UnsafeUtility.IsValidAllocator(Allocator))
-                UnsafeUtility.Free(Elements, Allocator);
-            this = default;
+            if (Elements == null || !UnsafeUtility.IsValidAllocator(Allocator)) return;
+            UnsafeUtility.Free(Elements, Allocator);
         }
     }
 }

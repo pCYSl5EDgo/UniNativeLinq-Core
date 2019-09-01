@@ -112,11 +112,7 @@ namespace UniNativeLinq
             T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
 
-            public void Dispose()
-            {
-                list.Dispose();
-                this = default;
-            }
+            public void Dispose() => list.Dispose();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

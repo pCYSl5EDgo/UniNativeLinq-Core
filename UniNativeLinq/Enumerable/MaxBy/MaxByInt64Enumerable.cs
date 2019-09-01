@@ -85,7 +85,6 @@ namespace UniNativeLinq
             {
                 if (NativeEnumerator.Ptr == null || !UnsafeUtility.IsValidAllocator(allocator)) return;
                 UnsafeUtility.Free(NativeEnumerator.Ptr, allocator);
-                this = default;
             }
         }
 

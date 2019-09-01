@@ -98,7 +98,7 @@ namespace UniNativeLinq
                 public ref T Current => ref values[index];
                 T IEnumerator<T>.Current => Current;
                 object IEnumerator.Current => Current;
-                public void Dispose() => this = default;
+                public void Dispose() { }
                 public bool MoveNext() => ++index < count;
                 public void Reset() => index = -1;
 
@@ -131,17 +131,14 @@ namespace UniNativeLinq
 
             public void Dispose(Allocator allocator)
             {
-                if (UnsafeUtility.IsValidAllocator(allocator))
+                if (!UnsafeUtility.IsValidAllocator(allocator)) return;
+                if (Next)
                 {
-                    if (Next)
-                    {
-                        Next.Value->Dispose(allocator);
-                        UnsafeUtility.Free(Next.Value, allocator);
-                    }
-                    if (Values)
-                        UnsafeUtility.Free(Values.Value, allocator);
+                    Next.Value->Dispose(allocator);
+                    UnsafeUtility.Free(Next.Value, allocator);
                 }
-                this = default;
+                if (Values)
+                    UnsafeUtility.Free(Values.Value, allocator);
             }
 
             public bool CanFastCount() => true;
@@ -256,7 +253,7 @@ namespace UniNativeLinq
             T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
 
-            public void Dispose() => this = default;
+            public void Dispose() { }
 
             public bool MoveNext()
             {

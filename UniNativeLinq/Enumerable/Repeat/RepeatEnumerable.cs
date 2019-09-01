@@ -104,11 +104,7 @@ namespace UniNativeLinq
 
             object IEnumerator.Current => Current;
 
-            public void Dispose()
-            {
-                originalEnumerator.Dispose();
-                this = default;
-            }
+            public void Dispose() => originalEnumerator.Dispose();
         }
 
         public Enumerator GetEnumerator() => new Enumerator(ref enumerable, repeatCount);

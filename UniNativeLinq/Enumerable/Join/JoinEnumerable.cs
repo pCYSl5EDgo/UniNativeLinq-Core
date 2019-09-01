@@ -133,9 +133,8 @@ namespace UniNativeLinq
             public void Dispose()
             {
                 outerEnumerator.Dispose();
-                if (innerValues != null)
-                    UnsafeUtility.Free(innerValues, allocator);
-                this = default;
+                if (innerValues == null || !UnsafeUtility.IsValidAllocator(allocator)) return;
+                UnsafeUtility.Free(innerValues, allocator);
             }
 
             public ref T TryGetNext(out bool success)

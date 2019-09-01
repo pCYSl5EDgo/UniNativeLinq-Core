@@ -42,11 +42,7 @@ namespace UniNativeLinq
                 this.enumerator = enumerator;
             }
 
-            public void Dispose()
-            {
-                enumerator.Dispose();
-                this = default;
-            }
+            public void Dispose() => enumerator.Dispose();
 
             public bool MoveNext()
             {

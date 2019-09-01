@@ -158,9 +158,8 @@ namespace UniNativeLinq
 
             public void Dispose()
             {
-                if (Ptr != null)
-                    UnsafeUtility.Free(Ptr, allocator);
-                this = default;
+                if (Ptr == null || !UnsafeUtility.IsValidAllocator(allocator)) return;
+                UnsafeUtility.Free(Ptr, allocator);
             }
 
             public ref T TryGetNext(out bool success)

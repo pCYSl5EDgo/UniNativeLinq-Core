@@ -70,9 +70,8 @@ namespace UniNativeLinq
 
         public void Dispose(Allocator allocator)
         {
-            if (Ptr != null)
-                UnsafeUtility.Free(Ptr, allocator);
-            this = default;
+            if (Ptr == null || !UnsafeUtility.IsValidAllocator(allocator)) return;
+            UnsafeUtility.Free(Ptr, allocator);
         }
 
         public Enumerator GetEnumerator() => new Enumerator(this);
@@ -94,7 +93,7 @@ namespace UniNativeLinq
                 Length = parent.Length;
             }
 
-            public void Dispose() => this = default;
+            public void Dispose() { }
 
             public bool MoveNext() => ++index < Length;
 

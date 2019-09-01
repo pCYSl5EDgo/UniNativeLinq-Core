@@ -140,7 +140,6 @@ namespace UniNativeLinq
                             UnsafeUtility.Free(Groups, allocator);
                         break;
                 }
-                this = default;
             }
 
             public bool MoveNext() => ++index < Count;

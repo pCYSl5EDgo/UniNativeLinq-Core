@@ -59,9 +59,8 @@ namespace UniNativeLinq
 
             public void Dispose()
             {
-                if (mergedEnumerator.Ptr != null && UnsafeUtility.IsValidAllocator(allocator))
-                    UnsafeUtility.Free(mergedEnumerator.Ptr, allocator);
-                this = default;
+                if (mergedEnumerator.Ptr == null || !UnsafeUtility.IsValidAllocator(allocator)) return;
+                UnsafeUtility.Free(mergedEnumerator.Ptr, allocator);
             }
 
             public ref T TryGetNext(out bool success) => ref mergedEnumerator.TryGetNext(out success);

@@ -104,9 +104,8 @@ namespace UniNativeLinq
             public void Dispose()
             {
                 enumerator.Dispose();
-                if (ptr != null && UnsafeUtility.IsValidAllocator(allocator))
-                    UnsafeUtility.Free(ptr, allocator);
-                this = default;
+                if (ptr == null || !UnsafeUtility.IsValidAllocator(allocator)) return;
+                UnsafeUtility.Free(ptr, allocator);
             }
 
             public NativeEnumerable<T> AsEnumerable()

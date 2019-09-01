@@ -61,11 +61,7 @@ namespace UniNativeLinq
             T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
 
-            public void Dispose()
-            {
-                enumerator.Dispose();
-                this = default;
-            }
+            public void Dispose() => enumerator.Dispose();
 
             public bool MoveNext()
             {
