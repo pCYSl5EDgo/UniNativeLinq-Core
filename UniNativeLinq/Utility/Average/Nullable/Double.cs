@@ -8,6 +8,7 @@ namespace UniNativeLinq.Average
         private bool @bool;
         public void Execute(ref double? arg0, ref double? arg1)
         {
+            @bool = true;
             if (!arg1.HasValue) return;
             ++count;
             arg0 = (arg0 ?? default) + arg1;
