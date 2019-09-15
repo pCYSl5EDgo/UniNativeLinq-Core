@@ -16,4 +16,8 @@
     <ProjectReference Include="..\UniNativeLinq\UniNativeLinq.csproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="dotnet &quot;$(TargetPath)&quot;&#xD;&#xA;&#xD;&#xA;copy &quot;C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll&quot; &quot;C:\Users\conve\Saved Games\LINQ\Assets\UniNativeLinq\Editor\DLLs\UniNativeLinq.bytes&quot;" />
+  </Target>
+
 </Project>
