@@ -14,7 +14,7 @@ namespace UniNativeLinq
         int Count();
         long LongCount();
 
-        void CopyTo(T* destination);
+        long CopyTo(T* destination);
         NativeEnumerable<T> ToNativeEnumerable(Allocator allocator);
         NativeArray<T> ToNativeArray(Allocator allocator);
         T[] ToArray();

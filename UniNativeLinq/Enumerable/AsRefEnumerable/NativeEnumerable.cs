@@ -144,7 +144,14 @@ namespace UniNativeLinq
         public long LongCount() => Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, Ptr, Length);
+        public long CopyTo(T* dest)
+        {
+            if (Length != 0)
+            {
+                UnsafeUtilityEx.MemCpy(dest, Ptr, Length);
+            }
+            return Length;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()

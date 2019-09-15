@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
@@ -119,6 +120,7 @@ namespace UniNativeLinq
 
         public long LongCount() => repeatCount <= 0 ? 0 : repeatCount * enumerable.LongCount();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void CopyTo(T* destination, long count)
         {
             enumerable.CopyTo(destination);
@@ -127,14 +129,16 @@ namespace UniNativeLinq
             UnsafeUtility.MemCpyStride(destination + count, size, destination, 0, size, (int)repeatCount - 1);
         }
 
-        public void CopyTo(T* destination)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public long CopyTo(T* destination)
         {
-            if (repeatCount <= 0) return;
-            enumerable.CopyTo(destination);
-            if (repeatCount == 1) return;
+            if (repeatCount <= 0) return 0;
+            var answer = enumerable.CopyTo(destination);
+            if (repeatCount == 1) return answer;
             var count = enumerable.LongCount();
             var size = (int)count * sizeof(T);
             UnsafeUtility.MemCpyStride(destination + count, size, destination, 0, size, (int)repeatCount - 1);
+            return answer * repeatCount;
         }
 
         public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)

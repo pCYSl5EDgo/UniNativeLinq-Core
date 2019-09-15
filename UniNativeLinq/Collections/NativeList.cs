@@ -75,7 +75,14 @@ namespace UniNativeLinq
         public NativeEnumerable<T> AsNativeEnumerable() => NativeEnumerable<T>.Create(Ptr, Length);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, Ptr, Length);
+        public long CopyTo(T* dest)
+        {
+            if (Length != 0)
+            {
+                UnsafeUtilityEx.MemCpy(dest, Ptr, Length);
+            }
+            return Length;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
@@ -97,7 +104,7 @@ namespace UniNativeLinq
         public T[] ToArray()
         {
             var answer = new T[Length];
-            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer(ref answer[0]));
             return answer;
         }
 

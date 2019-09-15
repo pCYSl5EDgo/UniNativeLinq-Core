@@ -127,8 +127,12 @@ namespace UniNativeLinq
         public void RemoveLast() => --Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo(T* dest)
+        public long CopyTo(T* dest)
         {
+            if (Length == 0)
+            {
+                return 0;
+            }
             if (StartIndex + Length <= Capacity)
             {
                 UnsafeUtilityEx.MemCpy(dest, Elements + StartIndex, Length);
@@ -139,13 +143,14 @@ namespace UniNativeLinq
                 UnsafeUtilityEx.MemCpy(dest, Elements + StartIndex, count);
                 UnsafeUtilityEx.MemCpy(dest + count, Elements, Length - count);
             }
+            return Length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()
         {
             var answer = new T[Length];
-            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer(ref answer[0]));
             return answer;
         }
 

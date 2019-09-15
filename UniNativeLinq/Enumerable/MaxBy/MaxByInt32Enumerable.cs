@@ -112,12 +112,14 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo(T* destination)
+        public long CopyTo(T* destination)
         {
             var enumerator = GetEnumerator();
             ref var nativeEnumerator = ref enumerator.NativeEnumerator;
-            UnsafeUtilityEx.MemCpy(destination, nativeEnumerator.Ptr, nativeEnumerator.Length);
+            var answer = nativeEnumerator.Length;
+            UnsafeUtilityEx.MemCpy(destination, nativeEnumerator.Ptr, answer);
             enumerator.Dispose();
+            return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

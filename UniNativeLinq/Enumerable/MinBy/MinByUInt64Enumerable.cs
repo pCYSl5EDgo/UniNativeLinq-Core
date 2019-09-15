@@ -107,12 +107,14 @@ namespace UniNativeLinq
             return count;
         }
 
-        public void CopyTo(T* destination)
+        public long CopyTo(T* destination)
         {
             var enumerator = GetEnumerator();
             ref var nativeEnumerator = ref enumerator.NativeEnumerator;
-            UnsafeUtilityEx.MemCpy(destination, nativeEnumerator.Ptr, nativeEnumerator.Length);
+            var answer = nativeEnumerator.Length;
+            UnsafeUtilityEx.MemCpy(destination, nativeEnumerator.Ptr, answer);
             enumerator.Dispose();
+            return answer;
         }
 
         public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
@@ -126,7 +128,7 @@ namespace UniNativeLinq
                 return default;
             }
             if (alloc == allocator)
-                return NativeEnumerable<T>.Create(nativeEnumerator.Ptr,  length);
+                return NativeEnumerable<T>.Create(nativeEnumerator.Ptr, length);
             var ptr = UnsafeUtilityEx.Malloc<T>(length, allocator);
             UnsafeUtilityEx.MemCpy(ptr, nativeEnumerator.Ptr, length);
             return NativeEnumerable<T>.Create(ptr, length);

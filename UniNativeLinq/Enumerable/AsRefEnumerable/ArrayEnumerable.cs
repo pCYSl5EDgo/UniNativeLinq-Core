@@ -129,7 +129,14 @@ namespace UniNativeLinq
         public long LongCount() => Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, GetPointer(), Length);
+        public long CopyTo(T* dest)
+        {
+            if (Length != 0)
+            {
+                UnsafeUtilityEx.MemCpy(dest, GetPointer(), Length);
+            }
+            return Length;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()
@@ -137,7 +144,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer(ref answer[0]));
             return answer;
         }
 

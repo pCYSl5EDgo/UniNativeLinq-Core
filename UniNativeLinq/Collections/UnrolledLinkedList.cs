@@ -149,7 +149,14 @@ namespace UniNativeLinq
 
             public long LongCount() => Count;
 
-            public void CopyTo(T* dest) => UnsafeUtilityEx.MemCpy(dest, Values, Count);
+            public long CopyTo(T* dest)
+            {
+                if (Count != 0)
+                {
+                    UnsafeUtilityEx.MemCpy(dest, Values, Count);
+                }
+                return Count;
+            }
 
             public NativeEnumerable<T> ToNativeEnumerable(Allocator allocator)
             {
@@ -168,7 +175,7 @@ namespace UniNativeLinq
             public T[] ToArray()
             {
                 var answer = new T[Count];
-                CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
+                CopyTo(Pseudo.AsPointer(ref answer[0]));
                 return answer;
             }
 
@@ -381,12 +388,17 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo(T* dest)
+        public long CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
+            long answer = 0;
             while (enumerator.MoveNext())
+            {
                 *dest++ = enumerator.Current;
+                answer++;
+            }
             enumerator.Dispose();
+            return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -395,7 +407,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[LongCount()];
-            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer(ref answer[0]));
             return answer;
         }
 

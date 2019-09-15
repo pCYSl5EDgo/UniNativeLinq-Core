@@ -213,12 +213,17 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo(GroupingEnumerable<TKey, TElement>* dest)
+        public long CopyTo(GroupingEnumerable<TKey, TElement>* dest)
         {
             var enumerator = GetEnumerator();
+            long answer = 0;
             while (enumerator.MoveNext())
+            {
                 *dest++ = enumerator.Current;
+                answer++;
+            }
             enumerator.Dispose();
+            return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

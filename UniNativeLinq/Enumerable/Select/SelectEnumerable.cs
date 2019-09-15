@@ -103,12 +103,17 @@ namespace UniNativeLinq
         public long LongCount() => enumerable.LongCount();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo(T* dest)
+        public long CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
+            long answer = 0;
             while (enumerator.MoveNext())
+            {
                 *dest++ = enumerator.Current;
+                answer++;
+            }
             enumerator.Dispose();
+            return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

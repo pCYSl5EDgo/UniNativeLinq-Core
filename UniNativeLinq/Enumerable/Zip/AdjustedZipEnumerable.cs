@@ -169,12 +169,17 @@ namespace UniNativeLinq
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo(T* dest)
+        public long CopyTo(T* dest)
         {
             var enumerator = GetEnumerator();
+            long answer = 0;
             while (enumerator.MoveNext())
+            {
                 *dest++ = enumerator.Current;
+                answer++;
+            }
             enumerator.Dispose();
+            return answer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -183,7 +188,7 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Pseudo.AsPointer<T>(ref answer[0]));
+            CopyTo(Pseudo.AsPointer(ref answer[0]));
             return answer;
         }
 
