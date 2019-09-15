@@ -29,7 +29,15 @@ namespace UniNativeLinq
         public struct Enumerator : IRefEnumerator<T>
         {
             private TEnumerator enumerator;
-            internal Enumerator(in TEnumerator enumerator) => this.enumerator = enumerator;
+            internal Enumerator(in TEnumerator enumerator, long count)
+            {
+                this.enumerator = enumerator;
+                for (var i = 0L; i < count; i++)
+                {
+                    if (!this.enumerator.MoveNext())
+                        break;
+                }
+            }
             public bool MoveNext() => enumerator.MoveNext();
 
             public void Reset() => enumerator.MoveNext();
@@ -43,7 +51,7 @@ namespace UniNativeLinq
             public void Dispose() => enumerator.Dispose();
         }
 
-        public Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator());
+        public Enumerator GetEnumerator() => new Enumerator(enumerable.GetEnumerator(), skipCount);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
