@@ -24,7 +24,7 @@ namespace UniNativeLinq
         public SkipLastEnumerable(in TEnumerable enumerable, long skipCount, Allocator allocator)
         {
             this.enumerable = enumerable;
-            this.skipCount = skipCount;
+            this.skipCount = skipCount < 0 ? 0 : skipCount;
             alloc = allocator;
         }
 

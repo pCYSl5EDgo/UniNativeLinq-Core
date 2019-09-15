@@ -23,7 +23,7 @@ namespace UniNativeLinq
         public SkipEnumerable(in TEnumerable enumerable, long skipCount)
         {
             this.enumerable = enumerable;
-            this.skipCount = skipCount;
+            this.skipCount = skipCount < 0 ? 0 : skipCount;
         }
 
         public struct Enumerator : IRefEnumerator<T>
