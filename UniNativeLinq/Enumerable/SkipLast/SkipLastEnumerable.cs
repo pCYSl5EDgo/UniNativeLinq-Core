@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
@@ -16,91 +15,70 @@ namespace UniNativeLinq
     {
         private TEnumerable enumerable;
         private long skipCount;
-        private Allocator alloc;
 
         public bool CanIndexAccess() => enumerable.CanIndexAccess();
         public ref T this[long index] => ref enumerable[index];
 
-        public SkipLastEnumerable(in TEnumerable enumerable, long skipCount, Allocator allocator)
+        public SkipLastEnumerable(in TEnumerable enumerable, long skipCount)
         {
             this.enumerable = enumerable;
             this.skipCount = skipCount < 0 ? 0 : skipCount;
-            alloc = allocator;
         }
 
         public struct Enumerator : IRefEnumerator<T>
         {
             private TEnumerator enumerator;
-            private T* buffer;
             private long index;
-            private long skipCount;
-            private Allocator allocator;
+            private long length;
 
-            public ref T Current => ref buffer[index];
+            public ref T Current => ref enumerator.Current;
             T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
 
-            public Enumerator(in TEnumerable enumerable, long skipCount, Allocator allocator)
+            public Enumerator(ref TEnumerable enumerable, long skipCount)
             {
-                enumerator = enumerable.GetEnumerator();
-                this.skipCount = skipCount;
-                this.allocator = allocator;
-                buffer = skipCount <= 0 ? null : UnsafeUtilityEx.Malloc<T>(skipCount + 1, allocator);
-                index = 0;
-                for (var i = 0L; i < skipCount; i++)
-                {
-                    if (!enumerator.MoveNext())
-                    {
-                        enumerator.Dispose();
-                        UnsafeUtility.Free(buffer, allocator);
-                        return;
-                    }
-                    buffer[i + 1] = enumerator.Current;
-                }
+                length = enumerable.LongCount() - skipCount;
+                if (length < 0)
+                    length = 0;
+                index = -1;
+                enumerator = length > 0 ? enumerable.GetEnumerator() : default;
             }
 
             public bool MoveNext()
             {
-                if (!enumerator.MoveNext())
+                if (++index >= length)
+                {
                     return false;
-                buffer[index++] = enumerator.Current;
-                if (index > skipCount)
-                    index = 0L;
-                return true;
+                }
+                return enumerator.MoveNext();
             }
 
             public void Reset() => throw new InvalidOperationException();
 
-            public void Dispose()
-            {
-                enumerator.Dispose();
-                if (buffer == null || !UnsafeUtility.IsValidAllocator(allocator)) return;
-                UnsafeUtility.Free(buffer, allocator);
-            }
+            public void Dispose() => enumerator.Dispose();
 
             public ref T TryGetNext(out bool success)
             {
-                ref var value = ref enumerator.TryGetNext(out success);
-                if (!success) return ref value;
-                buffer[index++] = value;
-                if (index > skipCount)
-                    index = 0L;
-                return ref buffer[index];
+                if (++index >= length)
+                {
+                    success = false;
+                    return ref Pseudo.AsRefNull<T>();
+                }
+                return ref enumerator.TryGetNext(out success);
             }
 
             public bool TryMoveNext(out T value)
             {
-                if (!enumerator.TryMoveNext(out value))
+                if (++index >= length)
+                {
+                    value = default;
                     return false;
-                buffer[index++] = value;
-                if (index > skipCount)
-                    index = 0L;
-                value = buffer[index];
-                return true;
+                }
+                return enumerator.TryMoveNext(out value);
             }
         }
 
-        public Enumerator GetEnumerator() => new Enumerator(enumerable, skipCount, alloc);
+        public Enumerator GetEnumerator() => new Enumerator(ref enumerable, skipCount);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
