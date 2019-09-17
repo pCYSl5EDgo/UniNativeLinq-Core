@@ -23,6 +23,7 @@ namespace UniNativeLinq
         private TAction action;
         public bool CanIndexAccess() => false;
         public ref T this[long index] => throw new NotSupportedException();
+        
         public AdjustedZipEnumerable(in TFirstEnumerable firstCollection, in TSecondEnumerable secondCollection, in TAction action)
         {
             this.firstCollection = firstCollection;

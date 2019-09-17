@@ -14,50 +14,48 @@ namespace UniNativeLinq
         where TEnumerable : struct, IRefEnumerable<TEnumerator, T>
     {
         private TEnumerable enumerable;
-        private long takeCount;
-        private Allocator alloc;
+        private readonly long takeCount;
 
-        public TakeLastEnumerable(in TEnumerable enumerable, long takeCount, Allocator allocator)
+        public TakeLastEnumerable(in TEnumerable enumerable, long takeCount)
         {
             this.enumerable = enumerable;
-            this.takeCount = takeCount;
-            alloc = allocator;
+            this.takeCount = takeCount < 0 ? 0 : takeCount;
         }
 
         public struct Enumerator : IRefEnumerator<T>
         {
-            private RingBuffer<T>.Enumerator enumerator;
+            private TEnumerator enumerator;
+            internal Enumerator(ref TEnumerable enumerable, long count)
+            {
+                enumerator = enumerable.GetEnumerator();
+                var skipCount = -count;
+                {
+                    var countEnumerator = enumerator;
+                    while (countEnumerator.MoveNext())
+                    {
+                        ++skipCount;
+                    }
+                }
+                for (var i = 0L; i < skipCount; i++)
+                {
+                    if (!enumerator.MoveNext())
+                        break;
+                }
+            }
+            public bool MoveNext() => enumerator.MoveNext();
+
+            public void Reset() => enumerator.MoveNext();
 
             public ref T Current => ref enumerator.Current;
             T IEnumerator<T>.Current => Current;
             object IEnumerator.Current => Current;
 
-            public Enumerator([PseudoIsReadOnly]ref TEnumerable enumerable, long takeCount, Allocator allocator)
-            {
-                var ringBuffer = new RingBuffer<T>(takeCount, allocator);
-                var baseEnumerator = enumerable.GetEnumerator();
-                while (baseEnumerator.MoveNext())
-                {
-                    if (ringBuffer.IsFull)
-                        ringBuffer.RemoveFirst();
-                    ringBuffer.Add(baseEnumerator.Current);
-                }
-                baseEnumerator.Dispose();
-                enumerator = ringBuffer.GetEnumerator();
-            }
-
-            public bool MoveNext() => enumerator.MoveNext();
-
-            public void Reset() => throw new InvalidOperationException();
-
-            public void Dispose() => enumerator.Parent.Dispose();
-
             public ref T TryGetNext(out bool success) => ref enumerator.TryGetNext(out success);
-
             public bool TryMoveNext(out T value) => enumerator.TryMoveNext(out value);
+            public void Dispose() => enumerator.Dispose();
         }
 
-        public Enumerator GetEnumerator() => new Enumerator(ref enumerable, takeCount, alloc);
+        public Enumerator GetEnumerator() => new Enumerator(ref enumerable, takeCount);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

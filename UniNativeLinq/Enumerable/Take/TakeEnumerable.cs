@@ -18,7 +18,7 @@ namespace UniNativeLinq
         public TakeEnumerable(in TEnumerable enumerable, long takeCount)
         {
             this.enumerable = enumerable;
-            this.takeCount = takeCount;
+            this.takeCount = takeCount < 0 ? 0 : takeCount;
         }
 
         public struct Enumerator : IRefEnumerator<T>

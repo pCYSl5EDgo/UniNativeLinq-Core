@@ -18,26 +18,42 @@ namespace UniNativeLinq
 
         public NativeEnumerable<T> Calc(ref TEnumerable0 first, ref TEnumerable1 second, Allocator allocator)
         {
-            var targets = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, Func, allocator).ToNativeEnumerable();
+            var targets = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, Func, Allocator.Temp).ToNativeEnumerable();
             if (targets.Length == 0)
             {
-                targets.Dispose(allocator);
+                targets.Dispose(Allocator.Temp);
                 return default;
             }
             var removes = new SortedDistinctEnumerable<TEnumerable1, TEnumerator1, T, TComparer>(second, Func, Allocator.Temp).ToNativeEnumerable();
             if (removes.Length == 0)
             {
+                targets.Dispose(Allocator.Temp);
                 removes.Dispose(Allocator.Temp);
                 return targets;
             }
-            var count = targets.Length;
-            for (var index = count; --index >= 0;)
+            var answer = new NativeList<T>(allocator);
+            foreach (ref var target in targets)
             {
-                if (removes.FindIndexBinarySearch(ref targets[index], Func) == -1) continue;
-                if (index != --count)
-                    targets[index] = targets[count];
+                var add = true;
+                foreach (ref var remove in removes)
+                {
+                    var compare = Func.Calc(ref target, ref remove);
+                    if (compare == 0)
+                    {
+                        add = false;
+                        break;
+                    }
+                    if (compare < 0)
+                    {
+                        break;
+                    }
+                }
+                if (!add) continue;
+                answer.Add(target);
             }
-            return NativeEnumerable<T>.Create(targets.Ptr, count);
+            removes.Dispose(Allocator.Temp);
+            targets.Dispose(Allocator.Temp);
+            return answer.AsNativeEnumerable();
         }
 
         public static implicit operator
