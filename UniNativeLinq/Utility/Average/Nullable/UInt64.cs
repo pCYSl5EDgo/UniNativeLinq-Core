@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace UniNativeLinq.Average
+﻿namespace UniNativeLinq.Average
 {
     public struct NullableUInt64Average : IAverageOperator<ulong?, double?>
     {
