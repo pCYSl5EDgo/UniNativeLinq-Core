@@ -28,6 +28,37 @@ namespace UniNativeLinq
         public GroupByDisposeOptions GroupByDisposeOption;
         public bool CanIndexAccess() => false;
         public ref GroupingEnumerable<TKey, TElement> this[long index] => throw new NotSupportedException();
+
+        public GroupByEnumerable(in TEnumerable enumerable, Allocator allocator, GroupByDisposeOptions groupByDisposeOption)
+        {
+            this.enumerable = enumerable;
+            keySelector = default;
+            elementSelector = default;
+            equalityComparer = default;
+            alloc = allocator;
+            GroupByDisposeOption = groupByDisposeOption;
+        }
+
+        public GroupByEnumerable(in TEnumerable enumerable, in TKeyFunc keySelector, Allocator allocator, GroupByDisposeOptions groupByDisposeOption)
+        {
+            this.enumerable = enumerable;
+            this.keySelector = keySelector;
+            elementSelector = default;
+            equalityComparer = default;
+            alloc = allocator;
+            GroupByDisposeOption = groupByDisposeOption;
+        }
+
+        public GroupByEnumerable(in TEnumerable enumerable, in TKeyFunc keySelector, in TElementFunc elementSelector, Allocator allocator, GroupByDisposeOptions groupByDisposeOption)
+        {
+            this.enumerable = enumerable;
+            this.keySelector = keySelector;
+            this.elementSelector = elementSelector;
+            equalityComparer = default;
+            alloc = allocator;
+            GroupByDisposeOption = groupByDisposeOption;
+        }
+
         public GroupByEnumerable(in TEnumerable enumerable, in TKeyFunc keySelector, in TElementFunc elementSelector, in TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions groupByDisposeOption)
         {
             this.enumerable = enumerable;
