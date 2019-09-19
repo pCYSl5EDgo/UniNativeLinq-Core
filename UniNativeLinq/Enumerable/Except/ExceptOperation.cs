@@ -2,11 +2,11 @@
 
 namespace UniNativeLinq
 {
-    public unsafe struct
+    public struct
         ExceptOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T, TComparer>
         : ISetOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T>
         where T : unmanaged
-        where TComparer : struct, IRefFunc<T, T, int>
+        where TComparer : struct, IRefFunc<T, T, bool>
         where TEnumerator0 : struct, IRefEnumerator<T>
         where TEnumerator1 : struct, IRefEnumerator<T>
         where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T>
@@ -18,41 +18,36 @@ namespace UniNativeLinq
 
         public NativeEnumerable<T> Calc(ref TEnumerable0 first, ref TEnumerable1 second, Allocator allocator)
         {
-            var targets = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, Func, Allocator.Temp).ToNativeEnumerable();
-            if (targets.Length == 0)
+            var d1 = new DistinctEnumerable<TEnumerable1, TEnumerator1, T, TComparer>(second, Func, Allocator.Temp).ToNativeEnumerable(Allocator.Temp);
+            if (d1.Length == 0)
             {
-                targets.Dispose(Allocator.Temp);
+                d1.Dispose(Allocator.Temp);
+                return first.ToNativeEnumerable(allocator);
+            }
+            var d0 = new DistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, Func, Allocator.Temp).ToNativeEnumerable(Allocator.Temp);
+            if (d0.Length == 0)
+            {
+                d1.Dispose(Allocator.Temp);
+                d0.Dispose(Allocator.Temp);
                 return default;
             }
-            var removes = new SortedDistinctEnumerable<TEnumerable1, TEnumerator1, T, TComparer>(second, Func, Allocator.Temp).ToNativeEnumerable();
-            if (removes.Length == 0)
-            {
-                targets.Dispose(Allocator.Temp);
-                removes.Dispose(Allocator.Temp);
-                return targets;
-            }
             var answer = new NativeList<T>(allocator);
-            foreach (ref var target in targets)
+            foreach (ref var i in d0)
             {
                 var add = true;
-                foreach (ref var remove in removes)
+                foreach (ref var j in d1)
                 {
-                    var compare = Func.Calc(ref target, ref remove);
-                    if (compare == 0)
-                    {
-                        add = false;
-                        break;
-                    }
-                    if (compare < 0)
-                    {
-                        break;
-                    }
+                    if (!Func.Calc(ref i, ref j)) continue;
+                    add = false;
+                    break;
                 }
-                if (!add) continue;
-                answer.Add(target);
+                if (add)
+                {
+                    answer.Add(i);
+                }
             }
-            removes.Dispose(Allocator.Temp);
-            targets.Dispose(Allocator.Temp);
+            d0.Dispose(Allocator.Temp);
+            d1.Dispose(Allocator.Temp);
             return answer.AsNativeEnumerable();
         }
 

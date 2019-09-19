@@ -1,9 +1,8 @@
 ﻿using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace UniNativeLinq
 {
-    public unsafe struct
+    public struct
         IntersectOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T, TComparer>
         : ISetOperation<TEnumerable0, TEnumerator0, TEnumerable1, TEnumerator1, T>
         where T : unmanaged
@@ -11,45 +10,38 @@ namespace UniNativeLinq
         where TEnumerator1 : struct, IRefEnumerator<T>
         where TEnumerable0 : struct, IRefEnumerable<TEnumerator0, T>
         where TEnumerable1 : struct, IRefEnumerable<TEnumerator1, T>
-        where TComparer : struct, IRefFunc<T, T, int>
+        where TComparer : struct, IRefFunc<T, T, bool>
     {
         public TComparer Func;
 
-        public IntersectOperation(in TComparer comparer) => this.Func = comparer;
+        public IntersectOperation(in TComparer comparer) => Func = comparer;
 
         public NativeEnumerable<T> Calc(ref TEnumerable0 first, ref TEnumerable1 second, Allocator allocator)
         {
-            var smaller = new SortedDistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, Func, Allocator.Temp).ToNativeEnumerable();
-            if (smaller.Length == 0)
+            var d0 = new DistinctEnumerable<TEnumerable0, TEnumerator0, T, TComparer>(first, Func, Allocator.Temp).ToNativeEnumerable(Allocator.Temp);
+            if (d0.Length == 0)
             {
-                smaller.Dispose(Allocator.Temp);
+                d0.Dispose(Allocator.Temp);
                 return default;
             }
-            var capacity = smaller.Length;
-            var larger = new SortedDistinctEnumerable<TEnumerable1, TEnumerator1, T, TComparer>(second, Func, Allocator.Temp).ToNativeEnumerable();
-            if (larger.Length == 0)
+            var d1 = new DistinctEnumerable<TEnumerable1, TEnumerator1, T, TComparer>(second, Func, Allocator.Temp).ToNativeEnumerable(Allocator.Temp);
+            if (d1.Length == 0)
             {
-                smaller.Dispose(Allocator.Temp);
-                larger.Dispose(Allocator.Temp);
+                d1.Dispose(Allocator.Temp);
+                d0.Dispose(Allocator.Temp);
                 return default;
             }
-            if (capacity > larger.Length)
+            var answer = new NativeList<T>(allocator);
+            foreach (ref var i in d0)
             {
-                capacity = larger.Length;
-                (smaller, larger) = (larger, smaller);
+                foreach (ref var j in d1)
+                {
+                    if (!Func.Calc(ref i, ref j)) continue;
+                    answer.Add(i);
+                    break;
+                }
             }
-            var ptr = UnsafeUtilityEx.Malloc<T>(capacity, allocator);
-            var count = 0L;
-            for (var i = 0L; i < capacity; i++)
-            {
-                if (larger.FindIndexBinarySearch(ref smaller[i], Func) != -1) continue;
-                ptr[count++] = smaller[i];
-            }
-            smaller.Dispose(Allocator.Temp);
-            larger.Dispose(Allocator.Temp);
-            if (count != 0) return NativeEnumerable<T>.Create(ptr, count);
-            UnsafeUtility.Free(ptr, allocator);
-            return default;
+            return answer.AsNativeEnumerable();
         }
 
         public static implicit operator
