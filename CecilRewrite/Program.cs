@@ -31,7 +31,11 @@ namespace CecilRewrite
 
                 var zipValueTuple = MainModule.GetType("UniNativeLinq", "ZipValueTuple`2");
                 var customAttributes = zipValueTuple.CustomAttributes;
-                IsReadOnlyAttribute = customAttributes[2];
+                foreach (var customAttribute in customAttributes)
+                {
+                    Console.WriteLine(customAttribute.AttributeType.FullName);
+                }
+                IsReadOnlyAttribute = customAttributes[1];
             }
         }
 
