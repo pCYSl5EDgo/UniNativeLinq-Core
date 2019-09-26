@@ -29,7 +29,17 @@ namespace CecilRewrite
 
                 if(MainModule is null) throw new ArgumentNullException();
 
-                var zipValueTuple = MainModule.GetType("UniNativeLinq", "ZipValueTuple`2");
+                var zipValueTuple = MainModule.GetType("UniNativeLinq", "ZipValueTuple`2"); 
+                
+                if (zipValueTuple is null)
+                {
+                    foreach (var typeDefinition in MainModule.Types)
+                    {
+                        Console.WriteLine(typeDefinition.FullName);
+                    }
+                    throw new ArgumentNullException();
+                }
+
                 var customAttributes = zipValueTuple.CustomAttributes;
                 foreach (var customAttribute in customAttributes)
                 {
