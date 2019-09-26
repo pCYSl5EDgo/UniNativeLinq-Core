@@ -26,7 +26,7 @@ jobs:
     - run: ls -l "/opt/Unity/Editor/Data/Managed/UnityEngine/"
     - run: |
         cd CecilRewrite
-        dotnet run -c Release "/opt/Unity/Editor/Data/Managed/UnityEngine/" "../UniNativeLinq.dll" "../artifact/UniNativeLinq.bytes"
+        dotnet run "/opt/Unity/Editor/Data/Managed/UnityEngine/" "../UniNativeLinq.dll" "../artifact/UniNativeLinq.bytes"
     - uses: actions/upload-artifact@master
       with:
         name: bytes
