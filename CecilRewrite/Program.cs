@@ -27,6 +27,8 @@ namespace CecilRewrite
                 Assembly = AssemblyDefinition.ReadAssembly(pathUniNativeLinqDll, new ReaderParameters(readingMode: ReadingMode.Deferred) { AssemblyResolver = resolver });
                 MainModule = Assembly.MainModule;
 
+                if(MainModule is null) throw new ArgumentNullException();
+
                 var zipValueTuple = MainModule.GetType("UniNativeLinq", "ZipValueTuple`2");
                 var customAttributes = zipValueTuple.CustomAttributes;
                 IsReadOnlyAttribute = customAttributes[2];
