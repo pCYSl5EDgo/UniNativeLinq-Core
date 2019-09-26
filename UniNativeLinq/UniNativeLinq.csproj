@@ -11,8 +11,6 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>/opt/Unit/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
+    <Reference Include="/opt/Unit/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll"></Reference>
   </ItemGroup>
 </Project>
