@@ -29,3 +29,8 @@ jobs:
       with:
         name: bytes
         path: artifact
+    - uses: elgohr/Github-Release-Action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        args: New Release
