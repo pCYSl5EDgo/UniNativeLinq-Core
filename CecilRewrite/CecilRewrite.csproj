@@ -12,8 +12,4 @@
     <PackageReference Include="Mono.Cecil" Version="0.10.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\UniNativeLinq\UniNativeLinq.csproj" />
-  </ItemGroup>
-
 </Project>
