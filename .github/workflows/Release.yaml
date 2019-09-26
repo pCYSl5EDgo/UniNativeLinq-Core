@@ -1,0 +1,31 @@
+name: CreateRelease
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  editorTestJob:
+    runs-on: ubuntu-latest
+    container: docker://gableroux/unity3d:${{ matrix.unity-tag }}
+    strategy:
+      matrix:
+        unity-tag: [2018.4.9f1]
+
+    steps:
+    - uses: actions/checkout@master
+    - run: mkdir -p artifact
+    - uses: actions/setup-dotnet@v1.0.2
+      with:
+        dotnet-version: '3.0.100'
+    - run: |
+        cd UniNativeLinq
+        dotnet build --c Release --framework netstandard2.0 --output ..
+    - run: |
+        cd CecilRewrite
+        dotnet run --c Release "/opt/Unity/Editor/Data/Managed/UnityEngine/" "../UniNativeLinq.dll" "../artifact/UniNativeLinq.bytes"
+    - uses: actions/upload-artifact
+      with:
+        name: bytes
+        path: artifact

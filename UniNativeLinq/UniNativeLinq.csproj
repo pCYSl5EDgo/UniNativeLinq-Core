@@ -12,7 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.0b3/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>/opt/Unit/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

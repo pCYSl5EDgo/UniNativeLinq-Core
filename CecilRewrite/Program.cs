@@ -14,38 +14,37 @@ namespace CecilRewrite
     {
         internal const string NameSpace = "UniNativeLinq";
 
-        internal static ModuleDefinition MainModule;
-        internal static CustomAttribute IsReadOnlyAttribute;
-        internal static ModuleDefinition SystemModule;
-        internal static AssemblyDefinition Assembly;
-        internal static TypeReference Allocator;
-        internal static TypeDefinition[] Enumerables;
-
-        static Program()
+        struct Data
         {
-            const string folderPath = @"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\netstandard2.0\";
-            const string UniNativeLinqDll = folderPath + @"UniNativeLinq.dll";
-            var resolver = new DefaultAssemblyResolver();
-            resolver.AddSearchDirectory(folderPath);
-            Assembly = AssemblyDefinition.ReadAssembly(UniNativeLinqDll, new ReaderParameters(readingMode: ReadingMode.Deferred) { AssemblyResolver = resolver });
-            MainModule = Assembly.MainModule;
+            public readonly ModuleDefinition MainModule;
+            public readonly CustomAttribute IsReadOnlyAttribute;
+            public readonly AssemblyDefinition Assembly;
 
-            IsReadOnlyAttribute = MainModule.GetType("UniNativeLinq", "ZipValueTuple`2").CustomAttributes[2];
+            public Data(string folderPath, string pathUniNativeLinqDll)
+            {
+                var resolver = new DefaultAssemblyResolver();
+                resolver.AddSearchDirectory(folderPath);
+                Assembly = AssemblyDefinition.ReadAssembly(pathUniNativeLinqDll, new ReaderParameters(readingMode: ReadingMode.Deferred) { AssemblyResolver = resolver });
+                MainModule = Assembly.MainModule;
 
-            var nativeEnumerable1 = MainModule.GetType(NameSpace, "NativeEnumerable`1");
-            MethodDefinition ToNativeArray = nativeEnumerable1.Methods.First(x => x.Name == nameof(ToNativeArray));
-            Allocator = ToNativeArray.Parameters.First().ParameterType;
-            SystemModule = ModuleDefinition.ReadModule(@"C:\Program Files\dotnet\sdk\NuGetFallbackFolder\netstandard.library\2.0.3\build\netstandard2.0\ref\netstandard.dll");
-            Enumerables = MainModule.Types.Where(x => x.IsValueType && x.IsPublic && x.HasInterfaces && x.Interfaces.Any(y => y.InterfaceType.Name == "IRefEnumerable`2")).ToArray();
+                IsReadOnlyAttribute = MainModule.GetType("UniNativeLinq", "ZipValueTuple`2").CustomAttributes[2];
+            }
         }
 
-        public static void Main()
-        {
-            RewriteThrow(MainModule);
-            ReWritePseudoIsReadOnly(MainModule);
-            ReWritePseudoUtility(MainModule);
+        static Data data;
 
-            Assembly.Write(@"C:\Users\conve\source\repos\pcysl5edgo\UniNativeLinq\bin\Release\UniNativeLinq.dll");
+        public static int Main(string[] args)
+        {
+            if (args.Length != 3) return 1;
+
+            data = new Data(args[0], args[1]);
+
+            RewriteThrow(data.MainModule);
+            ReWritePseudoIsReadOnly(data.MainModule);
+            ReWritePseudoUtility(data.MainModule);
+
+            data.Assembly.Write(args[2]);
+            return 0;
         }
 
         private static void ReWritePseudoUtility(ModuleDefinition module)
@@ -82,7 +81,7 @@ namespace CecilRewrite
             var pseudo = memberCustomAttributes.FirstOrDefault(x => x.AttributeType.Name == "PseudoIsReadOnlyAttribute");
             if (pseudo is null) return;
             memberCustomAttributes.Remove(pseudo);
-            memberCustomAttributes.Add(IsReadOnlyAttribute);
+            memberCustomAttributes.Add(data.IsReadOnlyAttribute);
             param.Attributes = ParameterAttributes.In;
         }
 
@@ -92,8 +91,8 @@ namespace CecilRewrite
             {
                 ReWritePseudoIsReadOnly(type);
             }
-            var pseudo = MainModule.GetType(NameSpace, "PseudoIsReadOnlyAttribute");
-            MainModule.Types.Remove(pseudo);
+            var pseudo = data.MainModule.GetType(NameSpace, "PseudoIsReadOnlyAttribute");
+            data.MainModule.Types.Remove(pseudo);
         }
 
         private static void ReWritePseudoIsReadOnly(TypeDefinition type)
