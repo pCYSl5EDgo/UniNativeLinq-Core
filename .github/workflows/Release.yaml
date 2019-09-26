@@ -23,6 +23,7 @@ jobs:
         cd UniNativeLinq
         dotnet build -c Release --framework netstandard2.0 --output ..
     - run: |
+        ls -l
         cd CecilRewrite
         dotnet run -c Release "/opt/Unity/Editor/Data/Managed/UnityEngine/" "../UniNativeLinq.dll" "../artifact/UniNativeLinq.bytes"
     - uses: actions/upload-artifact@master
