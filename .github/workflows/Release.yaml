@@ -21,12 +21,10 @@ jobs:
         dotnet-version: '3.0.100'
     - run: |
         cd UniNativeLinq
-        dotnet build -c Release --framework netstandard2.0 --output ..
-    - run: ls -l
-    - run: ls -l "/opt/Unity/Editor/Data/Managed/UnityEngine/"
+        dotnet build -c Release
     - run: |
         cd CecilRewrite
-        dotnet run "/opt/Unity/Editor/Data/Managed/UnityEngine/" "../UniNativeLinq.dll" "../artifact/UniNativeLinq.bytes"
+        dotnet run "/opt/Unity/Editor/Data/Managed/UnityEngine/" "../UniNativeLinq/bin/Release/netstandard2.0/UniNativeLinq.dll" "../artifact/UniNativeLinq.bytes"
     - uses: actions/upload-artifact@master
       with:
         name: bytes
