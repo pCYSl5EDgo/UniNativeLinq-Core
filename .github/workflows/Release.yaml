@@ -39,7 +39,7 @@ jobs:
       with:
         name: bytes
         path: artifact
-    - run: mkdir -p .ssh
+    - run: mkdir -p ~/.ssh
     - run: echo $id_rsa > ~/.ssh/id_rsa
       env:
         id_rsa: ${{ secrets.id_rsa }}
