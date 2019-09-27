@@ -39,11 +39,14 @@ jobs:
       with:
         name: bytes
         path: artifact
+    - run: mkdir .ssh
+    - run: echo $id_rsa > .ssh/id_rsa
+      env:
+        id_rsa: ${{ secrets.id_rsa }}
+    - run: echo "HostName github.com\nIdentityFile ~/.ssh/id_rsa\nUser git" > .ssh/config
+    - run: ssh -T git@github.com
     - run: git clone git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
     - run: git remote set-url git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
-    - run: echo $NETRC > UniNativeLinq-EditorExtension/.netrc
-      env:
-        NETRC: ${{ secrets.netrc }}
     - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
     - name: git config
       run: |
