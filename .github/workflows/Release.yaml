@@ -44,6 +44,7 @@ jobs:
       env:
         id_rsa: ${{ secrets.id_rsa }}
     - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension.git
+    - run: git remote set-rul git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
     - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
     - name: git config
       run: |
