@@ -40,20 +40,13 @@ jobs:
         name: bytes
         path: artifact
     - run: mkdir -p ~/.ssh
-    - run: echo $id_rsa > ~/.ssh/id_rsa
+    - run: echo $netrc > ~/.netrc
       env:
-        id_rsa: ${{ secrets.id_rsa }}
+        netrc: ${{ secrets.netrc }}
     - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension.git
-    - run: |
-        ssh-agent
-        ssh-add ~/.ssh/id_rsa
-        ssh -vT git@github.com
-    - run: ls -l
     - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
     - run: |
         cd UniNativeLinq-EditorExtension
-        git remote set-url origin git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
-        git remote -v
         git config --global user.email "pcysl5edgo@yahoo.co.jp"
         git config --global user.name "pCYSl5EDgo"
         git commit -a -m "[update]DLL Update of $GITHUB_SHA"
