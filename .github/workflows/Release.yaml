@@ -48,7 +48,7 @@ jobs:
     - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
     - run: |
         cd UniNativeLinq-EditorExtension
-        git remote set-rul git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
+        git remote set-url git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
         git remote -v
         git config --global user.email "pcysl5edgo@yahoo.co.jp"
         git config --global user.name "pCYSl5EDgo"
