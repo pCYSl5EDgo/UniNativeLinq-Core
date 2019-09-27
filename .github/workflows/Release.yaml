@@ -44,7 +44,7 @@ jobs:
     - run: echo $id_rsa > UniNativeLinq-EditorExtension/.ssh/id_rsa
       env:
         id_rsa: ${{ secrets.id_rsa }}
-    - run: echo "HostName github.com\nIdentityFile ~/.ssh/id_rsa\nUser git" > UniNativeLinq-EditorExtension/.ssh/config
+    - run: echo "HostName github.com\nIdentityFile ~/.ssh/id_rsa\nUser git"
     - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
     - name: git config
       run: |
