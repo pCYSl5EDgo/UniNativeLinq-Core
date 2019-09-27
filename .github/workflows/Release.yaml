@@ -51,4 +51,5 @@ jobs:
   publishReleaseJob:
     runs-on: ubuntu-latest
     steps:
-    - run: curl https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases/latest | jq .
+    - run: curl -s -S https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq .[0]
+    - run: curl -s -S https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq .
