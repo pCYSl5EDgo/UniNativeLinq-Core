@@ -44,9 +44,7 @@ jobs:
       env:
         id_rsa: ${{ secrets.id_rsa }}
     - run: echo "HostName github.com\nIdentityFile ~/.ssh/id_rsa\nUser git" > .ssh/config
-    - run: ssh -T git@github.com
     - run: git clone git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
-    - run: git remote set-url git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
     - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
     - name: git config
       run: |
