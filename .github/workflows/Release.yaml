@@ -29,8 +29,9 @@ jobs:
       with:
         name: bytes
         path: artifact
-    - uses: elgohr/Github-Release-Action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - run: echo $NETRC > .netrc
       with:
-        args: New Release
+        NETRC: ${{ secrets.netrc }}
+    - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension
+    - run: cp artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/Dlls/UniNativeLinq.bytes"
+    - run: git push
