@@ -11,4 +11,4 @@ jobs:
     steps:
     - run: curl -s -S https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" > p
     - run: cat p
-    - run: cat p | awk '{split($0,versions,".");print versions[1] "." versions[2] "." (versions[3]+1)}'
+    - run: cat p | awk '{split($0,versions,".");print (versions[1]+0) "." versions[2] "." (versions[3]+1)}'
