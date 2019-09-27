@@ -8,4 +8,5 @@ on:
 jobs:
   publishReleaseJob:
     runs-on: ubuntu-latest
-    - run: curl -s -S https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" | awk '{split($0,versions,".");print versions[0] "." versions[1] "." (versions[2]+1)}' 
+    steps:
+    - run: curl -s -S https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" | awk '{split($0,versions,".");print versions[0] "." versions[1] "." (versions[2]+1)}'
