@@ -70,10 +70,10 @@ jobs:
     - run: curl -sS https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" |  awk '{$0=substr($0, 1, length($0)-2);split($0,versions,".");print versions[1] "." versions[2] "." (versions[3]+1)}' > next_version
     - run: |
         NEXTVERSION=$(cat next_version)
-        JSON=$(printf "{\"tag_name\":\"%s\",\"target_commitish\":\"master\",\"name\":\"自動化されたリリース：%s\",\"body\":\"このリリースは自動化されたものです。\"}" NEXT_VERSION NEXT_VERSION)
-        cat $JSON
+        printf "{\"tag_name\":\"%s\",\"target_commitish\":\"master\",\"name\":\"自動化されたリリース：%s\",\"body\":\"このリリースは自動化されたものです。\"}" NEXT_VERSION NEXT_VERSION > json
+        cat json
         echo "\n"
-        curl -sS -X POST -H 'content-type:application/json' --data-urlencode $JSON https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases > response
+        curl -sS -X POST -H 'content-type:application/json' --data-urlencode @"json" https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases > response
         echo "\n"
         cat response
         echo "\n"
