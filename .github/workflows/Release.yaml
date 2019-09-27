@@ -45,7 +45,9 @@ jobs:
         id_rsa: ${{ secrets.id_rsa }}
     - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension.git
     - run: ls -l
-    - run: git remote -v
+    - run: |
+        cd UniNativeLinq-EditorExtension
+        git remote -v
     - run: |
         cd UniNativeLinq-EditorExtension
         git remote set-rul git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
