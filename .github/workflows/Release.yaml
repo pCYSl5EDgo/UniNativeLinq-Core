@@ -44,8 +44,14 @@ jobs:
         NETRC: ${{ secrets.netrc }}
     - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension
     - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
-    - run: git commit -a -m "[update]DLL Update of $GITHUB_SHA"
-    - run: git push
+    - name: git commit
+      run: |
+        cd UniNativeLinq-EditorExtension
+        git commit -a -m "[update]DLL Update of $GITHUB_SHA"
+    - name: git push
+      run: |
+        cd UniNativeLinq-EditorExtension
+        git push
 
   publishReleaseJob:
     runs-on: ubuntu-latest
@@ -61,8 +67,11 @@ jobs:
         NEXTVERSION=$(cat next_version)
         JSON=$(printf "{\"tag_name\":\"%s\",\"target_commitish\":\"master\",\"name\":\"自動化されたリリース：%s\",\"body\":\"このリリースは自動化されたものです。\"}" NEXT_VERSION NEXT_VERSION)
         cat $JSON
+        echo "\n"
         curl -sS -X POST -H 'content-type:application/json' --data-urlencode $JSON https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases > response
+        echo "\n"
         cat response
+        echo "\n"
         cat response | jq '.upload_url' > upload_url
     - run: cat upload_url
         #curl -sS -X POST -H 'content-type:application/json' --data-urlencode $JSON $(cat upload_url)
