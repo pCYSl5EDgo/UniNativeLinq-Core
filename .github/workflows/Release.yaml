@@ -39,7 +39,8 @@ jobs:
       with:
         name: bytes
         path: artifact
-    - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension
+    - run: git clone git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
+    - run: git remote set-url git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
     - run: echo $NETRC > UniNativeLinq-EditorExtension/.netrc
       env:
         NETRC: ${{ secrets.netrc }}
