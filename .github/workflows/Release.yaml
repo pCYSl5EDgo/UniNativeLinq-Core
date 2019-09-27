@@ -45,25 +45,14 @@ jobs:
         id_rsa: ${{ secrets.id_rsa }}
     - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension.git
     - run: ls -l
-    - run: |
-        cd UniNativeLinq-EditorExtension
-        git remote -v
+    - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
     - run: |
         cd UniNativeLinq-EditorExtension
         git remote set-rul git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
-    - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
-    - name: git config
-      run: |
-        cd UniNativeLinq-EditorExtension
+        git remote -v
         git config --global user.email "pcysl5edgo@yahoo.co.jp"
         git config --global user.name "pCYSl5EDgo"
-    - name: git commit
-      run: |
-        cd UniNativeLinq-EditorExtension
         git commit -a -m "[update]DLL Update of $GITHUB_SHA"
-    - name: git push
-      run: |
-        cd UniNativeLinq-EditorExtension
         git push
 
   publishReleaseJob:
