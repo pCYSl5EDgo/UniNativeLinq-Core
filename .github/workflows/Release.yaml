@@ -73,5 +73,6 @@ jobs:
         curl -sS -X POST -H 'content-type:application/json' --data-urlencode @"json" https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases > response
         cat response
         cat response | jq '.upload_url' > upload_url
-    - run: cat upload_url
+    - run: |
+        cat upload_url
         curl -sS -X POST -H 'content-type:application/json' --data-urlencode $JSON $(cat upload_url)
