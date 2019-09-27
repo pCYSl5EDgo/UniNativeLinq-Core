@@ -35,6 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: buildReleaseJob
     steps:
+    - run: mkdir -p artifact
     - uses: actions/download-artifacct@master
       with:
         name: bytes
@@ -51,6 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: buildReleaseJob
     steps:
+    - run: mkdir -p artifact
     - uses: actions/download-artifacct@master
       with:
         name: bytes
