@@ -50,11 +50,5 @@ jobs:
 
   publishReleaseJob:
     runs-on: ubuntu-latest
-    needs: buildReleaseJob
     steps:
-    - run: mkdir -p artifact
-    - uses: actions/download-artifacct@master
-      with:
-        name: bytes
-        path: artifact
     - run: curl https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases/latest | jq .
