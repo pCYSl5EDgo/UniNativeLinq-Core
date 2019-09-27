@@ -39,11 +39,16 @@ jobs:
       with:
         name: bytes
         path: artifact
-    - run: echo $NETRC > .netrc
+    - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension
+    - run: echo $NETRC > UniNativeLinq-EditorExtension/.netrc
       env:
         NETRC: ${{ secrets.netrc }}
-    - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension
     - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
+    - name: git config
+      run: |
+        cd UniNativeLinq-EditorExtension
+        git config --global user.email "pcysl5edgo@yahoo.co.jp"
+        git config --global user.name "pCYSl5EDgo"
     - name: git commit
       run: |
         cd UniNativeLinq-EditorExtension
