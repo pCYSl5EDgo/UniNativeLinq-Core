@@ -6,53 +6,6 @@ on:
     - master
 
 jobs:
-  buildReleaseJob:
-    runs-on: ubuntu-latest
-    container: docker://gableroux/unity3d:${{ matrix.unity-tag }}
-    strategy:
-      matrix:
-        unity-tag: [2018.4.9f1]
-
-    steps:
-    - uses: actions/checkout@master
-    - run: mkdir -p artifact
-    - uses: actions/setup-dotnet@v1.0.2
-      with:
-        dotnet-version: '3.0.100'
-    - run: |
-        cd UniNativeLinq
-        dotnet build -c Release
-    - run: |
-        cd CecilRewrite
-        dotnet run "/opt/Unity/Editor/Data/Managed/UnityEngine/" "../UniNativeLinq/bin/Release/netstandard2.0/UniNativeLinq.dll" "../artifact/UniNativeLinq.bytes"
-    - uses: actions/upload-artifact@master
-      with:
-        name: bytes
-        path: artifact
-    
-
-  pushGitJob:
-    runs-on: ubuntu-latest
-    needs: buildReleaseJob
-    steps:
-    - run: mkdir -p artifact
-    - uses: actions/download-artifact@master
-      with:
-        name: bytes
-        path: artifact
-    - run: echo $NETRC > .netrc
-      env:
-        NETRC: ${{ secrets.netrc }}
-    - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension
-    - run: \cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/Dlls/UniNativeLinq.bytes"
-    - run: git commit -a -m "[update]DLL Update of $GITHUB_SHA"
-    - run: git push
-
   publishReleaseJob:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/download-artifact@master
-      with:
-        name: bytes
-        path: artifact
-    - run: curl -s -S https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" | awk '{split($0,versions,".");print versions[0] "." versions[1] "." (versions[2]+1)}'
+    - run: curl -s -S https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" | awk '{split($0,versions,".");print versions[0] "." versions[1] "." (versions[2]+1)}' 
