@@ -50,7 +50,7 @@ jobs:
         git config --global user.email "pcysl5edgo@yahoo.co.jp"
         git config --global user.name "pCYSl5EDgo"
         git commit -a -m "[update]DLL Update of $GITHUB_SHA"
-        git push -v 
+        git push -v || exit 0
 
   publishReleaseJob:
     runs-on: ubuntu-latest
