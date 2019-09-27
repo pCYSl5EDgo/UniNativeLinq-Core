@@ -6,7 +6,7 @@ on:
     - master
 
 jobs:
-  editorTestJob:
+  buildReleaseJob:
     runs-on: ubuntu-latest
     container: docker://gableroux/unity3d:${{ matrix.unity-tag }}
     strategy:
@@ -29,10 +29,27 @@ jobs:
       with:
         name: bytes
         path: artifact
+    
+
+  pushGitJob:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifacct@master
+      with:
+        name: bytes
+        path: artifact
     - run: echo $NETRC > .netrc
       env:
         NETRC: ${{ secrets.netrc }}
     - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension
-    - run: cp artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/Dlls/UniNativeLinq.bytes"
+    - run: \cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/Dlls/UniNativeLinq.bytes"
     - run: git commit -a -m "[update]DLL Update of $GITHUB_SHA"
     - run: git push
+  publishReleaseJob:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifacct@master
+      with:
+        name: bytes
+        path: artifact
+    - run: curl https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases/latest | jq .
