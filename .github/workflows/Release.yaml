@@ -43,10 +43,7 @@ jobs:
       env:
         NETRC: ${{ secrets.netrc }}
     - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension
-    - run: ls "UniNativeLinq-EditorExtension"
-    - run: ls "UniNativeLinq-EditorExtension/Editor"
-    - run: ls "UniNativeLinq-EditorExtension/Editor/Dlls"
-    - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/Dlls/UniNativeLinq.bytes"
+    - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
     - run: git commit -a -m "[update]DLL Update of $GITHUB_SHA"
     - run: git push
 
@@ -63,6 +60,9 @@ jobs:
     - run: |
         NEXTVERSION=$(cat next_version)
         JSON=$(printf "{\"tag_name\":\"%s\",\"target_commitish\":\"master\",\"name\":\"自動化されたリリース：%s\",\"body\":\"このリリースは自動化されたものです。\"}" NEXT_VERSION NEXT_VERSION)
-        curl -sS -X POST -H 'content-type:application/json' --data-urlencode $JSON https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq .upload_url > upload_url
+        cat $JSON
+        curl -sS -X POST -H 'content-type:application/json' --data-urlencode $JSON https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases > response
+        cat response
+        cat response | jq '.upload_url' > upload_url
     - run: cat upload_url
         #curl -sS -X POST -H 'content-type:application/json' --data-urlencode $JSON $(cat upload_url)
