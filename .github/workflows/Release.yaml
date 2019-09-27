@@ -36,7 +36,7 @@ jobs:
     needs: buildReleaseJob
     steps:
     - run: mkdir -p artifact
-    - uses: actions/download-artifacct@master
+    - uses: actions/download-artifact@master
       with:
         name: bytes
         path: artifact
@@ -51,5 +51,8 @@ jobs:
   publishReleaseJob:
     runs-on: ubuntu-latest
     steps:
-    - run: curl -s -S https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq .[0]
-    - run: curl -s -S https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq .
+    - uses: actions/download-artifact@master
+      with:
+        name: bytes
+        path: artifact
+    - run: curl -s -S https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" | awk '{split($0,versions,".");print versions[0] "." versions[1] "." (versions[2]+1)}'
