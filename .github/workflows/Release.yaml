@@ -43,7 +43,7 @@ jobs:
     - run: echo $id_rsa > ~/.ssh/id_rsa
       env:
         id_rsa: ${{ secrets.id_rsa }}
-    - run: git clone git@github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
+    - run: git clone https://github.com:pCYSl5EDgo/UniNativeLinq-EditorExtension.git
     - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
     - name: git config
       run: |
