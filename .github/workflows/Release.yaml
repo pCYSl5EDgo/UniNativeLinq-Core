@@ -30,8 +30,9 @@ jobs:
         name: bytes
         path: artifact
     - run: echo $NETRC > .netrc
-      with:
+      env:
         NETRC: ${{ secrets.netrc }}
     - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension
     - run: cp artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/Dlls/UniNativeLinq.bytes"
+    - run: git commit -a -m "[update]DLL Update of $GITHUB_SHA"
     - run: git push
