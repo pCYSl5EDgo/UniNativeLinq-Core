@@ -6,55 +6,9 @@ on:
     - master
 
 jobs:
-  buildReleaseJob:
-    runs-on: ubuntu-latest
-    container: docker://gableroux/unity3d:${{ matrix.unity-tag }}
-    strategy:
-      matrix:
-        unity-tag: [2018.4.9f1]
-
-    steps:
-    - uses: actions/checkout@master
-    - run: mkdir -p artifact
-    - uses: actions/setup-dotnet@v1.0.2
-      with:
-        dotnet-version: '3.0.100'
-    - run: |
-        cd UniNativeLinq
-        dotnet build -c Release
-    - run: |
-        cd CecilRewrite
-        dotnet run "/opt/Unity/Editor/Data/Managed/UnityEngine/" "../UniNativeLinq/bin/Release/netstandard2.0/UniNativeLinq.dll" "../artifact/UniNativeLinq.bytes"
-    - uses: actions/upload-artifact@master
-      with:
-        name: bytes
-        path: artifact
-
-  pushGitJob:
-    runs-on: ubuntu-latest
-    needs: buildReleaseJob
-    steps:
-    - run: mkdir -p artifact
-    - uses: actions/download-artifact@master
-      with:
-        name: bytes
-        path: artifact
-    - run: mkdir -p ~/.ssh
-    - run: echo $netrc > ~/.netrc
-      env:
-        netrc: ${{ secrets.netrc }}
-    - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension.git
-    - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
-    - run: |
-        cd UniNativeLinq-EditorExtension
-        git config --global user.email "pcysl5edgo@yahoo.co.jp"
-        git config --global user.name "pCYSl5EDgo"
-        git commit -a -m "[update]DLL Update of $GITHUB_SHA"
-        git push -v || exit 0
 
   publishReleaseJob:
     runs-on: ubuntu-latest
-    needs: buildReleaseJob
     steps:
     - run: mkdir -p artifact
     - run: |
@@ -62,17 +16,12 @@ jobs:
         curl -sS https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" |  awk '{split(substr($0, 2, length($0)-2),versions,".");print versions[1] "." versions[2] "." (versions[3]+1)}' > next_version
         cat next_version
 
-    - uses: actions/download-artifact@master
-      with:
-        name: bytes
-        path: artifact
     - run: |
-        NEXTVERSION=$(cat next_version)
-        printf "{\"tag_name\":\"%s\",\"target_commitish\":\"master\",\"name\":\"Release - %s\"}" $NEXT_VERSION $NEXT_VERSION > json
+        printf "{\"tag_name\":\"%s\"}" $(cat next_version)> json
         cat json
-        curl -sS -X POST -H 'content-type:application/json' --data-urlencode @"json" https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases > response
+        curl -sS -X POST -H 'content-type:application/json' -d @"json" https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases > response
         cat response
         cat response | jq '.upload_url' > upload_url
     - run: |
         cat upload_url
-        curl -sS -X POST -H 'content-type:application/json' --data-urlencode $JSON $(cat upload_url)
+        #curl -sS -X POST -H 'content-type:application/json' -d $JSON $(cat upload_url)
