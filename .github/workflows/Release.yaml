@@ -50,7 +50,7 @@ jobs:
         git config --global user.email "pcysl5edgo@yahoo.co.jp"
         git config --global user.name "pCYSl5EDgo"
         git commit -a -m "[update]DLL Update of $GITHUB_SHA"
-        git push -v || exit 0
+        git push -v
 
   pushTestGitJob:
     runs-on: ubuntu-latest
@@ -68,8 +68,8 @@ jobs:
     - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension-Test.git
     - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension-Test/Assets/UniNativeLinq-EditorExtension/Editor/DLLs/UniNativeLinq.bytes"
     - run: |
-        cd UniNativeLinq-EditorExtension
+        cd UniNativeLinq-EditorExtension-Test
         git config --global user.email "pcysl5edgo@yahoo.co.jp"
         git config --global user.name "pCYSl5EDgo"
         git commit -a -m "[update]DLL Update of $GITHUB_SHA"
-        git push -v || exit 0
+        git push -v
