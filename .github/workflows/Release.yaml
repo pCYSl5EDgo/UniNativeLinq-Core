@@ -10,6 +10,12 @@ jobs:
   publishReleaseJob:
     runs-on: ubuntu-latest
     steps:
+    - run: mkdir -p ~/.ssh
+    - run: echo $netrc > ~/.netrc
+      env:
+        netrc: ${{ secrets.netrc }}
+    - uses: actions/checkout@master
+    - run: ls -l
     - run: mkdir -p artifact
     - run: |
         curl -sS https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" |  awk '{print substr($0, 2, length($0)-2)}'
