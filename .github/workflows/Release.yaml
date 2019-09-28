@@ -17,11 +17,11 @@ jobs:
     - uses: actions/checkout@master
     - run: mkdir -p artifact
     - run: |
-        curl -sS https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" > version
+        curl -sS https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" | awk 'substr($0, 2, length($0)-2)' > version
         cat version
 
     - run: |
-        printf "{\"tag_name\":\"%s\"}" $(cat version)> json
+        printf "{\"tag_name\":\"%s\"}" $(cat version) > json
         cat json
         curl -sS -X POST -H 'content-type:application/json' -d @"json" https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases > response
         cat response
