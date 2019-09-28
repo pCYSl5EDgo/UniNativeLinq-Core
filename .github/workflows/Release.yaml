@@ -12,7 +12,7 @@ jobs:
     steps:
     - run: mkdir -p artifact
     - run: |
-        curl -sS https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" | awk 'print substr($0, 2, length($0)-2)' > version
+        curl -sS https://api.github.com/repos/pCYSl5EDgo/UniNativeLinq-Core/releases | jq ".[0] | .tag_name" | awk '{print substr($0, 2, length($0)-2)}' > version
         cat version
 
     - run: |
