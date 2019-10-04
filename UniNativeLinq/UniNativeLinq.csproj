@@ -12,7 +12,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>/opt/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
+      <HintPath Condition="Exists('/opt/Unity/Editor/Data/Managed/UnityEngine')">/opt/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
+      <HintPath Condition="Exists('C:\Program Files\Unity\Hub\Editor\2018.4.9f1\Editor\Data\Managed\UnityEngine')">C:\Program Files\Unity\Hub\Editor\2018.4.9f1\Editor\Data\Managed\UnityEngine\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

@@ -72,138 +72,98 @@ namespace UniNativeLinq
         public struct Enumerator
             : IRefEnumerator<GroupingEnumerable<TKey, TElement>>
         {
-            internal GroupingEnumerable<TKey, TElement>* Groups;
-            internal long Count;
-            private long index;
+            internal NativeEnumerable<GroupingEnumerable<TKey, TElement>>.Enumerator enumerator;
             private Allocator allocator;
             private GroupByDisposeOptions option;
 
-            private const long INITIAL_CAPACITY = 16L;
-
-            internal Enumerator([PseudoIsReadOnly]ref TEnumerable enumerable, TKeyFunc keySelector, TElementFunc elementSelector, TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions option)
+            internal Enumerator(ref TEnumerable enumerable, ref TKeyFunc keySelector, ref TElementFunc elementSelector, ref TEqualityComparer equalityComparer, Allocator allocator, GroupByDisposeOptions option)
             {
-                this.option = option;
-                index = -1;
-                Count = 0;
                 this.allocator = allocator;
+                this.option = option;
                 if (enumerable.CanFastCount() && enumerable.LongCount() == 0)
                 {
-                    Groups = null;
+                    this.enumerator = default;
                     return;
                 }
-                var capacity = INITIAL_CAPACITY;
-                Groups = UnsafeUtilityEx.Malloc<GroupingEnumerable<TKey, TElement>>(capacity, allocator);
-                var capacities = UnsafeUtilityEx.Malloc<long>(capacity, Allocator.Temp);
+                this.allocator = allocator;
+                var list = new NativeList<(TKey Key, NativeList<TElement> Elements)>(Allocator.Temp);
                 var enumerator = enumerable.GetEnumerator();
-                EnumerateAndSort(ref capacity, ref enumerator, ref capacities, ref keySelector, ref elementSelector, ref equalityComparer);
-                UnsafeUtility.Free(capacities, Allocator.Temp);
-                enumerator.Dispose();
-            }
-
-            private void EnumerateAndSort(ref long capacity, ref TEnumerator enumerator, ref long* capacities, ref TKeyFunc keySelector, ref TElementFunc elementSelector, ref TEqualityComparer equalityComparer)
-            {
                 TKey key = default;
-                while (enumerator.MoveNext())
+                TElement element = default;
+                do
                 {
-                    ref var current = ref enumerator.Current;
+                    ref var current = ref enumerator.TryGetNext(out var success);
+                    if (!success) break;
+
                     keySelector.Execute(ref current, ref key);
-                    long insertIndex = LinearSearchInsertIndex(ref key, ref equalityComparer);
-                    if (capacity == insertIndex)
-                        ReAllocGroups(ref capacity, ref capacities, in key);
-                    ref var group = ref Groups[insertIndex];
-                    ref var capa = ref capacities[insertIndex];
-                    if (capa == 0)
-                        AllocGroup(key, ref group, ref capa);
-                    InsertTo(ref group, ref capa, ref current, ref elementSelector);
-                }
-            }
+                    elementSelector.Execute(ref current, ref element);
 
-            private void InsertTo(ref GroupingEnumerable<TKey, TElement> group, ref long capa, ref T current, ref TElementFunc elementSelector)
-            {
-                if (capa == group.Length)
+                    bool found = false;
+                    for (var i = 0L; i < list.LongCount(); i++)
+                    {
+                        ref var pair = ref list[i];
+                        if (!equalityComparer.Calc(ref key, ref pair.Key)) continue;
+                        pair.Elements.Add(element);
+                        found = true;
+                        break;
+                    }
+                    if (found) continue;
+                    list.Add((key, new NativeList<TElement>(this.allocator)
+                    {
+                        element
+                    }));
+                } while (true);
+                enumerator.Dispose();
+
+                var answer = new NativeEnumerable<GroupingEnumerable<TKey, TElement>>
                 {
-                    UnsafeUtilityEx.ReAlloc(ref group.Elements, capa, capa << 1, allocator);
-                    capa <<= 1;
+                    Length = list.LongCount(),
+                    Ptr = UnsafeUtilityEx.Malloc<GroupingEnumerable<TKey, TElement>>(list.LongCount(), this.allocator)
+                };
+                for (var i = 0L; i < answer.Length; i++)
+                {
+                    answer[i] = new GroupingEnumerable<TKey, TElement>(list[i].Key, list[i].Elements.AsNativeEnumerable(), allocator);
                 }
-                elementSelector.Execute(ref current, ref group.Elements[group.Length++]);
+                list.Dispose();
+                this.enumerator = answer.GetEnumerator();
             }
 
-            private void AllocGroup(in TKey key, ref GroupingEnumerable<TKey, TElement> group, ref long capacity)
-            {
-                group.Key = key;
-                group.Allocator = allocator;
-                capacity = INITIAL_CAPACITY;
-                group.Elements = UnsafeUtilityEx.Malloc<TElement>(capacity, allocator);
-                group.Length = 0;
-            }
+            public ref GroupingEnumerable<TKey, TElement> Current => ref enumerator.Current;
 
-            private long LinearSearchInsertIndex(ref TKey key, ref TEqualityComparer equalityComparer)
-            {
-                for (var i = 0L; i < Count; i++)
-                    if (equalityComparer.Calc(ref key, ref Groups[i].Key))
-                        return i;
-                return Count++;
-            }
-
-            private void ReAllocGroups(ref long capacity, ref long* capacities, in TKey key)
-            {
-                UnsafeUtilityEx.ReAlloc(ref capacities, capacity, capacity << 1, Allocator.Temp);
-                UnsafeUtilityEx.ReAlloc(ref Groups, capacity, capacity << 1, allocator);
-                UnsafeUtility.MemClear(capacities + capacity, sizeof(long) * capacity);
-                capacity <<= 1;
-            }
-
-            public ref GroupingEnumerable<TKey, TElement> Current => ref Groups[index];
             GroupingEnumerable<TKey, TElement> IEnumerator<GroupingEnumerable<TKey, TElement>>.Current => Current;
+
             object IEnumerator.Current => Current;
 
             public void Dispose()
             {
+                if (enumerator.Ptr == null || !UnsafeUtility.IsValidAllocator(allocator)) return;
                 switch (option)
                 {
-                    case GroupByDisposeOptions.Recursive:
-                        if (Groups != null)
-                            for (var i = 0L; i < Count; i++)
-                                Groups[i].Dispose();
-                        goto case GroupByDisposeOptions.GroupCollectionOnly;
                     case GroupByDisposeOptions.GroupCollectionOnly:
-                        if (Groups != null && UnsafeUtility.IsValidAllocator(allocator))
-                            UnsafeUtility.Free(Groups, allocator);
+                        UnsafeUtility.Free(enumerator.Ptr, allocator);
+                        break;
+                    case GroupByDisposeOptions.None:
+                        return;
+                    case GroupByDisposeOptions.Recursive:
+                        for (var i = 0L; i < enumerator.Length; i++)
+                        {
+                            enumerator.Ptr[i].Dispose();
+                        }
+                        UnsafeUtility.Free(enumerator.Ptr, allocator);
                         break;
                 }
             }
 
-            public bool MoveNext() => ++index < Count;
+            public bool MoveNext() => enumerator.MoveNext();
 
-            public void Reset() => index = -1;
+            public void Reset() => enumerator.MoveNext();
 
-            public ref GroupingEnumerable<TKey, TElement> TryGetNext(out bool success)
-            {
-                success = ++index < Count;
-                if (success)
-                    return ref Groups[index];
-                index = Count;
-                return ref Pseudo.AsRefNull<GroupingEnumerable<TKey, TElement>>();
-            }
+            public ref GroupingEnumerable<TKey, TElement> TryGetNext(out bool success) => ref enumerator.TryGetNext(out success);
 
-            public bool TryMoveNext(out GroupingEnumerable<TKey, TElement> value)
-            {
-                if (++index < Count)
-                {
-                    value = Groups[index];
-                    return true;
-                }
-                else
-                {
-                    value = default;
-                    index = Count;
-                    return false;
-                }
-            }
+            public bool TryMoveNext(out GroupingEnumerable<TKey, TElement> value) => enumerator.TryMoveNext(out value);
         }
 
-        public Enumerator GetEnumerator() => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, alloc, GroupByDisposeOption);
-        public Enumerator GetEnumerator(Allocator allocator, GroupByDisposeOptions option) => new Enumerator(ref enumerable, keySelector, elementSelector, equalityComparer, allocator, option);
+        public Enumerator GetEnumerator() => new Enumerator(ref enumerable, ref keySelector, ref elementSelector, ref equalityComparer, alloc, GroupByDisposeOption);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
