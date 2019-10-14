@@ -38,7 +38,7 @@ namespace UniNativeLinq
         private TInnerKeySelector innerKeySelector;
         private TSelector sourceSelector;
         private TKeyEqualityComparer keyEqualityComparer;
-        private Allocator alloc;
+        private readonly Allocator alloc;
         public bool CanIndexAccess() => false;
         public ref T this[long index] => throw new NotSupportedException();
         public GroupJoinEnumerable(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TKeyEqualityComparer keyEqualityComparer, in TSelector sourceSelector, Allocator allocator)
@@ -49,6 +49,17 @@ namespace UniNativeLinq
             this.innerKeySelector = innerKeySelector;
             this.sourceSelector = sourceSelector;
             this.keyEqualityComparer = keyEqualityComparer;
+            alloc = allocator;
+        }
+
+        public GroupJoinEnumerable(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TSelector sourceSelector, Allocator allocator)
+        {
+            this.outerEnumerable = outerEnumerable;
+            this.innerEnumerable = innerEnumerable;
+            this.outerKeySelector = outerKeySelector;
+            this.innerKeySelector = innerKeySelector;
+            this.sourceSelector = sourceSelector;
+            keyEqualityComparer = default;
             alloc = allocator;
         }
 
@@ -65,9 +76,9 @@ namespace UniNativeLinq
             private TOuterKeySelector keySelector;
             private TSelector selector;
             private T element;
-            private Allocator allocator;
+            private readonly Allocator allocator;
 
-            internal Enumerator(in TOuterEnumerable outerEnumerable, in TInnerEnumerable innerEnumerable, in TOuterKeySelector outerKeySelector, in TInnerKeySelector innerKeySelector, in TSelector sourceSelector, in TKeyEqualityComparer keyEqualityComparer, Allocator allocator)
+            internal Enumerator(ref TOuterEnumerable outerEnumerable, ref TInnerEnumerable innerEnumerable, ref TOuterKeySelector outerKeySelector, ref TInnerKeySelector innerKeySelector, ref TSelector sourceSelector, ref TKeyEqualityComparer keyEqualityComparer, Allocator allocator)
             {
                 enumerator = outerEnumerable.GetEnumerator();
                 var inners = innerEnumerable.ToNativeEnumerable(allocator);
@@ -123,7 +134,7 @@ namespace UniNativeLinq
             }
         }
 
-        public Enumerator GetEnumerator() => new Enumerator(outerEnumerable, innerEnumerable, outerKeySelector, innerKeySelector, sourceSelector, keyEqualityComparer, alloc);
+        public Enumerator GetEnumerator() => new Enumerator(ref outerEnumerable, ref innerEnumerable, ref outerKeySelector, ref innerKeySelector, ref sourceSelector, ref keyEqualityComparer, alloc);
 
         #region Interface Implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
