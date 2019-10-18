@@ -25,29 +25,19 @@ jobs:
     - run: |
         cd CecilRewrite
         dotnet run "/opt/Unity/Editor/Data/Managed/UnityEngine/" "../UniNativeLinq/bin/Release/netstandard2.0/UniNativeLinq.dll" "../artifact/UniNativeLinq.bytes"
-    - uses: actions/upload-artifact@master
-      with:
-        name: bytes
-        path: artifact
-
-  pushGitJob:
-    runs-on: ubuntu-latest
-    needs: buildReleaseJob
-    steps:
-    - run: mkdir -p artifact
-    - uses: actions/download-artifact@master
-      with:
-        name: bytes
-        path: artifact
     - run: mkdir -p ~/.ssh
     - run: echo $netrc > ~/.netrc
       env:
         netrc: ${{ secrets.netrc }}
     - run: git clone https://github.com/pCYSl5EDgo/UniNativeLinq-EditorExtension-Test.git
-    - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension-Test/Assets/UNL/DLLs/UniNativeLinq.bytes"
+    - run: cp -f artifact/UniNativeLinq.bytes "UniNativeLinq-EditorExtension-Test/Assets/Plugins/UNL/DLLs/UniNativeLinq.bytes"
     - run: |
         cd UniNativeLinq-EditorExtension-Test
         git config --global user.email "pcysl5edgo@yahoo.co.jp"
         git config --global user.name "pCYSl5EDgo"
         git commit -a -m "[update]DLL Update of $GITHUB_SHA"
         git push -v
+    - uses: actions/upload-artifact@master
+      with:
+        name: bytes
+        path: artifact
