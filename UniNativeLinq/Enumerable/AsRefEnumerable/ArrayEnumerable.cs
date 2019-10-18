@@ -133,7 +133,10 @@ namespace UniNativeLinq
         {
             if (Length != 0)
             {
-                UnsafeUtilityEx.MemCpy(dest, GetPointer(), Length);
+                fixed(T* ptr = &array[offset])
+                {
+                    UnsafeUtilityEx.MemCpy(dest, ptr, Length);
+                }
             }
             return Length;
         }
@@ -144,7 +147,10 @@ namespace UniNativeLinq
             var count = LongCount();
             if (count == 0) return Array.Empty<T>();
             var answer = new T[count];
-            CopyTo(Pseudo.AsPointer(ref answer[0]));
+            fixed(T* dest = &answer[0])
+            {
+                CopyTo(dest);
+            }
             return answer;
         }
 
