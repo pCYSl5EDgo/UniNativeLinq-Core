@@ -35,7 +35,7 @@ namespace UniNativeLinq
         public void Clear()
         {
             if(Ptr == null) return;
-            UnsafeUtilityEx.Clear(Ptr, Length);
+            UnsafeUtilityEx.MemClear(Ptr, Length);
         }
 
         public static NativeEnumerable<T> Create(NativeArray<T> array, long offset, long length)
