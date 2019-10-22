@@ -27,5 +27,9 @@ namespace UniNativeLinq
         public static void MemCpy<T>(T* dest, T* src, long count)
             where T : unmanaged
             => UnsafeUtility.MemCpy(dest, src, count * sizeof(T));
+
+        public static void MemClear<T>(T* src, long count)
+            where T : unmanaged
+            => UnsafeUtility.MemClear(src, count * sizeof(T));
     }
 }
