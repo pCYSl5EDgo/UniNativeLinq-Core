@@ -45,7 +45,7 @@ namespace CecilRewrite
                 {
                     Console.WriteLine(customAttribute.AttributeType.FullName);
                 }
-                IsReadOnlyAttribute = customAttributes[1];
+                IsReadOnlyAttribute = customAttributes[0];
             }
         }
 
