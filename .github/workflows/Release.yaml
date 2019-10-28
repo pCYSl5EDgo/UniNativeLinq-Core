@@ -36,7 +36,7 @@ jobs:
         git config --global user.email "pcysl5edgo@yahoo.co.jp"
         git config --global user.name "pCYSl5EDgo"
         git commit -a -m "[update]DLL Update of $GITHUB_SHA"
-        git push -v -f
+        git push -v
     - uses: actions/upload-artifact@master
       with:
         name: bytes

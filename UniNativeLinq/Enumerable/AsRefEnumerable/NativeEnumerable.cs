@@ -242,6 +242,14 @@ namespace UniNativeLinq
             return answer;
         }
 
+        public void ForEachIndex<TAction>(in TAction action) where TAction : struct, IForEachIndex<T>
+        {
+            for (var i = 0L; i < Length; i++)
+            {
+                action.Execute(ref Ptr[i], i);
+            }
+        }
+
         public static implicit operator NativeArray<T>(NativeEnumerable<T> enumerable)
             => NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<T>(enumerable.Ptr, (int)enumerable.Length, Allocator.None);
 
