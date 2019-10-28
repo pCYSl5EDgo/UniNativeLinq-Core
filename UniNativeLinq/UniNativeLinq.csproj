@@ -7,9 +7,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath Condition="Exists('/opt/Unity/Editor/Data/Managed/UnityEngine')">/opt/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
